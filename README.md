@@ -1,31 +1,103 @@
+
 # Semantic API
 
-Projeto desenvolvido para auxiliar no desenvolvimento de aplicações web que objetivam guardar conteúdo semântico. A API 
-foi desenvolvida em JAVA utilizando o framework JENA, que facilita a manipulação de conteúdo semântico. É abstraído o 
-local de armazenamento e é retornado o nome do endereço para que novas inserções no espaço de trabalho sejam feitas.
+Project developed to assist in the development of web applications that aim to store semantic content. The API
+was developed in JAVA using the JENA framework, which facilitates the manipulation of semantic content. It is abstracted the
+storage location, and returns the name of the address so that new insertions in the workspace are made.
 
-## Requisitos
+## Content
+- [Requisites](#requisites)
+- [Use](#use)
+- [ClientApi](#client-api) 
+    - [Property Format](#resource-format)
+    - [Sample of use](#sample-of-use)
 
-- Java 8+
-- Maven 3+
+### Requisites
 
-## Execução
+- [Java 8+](http://www.oracle.com/technetwork/pt/java/javase/downloads/jdk8-downloads-2133151.html)
+- [Maven 3](https://maven.apache.org/install.html)
+- [Fuseki 3+](https://jena.apache.org/download/#jena-fuseki): Precisa estar executando e possuir um dataset chamado SemanticContent
 
+### Use
+
+Must import client library into JavaScript that is directed to this API. There are methods to add
+vocabularies (addVocabulary), triples (addTriple) and save the contents of the resource (saveResource). There are four
+representation of content:
+
+- A property like triple that guards subject, predicate and literal
+    ``` javascript
+        <foaf:familyName>Brickley</foaf:familyName>
+        [{"propertyName":"familyName","value":"Brickley","asResouce":false,"subPropertyOf":"","prefix":"foaf"}]
+    ``` 
+- A property like triple that holds subject, predicate and URI of another resource
+    ``` javascript
+        <foaf:openid rdf:resource="http://danbri.org/" />
+        [{"propertyName":"openid","value":"http://danbri.org/","asResouce":true,"subPropertyOf":"","prefix":"foaf"}]    
+    ```
+- A subpropriety as triple that guards subject, predicate and literal
+     ``` javascript
+        <vcard:hasAddred>
+            <vcard:country-name>Brazil</vcard:country-name>
+        </vcard:hasAddred>
+        [{"propertyName":"hasAddress","value":"","asResouce":true,"subPropertyOf":"","prefix":"vcard"},
+         {"propertyName":"country-name","value":"Brazil","asResouce":false,"subPropertyOf":"hasAddress","prefix":"vcard"}]        
+     ```
+- A subpropriety as a triple that holds subject, predicate and URI of another resource
+     ``` javascript
+        <vacard:hasEmail>
+            <vcard:hasValue rdf:resource="eudesdionatas@gmail.com" />
+        </vacard:hasEmail>
+        [{"propertyName":"hasEmail","value":"","asResouce":true,"subPropertyOf":"","prefix":"vcard"},
+         {"propertyName":"hasValue","value":"eudesdionatas@gmail.com","asResouce":true,"subPropertyOf":"hasEmail","prefix":"vcard"}]
+     ```
+
+To clarify how the data should be passed, an interface has been developed that shows the structure of the data
+as they are formed and in parallel are presented the arguments that must be passed to form the structure
+in question.
+
+### Client API
+
+There is a constructor method, "SemanticAPI", which receives the base url that has the address of where the api is. 
+To create a new resource you must use the constructor method of the "Resource" class. To add new vocabularies to a 
+resource you must use the "addVocabulary" method of Resource, to add new triples you must use the "addTriple" method of 
+"Resource". At the end of this document there is a section showing an example of using the client side for API. Such methods 
+are useful for facilitating the creation of the resource in an atomic operation.
+
+### Resource Format
+
+```javascript
+{
+    "prefix": "resourcePrefix",
+    "name": "resourceName",
+    "uri": "resourceURI",
+    "vocabularies": [
+        { "uri": "vocabURI",
+          "prefix": "vocabPrefix",
+          "pairs": [
+            { "propertyName": "propertyName",
+              "value": "propertyValue"
+              "asResource": true
+              "subPropetyOf": "anotherProperty"  
+            }
+          ]
+        }
+    ] 
+}
 ```
-$ mvn spring-boot:run
+
+## Sample of use
+
+```javascript
+   const config = { 
+     baseURL: 'http://localhost:8080/'
+   }
+   const api = new SemanticAPI(config)
+   const resource = new Resource('contactData', 'contact', 'http://contactmail.com#Person')
+   resource.addVocabulary('schema', 'http://schema.org/')
+   resource.addTriple('schema', 'email', emailValue)
+   resource.addTriple('schema', 'name', nameValue)
+   const resourceToSend = resource.getResourceToSend()
+   api.saveResource(resourceToSend)
+     .then(...)
+     .catch(...)
 ```
-
-## Uso
-
-Deve ser feita a importação da biblioteca cliente em JavaScript que é direcionada a esta API. Há os métodos para adicionar
-vocabulários (addVocabulary), triplas (addTriple) e salvar o conteúdo do recurso (saveResource). Há quatro formas de 
-representação do conteúdo:
-
-- Uma propriedade como tripla que guarda sujeito, predicado e literal
-- Uma propriedade como tripla que guarda sujeito, predicado e URI de outro recurso
-- Uma subpropriedade como tripla que guarda sujeito, predicado e literal 
-- Uma subpropriedade como tripla que guarda sujeito, predicado e URI de outro recurso 
-
-Para esclerimento de como devem ser passados os dados foi desenvolvida uma interface que mostra a estrutura dos dados
-à medida que são formados e paralelamente são apresentados os argumentos que devem ser passados para formar a estrutura
-em questão.

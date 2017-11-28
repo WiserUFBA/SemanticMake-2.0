@@ -30,7 +30,7 @@ public class MakeModelController {
     /**
      * String that stores the URL of the Fuseki/DatasetName server to store the ontologies
      */
-    private String fusekiURI = "http://localhost:3030/Teste";
+    private String fusekiURI = "http://localhost:3030/SemanticContent";
     /**
      *String that hold the name to the graph of Dataset
      */
