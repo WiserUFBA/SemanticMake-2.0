@@ -18,7 +18,7 @@ public class APIResponse {
     String workspace;
 
     /**
-     * String the hold the ID of the stored resource
+     * String the hold the ID of the stored resource, the URI in this case
      */
     String resourceID;
 }

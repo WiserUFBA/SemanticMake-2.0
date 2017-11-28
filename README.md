@@ -13,13 +13,13 @@ storage location, and returns the name of the address so that new insertions in 
     - [Sample of use](#sample-of-use)
 - [Documentation](#documentation)
     - [Javadoc](#javadoc)
-    - [SWAGGER UI](#swagger-ui)
+    - [Swagger UI](#swagger-ui)
 
 ### Requisites
 
 - [Java 8+](http://www.oracle.com/technetwork/pt/java/javase/downloads/jdk8-downloads-2133151.html)
 - [Maven 3+](https://maven.apache.org/install.html)
-- [Fuseki 3+](https://jena.apache.org/download/#jena-fuseki): Precisa estar executando e possuir um dataset chamado SemanticContent
+- [Fuseki 3+](https://jena.apache.org/download/#jena-fuseki): Must be running and have a dataset called SemanticContent.
 
 ### Use
 
@@ -105,6 +105,10 @@ are useful for facilitating the creation of the resource in an atomic operation.
      .catch(...)
 ```
 
+## Documentation
+
+In the next two sections is showed two ways to present the operation of the API
+
 ## Javadoc
 
 The Javadoc folder contains all the documentation of all Java files that were used.
@@ -114,4 +118,10 @@ The Javadoc folder contains all the documentation of all Java files that were us
 To test the operation of all API methods, [Swagger](http://localhost:8080/swagger-ui.html) provides an interface with 
 input field, use and output examples to test the tool. This was the alternative used for documentation of REST methods.
 To open the Swagger the application SemanticApi need be running.
-  
+
+## Support and development
+
+<p align="center">
+Developed by Leandro Andrade at </br>
+<img src="https://wiki.dcc.ufba.br/pub/SmartUFBA/ProjectLogo/wiserufbalogo.jpg"/>
+</p>
