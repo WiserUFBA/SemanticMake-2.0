@@ -19,7 +19,7 @@ storage location, and returns the name of the address so that new insertions in 
 
 - [Java 8+](http://www.oracle.com/technetwork/pt/java/javase/downloads/jdk8-downloads-2133151.html)
 - [Maven 3+](https://maven.apache.org/install.html)
-- [Fuseki 3+](https://jena.apache.org/download/#jena-fuseki): Precisa estar executando e possuir um dataset chamado SemanticContent
+- [Fuseki 3+](https://jena.apache.org/download/#jena-fuseki): Must be running and have a dataset called SemanticContent.
 
 ### Use
 
