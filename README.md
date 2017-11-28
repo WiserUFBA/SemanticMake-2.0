@@ -3,7 +3,7 @@
 
 Project developed to assist in the development of web applications that aim to store semantic content. The API
 was developed in JAVA using the JENA framework, which facilitates the manipulation of semantic content. It is abstracted the
-storage location, and returns the name of the address so that new insertions in the workspace are made.
+storage location, and returned the name of the address so that new insertions in the workspace are made.
 
 ## Content
 - [Requisites](#requisites)
@@ -30,28 +30,67 @@ representation of content:
 - A property like triple that guards subject, predicate and literal
     ``` javascript
         <foaf:familyName>Brickley</foaf:familyName>
-        [{"propertyName":"familyName","value":"Brickley","asResouce":false,"subPropertyOf":"","prefix":"foaf"}]
+        [{
+            "propertyName":"familyName",
+            "value":"Brickley",
+            "asResouce":false,
+            "subPropertyOf":"",
+            "prefix":"foaf"
+        }]
     ``` 
 - A property like triple that holds subject, predicate and URI of another resource
     ``` javascript
         <foaf:openid rdf:resource="http://danbri.org/" />
-        [{"propertyName":"openid","value":"http://danbri.org/","asResouce":true,"subPropertyOf":"","prefix":"foaf"}]    
+        [{
+            "propertyName":"openid",
+            "value":"http://danbri.org/",
+            "asResouce":true,
+            "subPropertyOf":"",
+            "prefix":"foaf"
+        }]    
     ```
 - A subpropriety as triple that guards subject, predicate and literal
      ``` javascript
         <vcard:hasAddred>
             <vcard:country-name>Brazil</vcard:country-name>
         </vcard:hasAddred>
-        [{"propertyName":"hasAddress","value":"","asResouce":true,"subPropertyOf":"","prefix":"vcard"},
-         {"propertyName":"country-name","value":"Brazil","asResouce":false,"subPropertyOf":"hasAddress","prefix":"vcard"}]        
+        [
+            {
+                "propertyName":"hasAddress",
+                "value":"",
+                "asResouce":true,
+                "subPropertyOf":"",
+                "prefix":"vcard"},
+            {
+                "propertyName":"country-name",
+                "value":"Brazil",
+                "asResouce":false,
+                "subPropertyOf":"hasAddress",
+                "prefix":"vcard"
+                }
+        ]        
      ```
 - A subpropriety as a triple that holds subject, predicate and URI of another resource
      ``` javascript
         <vacard:hasEmail>
             <vcard:hasValue rdf:resource="eudesdionatas@gmail.com" />
         </vacard:hasEmail>
-        [{"propertyName":"hasEmail","value":"","asResouce":true,"subPropertyOf":"","prefix":"vcard"},
-         {"propertyName":"hasValue","value":"eudesdionatas@gmail.com","asResouce":true,"subPropertyOf":"hasEmail","prefix":"vcard"}]
+        [
+            {
+                "propertyName":"hasEmail",
+                "value":"",
+                "asResouce":true,
+                "subPropertyOf":"",
+                "prefix":"vcard"
+            },
+            {
+                "propertyName":"hasValue",
+                "value":"eudesdionatas@gmail.com",
+                "asResouce":true,
+                "subPropertyOf":"hasEmail",
+                "prefix":"vcard"
+            }
+        ]
      ```
 
 To clarify how the data should be passed, an interface has been developed that shows the structure of the data
