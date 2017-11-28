@@ -20,7 +20,7 @@ import static org.springframework.util.StringUtils.hasText;
 /**
  * REST controller responsible for handling requests and responses to the client
  * @author Eudes Souza
- * @since 10-2017
+ * @since 10/2017
  */
 @RestController
 @RequestMapping(value = "/resources")
@@ -51,7 +51,7 @@ public class MakeModelController {
      * Method responsible for receiving and saving the resource passed in the client defined ontology
      * <br> The resource is passed in JSON format
      * @param resource Resource passed by client
-     * @return Returns an HTTP 200 code code if the operation succeeds
+     * @return Returns an HTTP code code with the status of the operation
      */
     @PostMapping
     @ApiOperation(value = "REST controller responsible for handling requests and responses to the client", response = ResponseEntity.class)
@@ -72,6 +72,12 @@ public class MakeModelController {
         return ResponseEntity.ok(new APIResponse(graphURI, resource.getAbout()));
     }
 
+    /**
+     * Method responisble for delete one especified resouce
+     * @param workpace String that contains the name of the workspace where the resource is
+     * @param resouceID String that contains the ID of the resource to be deleted
+     * @return Returns an HTTP code code with the status of the operation
+     */
     @DeleteMapping("/deleteResource")
     public ResponseEntity deleteResource(@RequestBody String workpace, @RequestBody String resouceID){
 
@@ -83,6 +89,11 @@ public class MakeModelController {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     *
+     * @param workpace String that contains the name of the workspace to be deleted
+     * @return Returns an HTTP code code with the status of the operation
+     */
     @DeleteMapping("/deleteGraph")
     public ResponseEntity deleteGraph (@RequestBody String workpace){
 
@@ -97,7 +108,8 @@ public class MakeModelController {
      * Method responsible for retrieving predicates of vocabulary of interest according to the given term
      * @param vocabPrefix String with the prefix of the vocabulary in which the searches will be done
      * @param search String with the search term to find properties with similarity to the given term
-     * @return Returns an HTTP status 'ok' with an OptGroup list. Each of these contains specific predicates of that group defined in the vocabulary. An example is Schema.org which has Product, Place, Person, Organization, Review, Action ...
+     * @return Returns an HTTP status 'ok' with an OptGroup list. Each of these contains specific predicates of that group defined in the vocabulary.
+     * <br> An example is Schema.org which has Product, Place, Person, Organization, Review, Action ...
      */
     @GetMapping("/getVocabularyData")
     @ApiOperation(value = "Method responsible for retrieving predicates of vocabulary of interest according to the given term", response = OptGroup.class, responseContainer = "Set")
@@ -198,10 +210,6 @@ public class MakeModelController {
                 }
             }
         }
-    }
-
-    private void addResouceToModel(Model model, Verified v){
-
     }
 
     /**

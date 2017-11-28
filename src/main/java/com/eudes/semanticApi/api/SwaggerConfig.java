@@ -12,21 +12,30 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 import static springfox.documentation.builders.PathSelectors.regex;
 
 /**
- * Created by Eudes on 26/10/2017.
+ * Class to make the configuration of the Swagger that shows the operation of the REST methods
+ * @author Eudes Souza
+ * @since 11/2017
  */
 @Configuration
 @EnableSwagger2
 public class SwaggerConfig {
     @Bean
     public Docket productApi() {
+        /**
+         * Method responsible to configure the package of the controller and its methods
+         */
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.eudes.semanticApi"))
-                .paths(regex("/saveResource.*"))
+                .apis(RequestHandlerSelectors.basePackage("com.eudes.semanticApi.api"))
+                .paths(regex("/resources.*"))
                 .build()
                 .apiInfo(metaData());
     }
 
+    /**
+     * Method responsible to customize the Swagger
+     * @return Returns the data the we'll showed on Swagger
+     */
     private ApiInfo metaData() {
         ApiInfo apiInfo = new ApiInfo(
                 "API Semantic Framework",

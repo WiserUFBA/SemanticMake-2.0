@@ -11,6 +11,9 @@ storage location, and returns the name of the address so that new insertions in 
 - [ClientApi](#client-api) 
     - [Property Format](#resource-format)
     - [Sample of use](#sample-of-use)
+- [Documentation](#documentation)
+    - [Javadoc](#javadoc)
+    - [SWAGGER UI](#swagger-ui)
 
 ### Requisites
 
@@ -94,10 +97,21 @@ are useful for facilitating the creation of the resource in an atomic operation.
    const api = new SemanticAPI(config)
    const resource = new Resource('contactData', 'contact', 'http://contactmail.com#Person')
    resource.addVocabulary('schema', 'http://schema.org/')
-   resource.addTriple('schema', 'email', emailValue)
-   resource.addTriple('schema', 'name', nameValue)
+   resource.addTriple('schema', 'email', 'emailValue')
+   resource.addTriple('schema', 'name', 'nameValue')
    const resourceToSend = resource.getResourceToSend()
    api.saveResource(resourceToSend)
      .then(...)
      .catch(...)
 ```
+
+## Javadoc
+
+The Javadoc folder contains all the documentation of all Java files that were used.
+
+## Swagger UI
+
+To test the operation of all API methods, [Swagger](http://localhost:8080/swagger-ui.html) provides an interface with 
+input field, use and output examples to test the tool. This was the alternative used for documentation of REST methods.
+To open the Swagger the application SemanticApi need be running.
+  

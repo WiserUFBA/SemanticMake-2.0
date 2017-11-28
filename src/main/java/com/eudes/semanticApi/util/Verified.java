@@ -3,11 +3,23 @@ package com.eudes.semanticApi.util;
 import com.eudes.semanticApi.api.Pair;
 import lombok.Data;
 
+/**
+ * Class to assist in structuring the properties to be inserted into a resource
+ */
 @Data
 public class Verified {
 
     /**
-     * Type of object to verify
+     * The contructor the receive one Pair to make the object to be verfied
+     * @param data The Pair
+     */
+    public Verified(Pair data){
+        this.pair = data;
+        this.verified = false;
+    }
+
+    /**
+     * Type of object to verify, in this case a Pair that represents a property
      */
     private Pair pair;
 
@@ -16,11 +28,10 @@ public class Verified {
      */
     private boolean verified = false;
 
-    public Verified(Pair data){
-        this.pair = data;
-        this.verified = false;
-    }
-
+    /**
+     * Method that return the state of object
+     * @return The state of object
+     */
     public boolean isVerified(){
         return this.verified;
     }
