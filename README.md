@@ -104,6 +104,9 @@ are useful for facilitating the creation of the resource in an atomic operation.
      .then(...)
      .catch(...)
 ```
+## Documentation
+
+In the next two sections is showed two ways to present the operation of the API
 
 ## Javadoc
 
