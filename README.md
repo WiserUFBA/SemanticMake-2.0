@@ -13,7 +13,7 @@ storage location, and returns the name of the address so that new insertions in 
     - [Sample of use](#sample-of-use)
 - [Documentation](#documentation)
     - [Javadoc](#javadoc)
-    - [SWAGGER UI](#swagger-ui)
+    - [Swagger UI](#swagger-ui)
 
 ### Requisites
 
