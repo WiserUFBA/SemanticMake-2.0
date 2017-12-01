@@ -3,7 +3,7 @@
 
 Project developed to assist in the development of web applications that aim to store semantic content. The API
 was developed in JAVA using the JENA framework, which facilitates the manipulation of semantic content. It is abstracted the
-storage location, and returned the name of the address so that new insertions in the workspace are made.
+storage location and returned the name of the address so that new insertions in the workspace are made.
 
 ## Content
 - [Requisites](#requisites)
@@ -60,14 +60,15 @@ representation of content:
                 "value":"",
                 "asResouce":true,
                 "subPropertyOf":"",
-                "prefix":"vcard"},
+                "prefix":"vcard"
+            },
             {
                 "propertyName":"country-name",
                 "value":"Brazil",
                 "asResouce":false,
                 "subPropertyOf":"hasAddress",
                 "prefix":"vcard"
-                }
+            }
         ]        
      ```
 - A subpropriety as a triple that holds subject, predicate and URI of another resource
