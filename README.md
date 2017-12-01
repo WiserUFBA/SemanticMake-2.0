@@ -162,6 +162,6 @@ To open the Swagger the application SemanticApi need be running.
 ## Support and development
 
 <p align="center">
-Developed by Leandro Andrade at </br>
+Developed by Eudes Souza at </br>
 <img src="https://wiki.dcc.ufba.br/pub/SmartUFBA/ProjectLogo/wiserufbalogo.jpg"/>
 </p>
