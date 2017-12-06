@@ -53,25 +53,27 @@ public class MakeModelController {
      * @param resource Resource passed by client
      * @return Returns an HTTP code code with the status of the operation
      */
-    @PostMapping
+    @PostMapping("/{workspace}")
     @ApiOperation(value = "REST controller responsible for handling requests and responses to the client", response = ResponseEntity.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Saves the resource successfully"),
             @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
             @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")})
-    public ResponseEntity saveResource(@RequestBody ResourceApi resource) {
+    public ResponseEntity saveResource(@RequestBody ResourceApi resource, @PathVariable String workspace) {
         resource.setAbout(normalizeURI(resource.getAbout()));
         Model model = createModel(resource);
         addAsResource(model, resource);
         model.write(System.out);
 
-        Random r = new Random();
-        graphURI = "/workspace-" + UUID.randomUUID().toString().substring(0,8);
+        graphURI = "/" + workspace;
+
+        if(datasetAccessor.getModel(graphURI) == null)
+            graphURI = "/workspace-" + UUID.randomUUID().toString().substring(0,8);
+
         datasetAccessor.add(graphURI, model);
         return ResponseEntity.ok(new APIResponse(graphURI, resource.getAbout()));
     }
-
     /**
      * Method responisble for delete one especified resouce
      * @param workpace String that contains the name of the workspace where the resource is

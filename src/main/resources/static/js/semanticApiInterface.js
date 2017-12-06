@@ -23,7 +23,7 @@
     const subpropValueField       = document.getElementById('subpropValue')
 
     const result                  = document.getElementById('result')
-    const structDataTable         = document.getElementById('listStrutcData')
+    const calledFunctions         = document.getElementById('calledFunctions')
 
     const subpropDiv              = document.getElementById('subpropDiv')
     const propValueDiv            = document.getElementById('propValueDiv')
@@ -55,12 +55,15 @@
     //Usa .addEventListener para adidionar mais de uma função ao mesmo evento
     resPrefixField        .addEventListener('blur', validateField(isNotEmpty))
     resPrefixField        .addEventListener('blur', showResource)
+    resPrefixField        .addEventListener('blur', showCalledFunctions)
 
-    resNameField          .addEventListener('blur', showResource)
     resNameField          .addEventListener('blur', validateField(isNotEmpty))
+    resNameField          .addEventListener('blur', showResource)
+    resNameField          .addEventListener('blur', showCalledFunctions)
 
-    resAboutField         .addEventListener('blur', showResource)
     resAboutField         .addEventListener('blur', validateField(isValidURL))
+    resAboutField         .addEventListener('blur', showResource)
+    resAboutField         .addEventListener('blur', showCalledFunctions)
     
     vocabPrefixField      .addEventListener('blur', validateField(isNotEmpty))
     vocabURIField.onblur  = validateField(isValidURL)
@@ -146,6 +149,8 @@
       updatePrefixList()
       //Mostra o recurso na tag '<pre>' de id 'result'
       showResource()
+
+      showCalledFunctions()
     }
 
     $('#subpropName').select2({ 
@@ -179,9 +184,9 @@
       if(!propExists(properties)){
         const propertyName  = propNameField.value
         const value         = propValueField.value
-        const asResouce     = propAsResourceCheck.checked
+        const asResource    = propAsResourceCheck.checked
         const subPropertyOf = ''
-        const pair = { propertyName, value, asResouce, subPropertyOf }
+        const pair = { propertyName, value, asResource, subPropertyOf }
         if (!propAsResourceCheck.checked) {
           resource.vocabularies[prefix].pairs.push(pair)
         }
@@ -189,8 +194,8 @@
           resource.vocabularies[prefix].pairs.push(pair)
         }          
       }
-      console.log(JSON.stringify(getProps(getResourceToSend().vocabularies)))
-      showGeneratedData()
+      console.log(JSON.stringify(getResourceToSend()))
+      showCalledFunctions()
       //Mostra o recurso na tag '<pre>' de id 'result'
       showResource()
     }
@@ -222,16 +227,16 @@
               qtdePropertiesWithSubproperties(propNameField.value) == 0){
               const propertyName  = propNameField.value
               const value         = ''
-              const asResouce     = propAsResourceCheck.checked
+              const asResource    = propAsResourceCheck.checked
               const subPropertyOf = ''
-              const pair = { propertyName, value, asResouce, subPropertyOf }
+              const pair = { propertyName, value, asResource, subPropertyOf }
               resource.vocabularies[prefix].pairs.push(pair)
           }
           const propertyName  = subpropNameField.value
           const value         = subpropValueField.value
-          const asResouce     = subpropAsResourceCheck.checked
+          const asResource    = subpropAsResourceCheck.checked
           const subPropertyOf = propNameField.value
-          const pair = { propertyName, value, asResouce, subPropertyOf }
+          const pair = { propertyName, value, asResource, subPropertyOf }
           if (!subpropAsResourceCheck.checked) {
             resource.vocabularies[prefix].pairs.push(pair)
           }
@@ -240,8 +245,8 @@
           }          
         }
       }
-      console.log(JSON.stringify(getProps(getResourceToSend().vocabularies)))
-      showGeneratedData()
+      console.log(JSON.stringify(getResourceToSend()))
+      showCalledFunctions()
       //Mostra o recurso na tag '<pre>' de id 'result'
       showResource()
     }
@@ -256,7 +261,7 @@
       //Mostra o recurso na tag '<pre>' de id 'result'
       showResource()
       //Envia a cópia do recurso
-      sendResource()
+      sendResource('workspace-17f52a7f')
     }
       //Muda o comportamento padrão da tooltip que é ser mostrada apenas quando se passa o mouse por cima do elemento
       $('[data-toggle="tooltip"]').tooltip({ trigger: 'manual' })
@@ -311,19 +316,39 @@
       }
 
     function validateForm(){
+
       if (!hasSubpropCheck.checked){
-        if(isValidURL(resAboutField.value) && isValidURL(vocabURIField.value) &&
-            isNotEmpty(vocabPrefixField.value) && isNotEmpty(propNameField.value) && isNotEmpty(propValueField.value))
+        if(propAsResourceCheck.checked){
+          if( isNotEmpty(propNameField.value) && isValidURL(resAboutField.value) && 
+              isNotEmpty(vocabPrefixField.value) &&  isValidURL(vocabURIField.value) &&
+              isNotEmpty(propNameField.value) && isValidURL(propValueField.value))
             return true
-        else return false
-      } else{
-        if(isValidURL(resAboutField.value) && isValidURL(vocabURIField.value) && isValidURL(subpropValueField.value) &&
-            isNotEmpty(vocabPrefixField.value) && isNotEmpty(propNameField.value) && isNotEmpty(propValueField.value) && 
-            isNotEmpty(subpropNameField.value) && isNotEmpty(subpropValueField.value))
+          else return false
+        } else{
+          if( isNotEmpty(propNameField.value) && isValidURL(resAboutField.value) && 
+              isNotEmpty(vocabPrefixField.value) &&  isValidURL(vocabURIField.value) &&
+              isNotEmpty(propNameField.value) && isNotEmpty(propValueField.value))
             return true
-        else return false
+          else
+            return false
+        }
+      } else {
+        if(subpropAsResourceCheck.checked){
+          if( isNotEmpty(propNameField.value) && isValidURL(resAboutField.value) && 
+              isNotEmpty(vocabPrefixField.value) &&  isValidURL(vocabURIField.value) &&
+              isNotEmpty(propNameField.value) && isNotEmpty(subpropNameField.value) && isValidURL(subpropValueField.value))
+            return true
+          else return false
+        } else{
+          if( isNotEmpty(propNameField.value) && isValidURL(resAboutField.value) && 
+              isNotEmpty(vocabPrefixField.value) &&  isValidURL(vocabURIField.value) &&
+              isNotEmpty(propNameField.value) && isNotEmpty(subpropNameField.value) && isNotEmpty(subpropValueField.value))
+            return true
+          else
+            return false
       }
     }
+  }
 
     function showResource() {
       updateResource()
@@ -344,11 +369,14 @@
     }
 
     //Envia o recurso
-    function sendResource() {
+    function sendResource(workspace) {
+      //Adiciona local, data e hora de salvamento do recurso
+      addCoordinatesDateTime()
       //Faz uma cópia do resultado e atrabui à variávek resToShow
       const resToSend = getResourceToSend()
       //Envia o conteúdo (cópia do recurso) ao servidor
-      fetch('/resources', {
+      
+      fetch(`/resources/${workspace}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json; charset=utf-8'},
         body: JSON.stringify(resToSend)
@@ -361,6 +389,59 @@
       }).catch(function(error) {
           result.innerHTML += `<br/><br/><h3>Problema de conexão ao tentar salvar a ontologia<h3><br/><br/>${error.message}`
         });
+    }
+
+    function addCoordinatesDateTime(){
+      if(vocabularySchema() === null){
+        const vocab = { prefix: 'schema', uri: 'http://schema.org', pairs: [] }
+        resource.vocabularies['schema'] = vocab 
+      }
+      if(vocabularyIcal() === null){
+        const vocab = { prefix: 'ical', uri: 'http://www.w3.org/2002/12/cal/ical#', pairs: [] }
+        resource.vocabularies['ical'] = vocab 
+      }
+      const locale = { propertyName: 'geocoordinates', value: '', asResource: true, subPropertyOf:'' }
+      resource.vocabularies['schema'].pairs.push(locale)
+      const position = getPosition()
+      const latitude = { propertyName: 'latitude', value: position.latitude, asResource: false, subPropertyOf:'geocoordinates' }
+      resource.vocabularies['schema'].pairs.push(latitude)
+      const longitude = { propertyName: 'longitude', value: position.longitude, asResource: false, subPropertyOf:'geocoordinates' }
+      resource.vocabularies['schema'].pairs.push(longitude)
+      
+      now = new Date()
+      const dateTimeCreated = `${now.getFullYear()}/${now.getMonth()}/${now.getDay()} ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`
+      const created = { propertyName: 'created', value: dateTimeCreated, asResource: false, subPropertyOf:'' }
+      resource.vocabularies['ical'].pairs.push(created)    }
+  
+    function vocabularySchema(){
+      for (let vocabulary of Object.values(resource.vocabularies))
+        if (vocabulary.prefix === 'schema')
+          return vocabularies[prefix];
+      return null;
+    }
+
+    function vocabularyIcal(){
+      for (let vocabulary of Object.values(resource.vocabularies))
+        if (vocabulary.prefix === "ical")
+          return vocabularies[prefix];
+      return null;
+    }
+    
+    function getPosition(){
+      // Verifica se o browser do usuario tem suporte a geolocation
+      const p = {
+        latitude: '',
+        longitude: ''
+      }
+      if ( navigator.geolocation ){
+          navigator.geolocation.getCurrentPosition( 
+            function( position ){
+              p.latitude  = position.coords.latitude
+              p.longitude = position.coords.longitude  
+            }
+          );
+      }
+      return p
     }
 
     //Faz um recurso para ser enviado
@@ -442,21 +523,20 @@
     const showRDF = () => {
         //Pega um recurso a ser enviado
         const resToSend = getResourceToSend();
+        //Monta a string com o prefixo e o nome do recurso
+        let resourceHead = `xmlns:${resource.prefix}="${resource.about}"`
         //Monta a string que mostra todos os vocabulários usados
         let vocabulariesString = resToSend.vocabularies.map(vocab => `xmlns:${vocab.prefix}="${vocab.uri}"`).join("\n  ");
         //Cria uma variável que vai ser usada para guardar todas as propriedades de todos os vabulários usados
         const propsString = mountPropertiesString(resToSend.vocabularies)
-        //Verifica se o prefixo do recurso ou seu nome não são vazios e adiciona à lista de vocabulários
-        if (!isEmpty(resource.prefix) && !isEmpty(resource.name)) {
-            vocabulariesString = `xmlns:${resource.prefix}="${resource.about}"\n    ` + vocabulariesString
-        }
         //Verifica se o nome do recurso é vazio e apresenta 'rdf:Desciption' se for
         const rootNodeString = isEmpty(resource.name) ? 'rdf:Description' : `${resource.prefix}:${resource.name}`
 
-        const rdf = `<rdf:RDF
+        const rdf = `Formato de saída
+<rdf:RDF
   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns"
+  ${resourceHead}
   ${vocabulariesString}
->
   <${rootNodeString} rdf:about="${resource.about}/uid">
       ${propsString}
   </${rootNodeString}>
@@ -484,7 +564,7 @@
       const p1 = props.slice()
       for (let i = 0; i < props.length; i++){
         //Se a propriedade é uma recurso
-        if (p1[i].asResouce){
+        if (p1[i].asResource){
           //Represents the property that have one simple resource: <vocab:property rdf:resource="http://site.com"/>
           if(!p1[i].verified && isEmpty(p1[i].subPropertyOf) && p1[i].value.includes('http://')){
             RDFprops.push(`<${p1[i].prefix}:${p1[i].propertyName} rdf:resource="${p1[i].value}" />`)
@@ -518,7 +598,7 @@
           }
         } 
         //Se não é um recurso e não tem subpropriedades
-        else if (!p1[i].verified && !p1[i].asResouce){
+        else if (!p1[i].verified && !p1[i].asResource){
           RDFprops.push(`<${p1[i].prefix}:${p1[i].propertyName}>${p1[i].value}</${p1[i].prefix}:${p1[i].propertyName}>`)
           p1[i].verified = true
         }
@@ -529,29 +609,19 @@
       return RDFprops        
     }
 
-    function showGeneratedData(){
+    function showCalledFunctions(){
       const res       = getResourceToSend()
       const props     = getProps(res.vocabularies)
-      let trs  = ''
-      const tbody = structDataTable.querySelector('tbody');
-      for(let p of props){
-        trs += renderStructProperty(p)
+      let out         = `Funções chamadas\nnew Resource("${res.name}", "${res.prefix}", "${res.about}")\n`
+      for (let vocab of res.vocabularies){
+        out += `addVocabulary("${vocab.prefix}", "${vocab.uri}")\n`
       }
-      tbody.innerHTML = trs
+      for(let p of props){
+        out += `addTriple("${p.prefix}", "${p.propertyName}", "${p.value}", "${p.asResource}", "${p.subPropertyOf}")\n`
+      }
+      calledFunctions.innerHTML = out
     }
-
-    function renderStructProperty(property) {
-      const subPropertyOf = isEmpty(property.subPropertyOf) ? "\"\"" : property.subPropertyOf
-      return `
-          <tr>
-              <td>${property.propertyName}&ensp;&ensp;</td>
-              <td>${property.value}&ensp;&ensp;&ensp;</td>
-              <td>${property.asResouce}&ensp;&ensp;</td>
-              <td>${subPropertyOf}</td>
-          </tr>
-      `;
-  }
+ 
   
-
 }()
 )
