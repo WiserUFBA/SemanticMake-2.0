@@ -18,7 +18,7 @@
                 <div class="input-group">
                     <input type="text" class="form-control" id="resPrefix" placeholder="prefixo" data-toggle="tooltip" title="Insira um valor"/>
                     <span class="input-group-addon">:</span>
-                    <input title="Insira um valor" data-toggle="tooltip" type="text" class="form-control" id="resName" placeholder="nome"/>
+                    <input title="Insira um valor" data-toggle="tooltip" type="text" class="form-control" id="resName" placeholder="nome (type)"/>
                     <span class="input-group-addon">about</span>
                     <input style="width: 325px" type="text" class="form-control" id="resAbout" placeholder="http://www.fre.dg/"
                            data-toggle="tooltip" title="As URIs devem ser válidas: http://... terminando com / ou #"/>
@@ -61,7 +61,7 @@
             <div>
                 <span style="font-size:18px">Propriedades</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <input type="checkbox" id="propAsResource" value="true"/> Como um recurso &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="checkbox" id="hasSubproperty"/> Tem subpropriedade
+                <input type="checkbox" id="hasSubproperty" title="Insere um Blank Node no recurso" data-toggle="tooltip" /> Tem subpropriedade
             </div>
             <div class="form-group">
                 <div class="input-group">
@@ -85,7 +85,7 @@
         <br/>
         <div class="row" id="subpropDiv" style="display: none">
             <div class="form-group">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id="subpropAsResource" value="true"/> Como um recurso &nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id="subpropAsResource" value="true" title="Guarda a URI de outro recurso" data-toggle="tooltip"/> Como um recurso &nbsp;&nbsp;&nbsp;&nbsp;
                 <div class="input-group">
                     <select data-toggle="tooltip" class="form-control select2-single" id="subpropName" style="width:290px"></select>
                 </div>

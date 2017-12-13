@@ -93,17 +93,27 @@
         propValueField.onblur = validateField(isNotEmpty)
       }
     })
+
+    $(hasSubpropCheck).on({
+      'mouseenter': (evt) => { $(evt.target).tooltip('show') },
+      'mouseleave': (evt) => { $(evt.target).tooltip('hide') }
+    })
   
+    $(subpropAsResourceCheck).on({
+      'mouseenter': (evt) => { $(evt.target).tooltip('show') },
+      'mouseleave': (evt) => { $(evt.target).tooltip('hide') }
+    })
+
     hasSubpropCheck.addEventListener('click', (evt) => {
       if (hasSubpropCheck.checked === true){
-        propAsResourceCheck.checked = true
-        propAsResourceCheck.onclick = () => {return false}
-        subpropDiv.style.display = 'block'
+        propAsResourceCheck.checked   = true
+        propAsResourceCheck.onclick   = () => {return false}
+        subpropDiv.style.display      = 'block'
         propValueDiv.style.visibility = "hidden"
-      }else {
-        subpropValueField.value = ''
-        subpropDiv.style.display = 'none'
-        propAsResourceCheck.onclick = () => {return true}
+      } else {
+        subpropValueField.value       = ''
+        subpropDiv.style.display      = 'none'
+        propAsResourceCheck.onclick   = () => {return true}
         propValueDiv.style.visibility = "visible"
       }
     })
@@ -254,10 +264,10 @@
       if (!validateForm()) return
 
       //Reseta alguns campos da página
-      resForm.elements.vocabPrefix.value = ''
-      resForm.elements.vocabUri.value = ''
-      resForm.elements.propName.value = ''
-      resForm.elements.propValue.value = ''
+      resForm.elements.vocabPrefix.value  = ''
+      resForm.elements.vocabUri.value     = ''
+      resForm.elements.propName.value     = ''
+      resForm.elements.propValue.value    = ''
       //Mostra o recurso na tag '<pre>' de id 'result'
       showResource()
       //Envia a cópia do recurso
@@ -446,9 +456,9 @@
 
     //Faz um recurso para ser enviado
     function getResourceToSend() {
-      const vocabularies = Object.values(resource.vocabularies)
-      const resToSend = Object.assign({}, resource)
-      resToSend.vocabularies = vocabularies
+      const vocabularies      = Object.values(resource.vocabularies)
+      const resToSend         = Object.assign({}, resource)
+      resToSend.vocabularies  = vocabularies
       return resToSend
 
     }

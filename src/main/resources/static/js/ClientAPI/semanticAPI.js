@@ -172,4 +172,14 @@ class SemanticAPI{
     getResource(workspace, resourceId){
       return this.call(`/resources/${workspace}/${resourceId}`)
     }
+
+    deleteResource(workspace, resourceURI){
+      resourceId = substring(resourceURI,7)
+      return this.call(`/resources/deleteResource/${workspace}/${resourceId}`, {method: 'DELETE'})
+    }
+
+    deleteGraph(workspace){
+      return this.call(`/resources/deleteGraph/${workspace}`, {method: 'DELETE'})
+    }
+   
   }

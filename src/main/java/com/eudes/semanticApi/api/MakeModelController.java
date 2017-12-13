@@ -66,7 +66,8 @@ public class MakeModelController {
         addAsResource(model, resource);
         model.write(System.out);
 
-        graphURI = "/" + workspace;
+        if(workspace.charAt(0) != '/') workspace = "/" + workspace;
+        graphURI = workspace;
 
         if(datasetAccessor.getModel(graphURI) == null)
             graphURI = "/workspace-" + UUID.randomUUID().toString().substring(0,8);
@@ -76,36 +77,139 @@ public class MakeModelController {
     }
     /**
      * Method responisble for delete one especified resouce
-     * @param workpace String that contains the name of the workspace where the resource is
-     * @param resouceID String that contains the ID of the resource to be deleted
+     * @param workspace String that contains the name of the workspace where the resource is
+     * @param resourceId String that contains the ID of the resource to be deleted
      * @return Returns an HTTP code code with the status of the operation
      */
-    @DeleteMapping("/deleteResource")
-    public ResponseEntity deleteResource(@RequestBody String workpace, @RequestBody String resouceID){
+    @DeleteMapping("/deleteResource/{workspace}/{resourceId}")
+    public ResponseEntity deleteResource(@PathVariable String workspace, @PathVariable String resourceId) {
 
-        String graphURI = "/" + workpace;
+        if(workspace.charAt(0) != '/') workspace = "/" + workspace;
+        String graphURI = workspace;
+        resourceId = resourceId.replace("|", "/");
+        resourceId = resourceId.replace("_", ".");
         DatasetAccessor datasetAccessor = DatasetAccessorFactory.createHTTP(fusekiURI);
         Model model = datasetAccessor.getModel(graphURI);
-        model.removeAll(model.getResource(resouceID), null, null);
+        Resource r = model.getResource(resourceId);
+        StmtIterator iter = r.listProperties();
+        while (iter.hasNext()) {
+            Statement stmt      = iter.nextStatement();
+            RDFNode object      = stmt.getObject();
+            if (object instanceof Resource && !object.toString().contains("http://")) {
+                ((Resource) object).removeProperties();
+            }
+        }
+        r.removeProperties();
         datasetAccessor.putModel(graphURI, model);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(new APIResponse(workspace, resourceId));
     }
 
     /**
      *
-     * @param workpace String that contains the name of the workspace to be deleted
+     * @param workspace String that contains the name of the workspace to be deleted
      * @return Returns an HTTP code code with the status of the operation
      */
-    @DeleteMapping("/deleteGraph")
-    public ResponseEntity deleteGraph (@RequestBody String workpace){
+    @DeleteMapping("/deleteGraph/{workspace}")
+    public ResponseEntity deleteGraph (@PathVariable String workspace){
 
-        String graphURI = "/" + workpace;
+        if(workspace.charAt(0) != '/') workspace = "/" + workspace;
+        String graphURI = workspace;
         DatasetAccessor datasetAccessor = DatasetAccessorFactory.createHTTP(fusekiURI);
         Model model = datasetAccessor.getModel(graphURI);
 //        model.getGraph().clear();
         datasetAccessor.deleteModel(graphURI);
+        return ResponseEntity.ok(new APIResponse(workspace, ""));
+    }
+
+    @DeleteMapping("/deleteProperty/{workspace}/{resourceId}/{property}")
+    public  ResponseEntity deleteProperty(@PathVariable String workspace, @PathVariable String resourceId, @PathVariable String property){
+
+        if(workspace.charAt(0) != '/') workspace = "/" + workspace;
+        String graphURI = workspace;
+        resourceId = resourceId.replace("|", "/");
+        resourceId = resourceId.replace("_", ".");
+        DatasetAccessor datasetAccessor = DatasetAccessorFactory.createHTTP(fusekiURI);
+        Model model = datasetAccessor.getModel(graphURI);
+        Resource subject = model.getResource(resourceId);
+        String propertyURI = property.substring(0, property.length() - getPropertyNameSize(property));
+        String propertyName = property.substring(property.length() - getPropertyNameSize(property), property.length());
+        Property prop = ResourceFactory.createProperty(propertyURI, propertyName);
+        Statement stmt = subject.getProperty(prop);
+        if (stmt == null){
+            StmtIterator propIter = subject.listProperties();
+            while(propIter.hasNext()){
+                Statement propStmt = propIter.nextStatement();
+                RDFNode object = propStmt.getObject();
+                if (object instanceof Resource && !object.toString().contains("http://")) {
+                    StmtIterator subIter = ((Resource) object).listProperties();
+                    while(subIter.hasNext()){
+                        Statement subStmt = subIter.nextStatement();
+                        Resource subSubject   = subStmt.getSubject();
+                        Property subProp = subStmt.getPredicate();
+                        if(subProp.toString().equals(property)) {
+                            subject = subSubject;
+                            prop = subProp;
+                        }
+
+                    }
+                }
+            }
+        }
+        subject.removeAll(prop);
+        datasetAccessor.putModel(graphURI, model);
         return ResponseEntity.ok().build();
     }
+
+    @PutMapping("/updateResource/{workspace}/{resourceId}/{property}/{value}")
+    public ResponseEntity updateResouce(@PathVariable String workspace, @PathVariable String resourceId, @PathVariable String property, @PathVariable String value){
+        if(workspace.charAt(0) != '/') workspace = "/" + workspace;
+        String graphURI = workspace;
+        resourceId = resourceId.replace("|", "/");
+        resourceId = resourceId.replace("_", ".");
+        DatasetAccessor datasetAccessor = DatasetAccessorFactory.createHTTP(fusekiURI);
+        Model model = datasetAccessor.getModel(graphURI);
+        Resource subject = model.getResource(resourceId);
+        String propertyURI = property.substring(0, property.length() - getPropertyNameSize(property));
+        String propertyName = property.substring(property.length() - getPropertyNameSize(property), property.length());
+        Property prop = ResourceFactory.createProperty(propertyURI, propertyName);
+        Statement stmt = subject.getProperty(prop);
+        boolean propAsResource = false;
+        if (stmt != null) propAsResource = stmt.getObject().toString().contains("http://");
+        if (stmt == null){
+            StmtIterator propIter = subject.listProperties();
+            while(propIter.hasNext()){
+                Statement propStmt = propIter.nextStatement();
+                RDFNode object = propStmt.getObject();
+                if (object instanceof Resource && !object.toString().contains("http://")) {
+                    StmtIterator subIter = ((Resource) object).listProperties();
+                    while(subIter.hasNext()){
+                        Statement subStmt = subIter.nextStatement();
+                        Resource subSubject   = subStmt.getSubject();
+                        Property subProp = subStmt.getPredicate();
+                        RDFNode subObject    = subStmt.getObject();
+                        if(subProp.toString().equals(property)) {
+                            subject = subSubject;
+                            propAsResource = subObject.toString().contains("http://");
+                            prop = subProp;
+                        }
+
+                    }
+                }
+            }
+        }
+        subject.removeAll(prop);
+
+        if(propAsResource){
+            Resource propResource = ResourceFactory.createResource(value);
+            model.add(subject, prop, propResource);
+        } else{
+            subject.addProperty(prop,value);
+        }
+
+        datasetAccessor.putModel(graphURI, model);
+        return ResponseEntity.ok().build();
+    }
+
     /**
      * Method responsible for retrieving predicates of vocabulary of interest according to the given term
      * @param vocabPrefix String with the prefix of the vocabulary in which the searches will be done
@@ -121,8 +225,8 @@ public class MakeModelController {
             @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")})
     public ResponseEntity<Collection<OptGroup>> getVocabularyPredicates(
-                                              @RequestParam(value = "vocabPrefix", required = false) String vocabPrefix,
-                                              @RequestParam(value = "search", required = false) String search){
+            @RequestParam(value = "vocabPrefix", required = false) String vocabPrefix,
+            @RequestParam(value = "search", required = false) String search){
 
         List<OptGroup> predicates = new ArrayList<>();
         if (!hasText(vocabPrefix) || !hasText(search))
@@ -134,6 +238,184 @@ public class MakeModelController {
         Map<String, OptGroup> optGroupMap = optGroupBuilder.build(knownVocab.getUri(), knownVocab.getFilePath(), search);
 
         return ResponseEntity.ok(optGroupMap.values());
+    }
+
+    @GetMapping("/getResource/{workspace}/{resourceId}")
+    public ResponseEntity getResource(@PathVariable String workspace, @PathVariable String resourceId) {
+
+        String graphURI = "/" + workspace;
+        resourceId = resourceId.replace("|", "/");
+        resourceId = resourceId.replace("_", ".");
+        DatasetAccessor datasetAccessor = DatasetAccessorFactory.createHTTP(fusekiURI);
+        Model model = datasetAccessor.getModel(graphURI);
+        Resource r = model.getResource(resourceId);
+        ResourceApi resource = new ResourceApi();
+
+        int uriSize             = r.getURI().length();
+        int localNameSize       = r.getLocalName().length();
+        String resourcePrefix   = r.getURI().substring(0, uriSize - localNameSize);
+        resource.setPrefix( model.getNsURIPrefix(resourcePrefix) );
+        resource.setName(getResourceTypeName(model));
+        resource.setAbout(r.getURI());
+
+        List<PrefixedPair> prefixedPairs = getPrefixedPairs(model, r);
+
+        List<Vocabulary> vocabularies = getVocabularies(prefixedPairs);
+
+        resource.setVocabularies(vocabularies);
+
+        return ResponseEntity.ok(resource);
+    }
+
+    private void showStatements(StmtIterator iter2) {
+        while (iter2.hasNext()){
+            Statement stmt      = iter2.nextStatement();  // get next statement
+            Resource subject   = stmt.getSubject();     // get the subject
+            Property predicate = stmt.getPredicate();   // get the predicate
+            RDFNode object    = stmt.getObject();      // get the object
+
+            System.out.print(subject.toString());
+            System.out.print(" " + predicate.toString() + " ");
+            if (object instanceof Resource) {
+                StmtIterator subiter = ((Resource) object).listProperties();
+                while(subiter.hasNext()){
+                    Statement subStmt = subiter.nextStatement();
+                    Resource subsubject   = subStmt.getSubject();     // get the subject
+                    Property subpredicate = subStmt.getPredicate();   // get the predicate
+                    RDFNode subobject    = subStmt.getObject();      // get the object
+                    System.out.println(subsubject.toString());
+                    System.out.print(" " + subpredicate.toString() + " ");
+                    System.out.print(" \"" + subobject.toString() + "\"");
+                }
+                System.out.print(object.toString());
+            } else {
+                // object is a literal
+                System.out.print(" \"" + object.toString() + "\"");
+            }
+
+            System.out.println(" .");
+        }
+    }
+
+    private String getResourceTypeName(Model model) {
+        StmtIterator iter = model.listStatements();
+        String resourceTypeName = null;
+        while (iter.hasNext()) {
+            Statement stmt      = iter.nextStatement();
+            RDFNode object      = stmt.getObject();
+            if (object instanceof Resource && stmt.getPredicate().getLocalName().contains("type")) {
+                String typeNameUri  = ((Resource) object).getURI();
+                int typeNameSize    = getPropertyNameSize(typeNameUri);
+                resourceTypeName    = typeNameUri.substring(typeNameUri.length() - typeNameSize, typeNameUri.length());
+            }
+        }
+        return resourceTypeName;
+    }
+
+    private int getPropertyNameSize(String typeUri) {
+         int size = 0;
+         for(int i = typeUri.length() - 1; typeUri.charAt(i) != '/' && typeUri.charAt(i) != '#'; i--)
+             size++;
+         return size;
+    }
+
+    private List<Vocabulary> getVocabularies(List<PrefixedPair> prefixedPairs) {
+        List <PrefixedPair> usedVocabularies = getUsedVocabularies(prefixedPairs);
+        List <Vocabulary> vocabularies = new ArrayList<>();
+        for (PrefixedPair vocab: usedVocabularies){
+            List<Pair> pairsForVocab = null;
+            Vocabulary vocabulary = null;
+            if (!vocabularyExists(vocabularies, vocab)){
+                vocabulary = new Vocabulary();
+                pairsForVocab =  new ArrayList<>();
+                vocabulary.setPrefix(vocab.getPrefix());
+                vocabulary.setUri(vocab.getUri());
+                for (PrefixedPair prefixedPair: prefixedPairs) {
+                    String vocabURI1 = vocabulary.getUri().substring(0, vocabulary.getUri().length() - vocabulary.getPrefix().length());
+                    String vocabURI2 = prefixedPair.getUri().substring(0, prefixedPair.getUri().length() - prefixedPair.getPrefix().length());
+                    if (vocabURI1.equals(vocabURI2))
+                        pairsForVocab.add(prefixedPair.getPair());
+                }
+                vocabulary.setPairs(pairsForVocab);
+                vocabularies.add(vocabulary);
+            }
+        }
+        return vocabularies;
+    }
+
+    private List<PrefixedPair> getPrefixedPairs(Model model, Resource r) {
+        List<Pair> pairs = new ArrayList<>();
+        List<PrefixedPair> prefixedPairs = new ArrayList<>();
+        StmtIterator propIter = r.listProperties();                                         //Pega todas as propriedades do recurso
+        while (propIter.hasNext()) {                                                        //Enquanto tiver próxima propriedade
+            Statement propStmt  = propIter.nextStatement();                                 //Pega a proxima propriedades
+            Property prop       = propStmt.getPredicate();
+            RDFNode object      = propStmt.getObject();                                     //
+
+
+            String vocabURI = prop.getURI().substring(0, prop.getURI().length() - prop.getLocalName().length());
+            String URIPrefix = model.getNsURIPrefix(vocabURI);
+
+            if((object instanceof Resource && !prop.getLocalName().equals("type")) && !object.toString().contains("http://")) {
+                Pair pairAsResource = new Pair(prop.getLocalName(), "", true, "");
+                prefixedPairs.add(new PrefixedPair(URIPrefix, vocabURI, pairAsResource));
+
+                pairs.add(pairAsResource);
+            }
+
+            if(!prop.getLocalName().equals("type")) {
+                if (object instanceof Resource && !object.toString().contains("http://")) {
+                    StmtIterator subpropIter = ((Resource) object).listProperties();
+                    while (subpropIter.hasNext()) {
+                        Statement subpropSmtm = subpropIter.nextStatement();
+                        Property subp = subpropSmtm.getPredicate();
+                        RDFNode subObjet = subpropSmtm.getObject();
+                        if (subObjet.isResource()) {
+                            Pair pair = new Pair(subp.getLocalName(), subObjet.toString(), true, prop.getLocalName());
+                            prefixedPairs.add(new PrefixedPair(URIPrefix, vocabURI, pair));
+                            pairs.add(pair);
+                        } else {
+                            Pair pair = new Pair(subp.getLocalName(), subObjet.toString(), false, prop.getLocalName());
+                            prefixedPairs.add(new PrefixedPair(URIPrefix, vocabURI, pair));
+                            pairs.add(pair);
+                        }
+                    }
+                } else {
+                    if (object.isResource()) {
+                        Pair pair = new Pair(prop.getLocalName(), object.toString(), true, "");
+                        prefixedPairs.add(new PrefixedPair(URIPrefix, vocabURI, pair));
+                        pairs.add(pair);
+                    } else {
+                        Pair pair = new Pair(prop.getLocalName(), object.toString(), false, "");
+                        prefixedPairs.add(new PrefixedPair( URIPrefix, vocabURI, pair));
+                        pairs.add(pair);
+                    }
+                }
+            }
+        }
+        return prefixedPairs;
+    }
+
+    private boolean vocabularyExists(List<Vocabulary> vocabularies, PrefixedPair prefixedPair){
+        for(Vocabulary vocabulary: vocabularies){
+            String vocabURI1 = vocabulary.getUri().substring(0, vocabulary.getUri().length() - vocabulary.getPrefix().length());
+            String vocabURI2 = prefixedPair.getUri().substring(0, prefixedPair.getUri().length() - prefixedPair.getPrefix().length());
+            if(vocabURI1.equals(vocabURI2)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public List<PrefixedPair> getUsedVocabularies(List<PrefixedPair> prefixedPairs){
+
+        List<PrefixedPair> usedVocabularies = new ArrayList();
+        for (PrefixedPair prefixedPair: prefixedPairs){
+            if (!usedVocabularies.contains(prefixedPair.getPrefix())){
+                usedVocabularies.add(prefixedPair);
+            }
+        }
+        return usedVocabularies;
     }
 
     /**
@@ -186,6 +468,7 @@ public class MakeModelController {
                         && verifiedPairs.get(i).getPair().isAsResource()
                         && verifiedPairs.get(i).getPair().getSubPropertyOf().isEmpty()) {
                     Property property = ResourceFactory.createProperty(normalizeURI(v.getUri()), propertyName);
+//                    RDFNode innerNode =
                     Resource innerResource = model.createResource();
                     List<Pair> pairs = v.getPairs();
                     for (int k = 0; k < v.getPairs().size(); k++) {

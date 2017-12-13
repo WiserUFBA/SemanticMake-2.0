@@ -20,5 +20,5 @@ public class APIResponse {
     /**
      * String the hold the ID of the stored resource, the URI in this case
      */
-    String resourceID;
+    String resourceId;
 }
