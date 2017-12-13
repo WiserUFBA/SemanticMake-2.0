@@ -86,12 +86,26 @@
     
     propAsResourceCheck.addEventListener('click', (evt) => {
       if (propAsResourceCheck.checked){
-        propValueField     .setAttribute('title', 'As URIs devem ser válidas: http://... terminando com / ou #')
+        $(propValueField).attr('data-original-title', 'As URIs devem ser válidas: http://... terminando com / ou #')
         propValueField.onblur = validateField(isValidURL)
       }else{
-        subpropValueField     .setAttribute('title', 'Insira um valor')
+        $(propValueField).attr('data-original-title', 'Insira um valor')
         propValueField.onblur = validateField(isNotEmpty)
       }
+    })
+
+    $(propAsResourceCheck).on({
+      'mouseenter': (evt) => { 
+        if (!hasSubpropCheck.checked){
+          $(propValueField).attr('data-original-title', 'As URIs devem ser válidas: http://... terminando com / ou #')
+          $(evt.target).attr('data-original-title', 'Guarda a URI de outro recurso')
+          $(evt.target).tooltip('show')
+        }
+        else {
+          $(evt.target).attr('data-original-title', 'Blank Node')
+          $(evt.target).tooltip('show')
+        } },
+      'mouseleave': (evt) => { $(evt.target).tooltip('hide') }
     })
 
     $(hasSubpropCheck).on({
@@ -212,10 +226,10 @@
 
     subpropAsResourceCheck.addEventListener('click', (evt) => {
       if (propAsResourceCheck.checked && subpropAsResourceCheck.checked){
-        subpropValueField.setAttribute('title', 'As URIs devem ser válidas: http://... terminando com / ou #')
+        $(subpropValueField).attr('data-original-title', 'As URIs devem ser válidas: http://... terminando com / ou #')
         subpropValueField.onblur = validateField(isValidURL)
       }else{
-        subpropValueField.setAttribute('title', 'Insira um valor')
+        $(subpropValueField).attr('data-original-title', 'Insira um valor')
         subpropValueField.onblur = validateField(isNotEmpty)
       }
     })
