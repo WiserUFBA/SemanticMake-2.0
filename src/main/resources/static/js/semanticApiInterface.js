@@ -158,8 +158,8 @@
     addVocabButton.onclick = () => {
       if (isEmpty(vocabURIField.value) || isEmpty(vocabPrefixField.value)) return
 
-      const prefix = vocabPrefixField.value
-      const uri = vocabURIField.value
+      const prefix  = vocabPrefixField.value
+      const uri     = vocabURIField.value
       
       if (!isValidURL(uri)){
           return;
@@ -285,7 +285,7 @@
       //Mostra o recurso na tag '<pre>' de id 'result'
       showResource()
       //Envia a cópia do recurso
-      sendResource('workspace-17f52a7f')
+      sendResource('workspace')
     }
       //Muda o comportamento padrão da tooltip que é ser mostrada apenas quando se passa o mouse por cima do elemento
       $('[data-toggle="tooltip"]').tooltip({ trigger: 'manual' })
@@ -400,7 +400,7 @@
       const resToSend = getResourceToSend()
       //Envia o conteúdo (cópia do recurso) ao servidor
       
-      fetch(`/resources/${workspace}`, {
+      fetch(`/resources/saveResource/${workspace}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json; charset=utf-8'},
         body: JSON.stringify(resToSend)
@@ -416,11 +416,11 @@
     }
 
     function addCoordinatesDateTime(){
-      if(vocabularySchema() === null){
+      if(!vocabularySchemaExists()){
         const vocab = { prefix: 'schema', uri: 'http://schema.org', pairs: [] }
         resource.vocabularies['schema'] = vocab 
       }
-      if(vocabularyIcal() === null){
+      if(!vocabularyIcalExists()){
         const vocab = { prefix: 'ical', uri: 'http://www.w3.org/2002/12/cal/ical#', pairs: [] }
         resource.vocabularies['ical'] = vocab 
       }
@@ -435,20 +435,21 @@
       now = new Date()
       const dateTimeCreated = `${now.getFullYear()}/${now.getMonth()}/${now.getDay()} ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`
       const created = { propertyName: 'created', value: dateTimeCreated, asResource: false, subPropertyOf:'' }
-      resource.vocabularies['ical'].pairs.push(created)    }
+      resource.vocabularies['ical'].pairs.push(created)    
+    }
   
-    function vocabularySchema(){
+    function vocabularySchemaExists(){
       for (let vocabulary of Object.values(resource.vocabularies))
         if (vocabulary.prefix === 'schema')
-          return vocabularies[prefix];
-      return null;
+          return true;
+      return false;
     }
 
-    function vocabularyIcal(){
+    function vocabularyIcalExists(){
       for (let vocabulary of Object.values(resource.vocabularies))
         if (vocabulary.prefix === "ical")
-          return vocabularies[prefix];
-      return null;
+          return true;
+      return false;
     }
     
     function getPosition(){

@@ -38,8 +38,8 @@ public class SwaggerConfig {
      */
     private ApiInfo metaData() {
         ApiInfo apiInfo = new ApiInfo(
-                "API Semantic Framework",
-                "Spring Boot REST API Semantic Framework",
+                "Semantic API",
+                "Spring Boot REST Semantic API",
                 "1.0",
                 "Terms of service",
                 new Contact("Eudes Souza", "https://springframework.guru/about/", "eudesdionatas@gmail.com"),

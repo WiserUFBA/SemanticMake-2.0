@@ -31,10 +31,12 @@ public class MakeModelController {
      * String that stores the URL of the Fuseki/DatasetName server to store the ontologies
      */
     private String fusekiURI = "http://localhost:3030/SemanticContent";
+
     /**
      *String that hold the name to the graph of Dataset
      */
     private String graphURI;
+
     /**
      * DatasetAccessor that hold the URI of the server and the graph name that will store the resources
      */
@@ -53,7 +55,7 @@ public class MakeModelController {
      * @param resource Resource passed by client
      * @return Returns an HTTP code code with the status of the operation
      */
-    @PostMapping("/{workspace}")
+    @PostMapping("/saveResource/{workspace}")
     @ApiOperation(value = "REST controller responsible for handling requests and responses to the client", response = ResponseEntity.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Saves the resource successfully"),
@@ -65,29 +67,51 @@ public class MakeModelController {
         Model model = createModel(resource);
         addAsResource(model, resource);
         model.write(System.out);
+        String resourceId = "";
 
-        if(workspace.charAt(0) != '/') workspace = "/" + workspace;
-        graphURI = workspace;
+        StmtIterator iter = model.listStatements();
+        while(iter.hasNext()){
+            Statement stmt = iter.nextStatement();
+            resourceId = stmt.getSubject().toString();
+            break;
+        }
 
-        if(datasetAccessor.getModel(graphURI) == null)
-            graphURI = "/workspace-" + UUID.randomUUID().toString().substring(0,8);
+        graphURI = (workspace.charAt(0) == '/')? workspace : "/" + workspace;
+        try{
+            if(datasetAccessor.getModel(graphURI) == null)
+                graphURI = "/workspace-" + UUID.randomUUID().toString().substring(0,8);
+        }catch (Exception e){
+
+        }
 
         datasetAccessor.add(graphURI, model);
-        return ResponseEntity.ok(new APIResponse(graphURI, resource.getAbout()));
+        return ResponseEntity.ok(new APIResponse(graphURI, resourceId, null));
     }
+
+    @PostMapping("/addProperty/{workspace}")
+    public ResponseEntity addProperty(@PathVariable String workspace, @RequestParam String resourceId, @RequestParam String propertyUri, @RequestParam String value, @RequestParam String subpropertyOf){
+
+        graphURI = (workspace.charAt(0) == '/')? workspace : "/" + workspace;
+        Model model = datasetAccessor.getModel(graphURI);
+        Resource resource = model.getResource(resourceId);
+        String propertyURI = getPropertyNameSpace(propertyUri);
+        String propertyName = getPropertyName(propertyUri);
+        Property prop = ResourceFactory.createProperty(propertyURI, propertyName);
+        resource.addProperty(prop, value);
+//        datasetAccessor.putModel(graphURI, model);
+        return ResponseEntity.ok(new APIResponse(graphURI, resourceId, propertyURI));
+    }
+
     /**
      * Method responisble for delete one especified resouce
      * @param workspace String that contains the name of the workspace where the resource is
      * @param resourceId String that contains the ID of the resource to be deleted
      * @return Returns an HTTP code code with the status of the operation
      */
-    @DeleteMapping("/deleteResource/{workspace}/{resourceId}")
-    public ResponseEntity deleteResource(@PathVariable String workspace, @PathVariable String resourceId) {
+    @DeleteMapping("/deleteResource/{workspace}")
+    public ResponseEntity deleteResource(@PathVariable String workspace, @RequestParam String resourceId) {
 
-        if(workspace.charAt(0) != '/') workspace = "/" + workspace;
-        String graphURI = workspace;
-        resourceId = resourceId.replace("|", "/");
-        resourceId = resourceId.replace("_", ".");
+        graphURI = (workspace.charAt(0) == '/')? workspace : "/" + workspace;
         Model model = datasetAccessor.getModel(graphURI);
         Resource r = model.getResource(resourceId);
         StmtIterator iter = r.listProperties();
@@ -100,7 +124,7 @@ public class MakeModelController {
         }
         r.removeProperties();
         datasetAccessor.putModel(graphURI, model);
-        return ResponseEntity.ok(new APIResponse(workspace, resourceId));
+        return ResponseEntity.ok(new APIResponse(graphURI, resourceId, null));
     }
 
     /**
@@ -111,25 +135,21 @@ public class MakeModelController {
     @DeleteMapping("/deleteGraph/{workspace}")
     public ResponseEntity deleteGraph (@PathVariable String workspace){
 
-        if(workspace.charAt(0) != '/') workspace = "/" + workspace;
-        String graphURI = workspace;
+        graphURI = (workspace.charAt(0) == '/')? workspace : "/" + workspace;
 //        Model model = datasetAccessor.getModel(graphURI);
 //        model.getGraph().clear();
         datasetAccessor.deleteModel(graphURI);
-        return ResponseEntity.ok(new APIResponse(workspace, ""));
+        return ResponseEntity.ok(new APIResponse(graphURI, null, null));
     }
 
-    @DeleteMapping("/deleteProperty/{workspace}/{resourceId}/{property}")
-    public  ResponseEntity deleteProperty(@PathVariable String workspace, @PathVariable String resourceId, @PathVariable String property){
+    @DeleteMapping("/deleteProperty/{workspace}")
+    public  ResponseEntity deleteProperty(@PathVariable String workspace, @RequestParam String resourceId, @RequestParam String propertyUri){
 
-        if(workspace.charAt(0) != '/') workspace = "/" + workspace;
-        String graphURI = workspace;
-        resourceId = resourceId.replace("|", "/");
-        resourceId = resourceId.replace("_", ".");
+        graphURI = (workspace.charAt(0) == '/')? workspace : "/" + workspace;
         Model model = datasetAccessor.getModel(graphURI);
         Resource subject = model.getResource(resourceId);
-        String propertyURI = property.substring(0, property.length() - getPropertyNameSize(property));
-        String propertyName = property.substring(property.length() - getPropertyNameSize(property), property.length());
+        String propertyURI = getPropertyNameSpace(propertyUri);
+        String propertyName = getPropertyName(propertyUri);
         Property prop = ResourceFactory.createProperty(propertyURI, propertyName);
         Statement stmt = subject.getProperty(prop);
         if (stmt == null){
@@ -143,78 +163,100 @@ public class MakeModelController {
                         Statement subStmt = subIter.nextStatement();
                         Resource subSubject   = subStmt.getSubject();
                         Property subProp = subStmt.getPredicate();
-                        if(subProp.toString().equals(property)) {
+                        if(subProp.toString().equals(propertyUri)) {
                             subject = subSubject;
                             prop = subProp;
                         }
-
                     }
                 }
             }
         }
         subject.removeAll(prop);
         datasetAccessor.putModel(graphURI, model);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok( new APIResponse(graphURI, resourceId, propertyURI));
     }
 
-    @PutMapping("/updateResource/{workspace}/{resourceId}/{property}/{value}")
-    public ResponseEntity updateResource(@PathVariable String workspace, @PathVariable String resourceId, @PathVariable String property, @PathVariable String value){
-        if(workspace.charAt(0) != '/') workspace = "/" + workspace;
-        String graphURI = workspace;
-        resourceId = resourceId.replace("|", "/");
-        resourceId = resourceId.replace("_", ".");
+    @PutMapping("/updateProperty/{workspace}")
+    public ResponseEntity updateProperty(@PathVariable String workspace, @RequestParam String resourceId, @RequestParam String propertyUri, @RequestParam String newValue){
+        graphURI = (workspace.charAt(0) == '/')? workspace : "/" + workspace;
         Model model = datasetAccessor.getModel(graphURI);
-        Resource subject = model.getResource(resourceId);
-        String propertyURI = property.substring(0, property.length() - getPropertyNameSize(property));
-        String propertyName = property.substring(property.length() - getPropertyNameSize(property), property.length());
-        Property prop = ResourceFactory.createProperty(propertyURI, propertyName);
-        Statement stmt = subject.getProperty(prop);
-        boolean propAsResource = false;
-        if (stmt != null) propAsResource = stmt.getObject().toString().contains("http://");
-        if (stmt == null){
+        Resource subject        = model.getResource(resourceId);
+        String propertyURI      = getPropertyNameSpace(propertyUri);
+        String propertyName     = getPropertyName(propertyUri);
+        Property prop           = ResourceFactory.createProperty(propertyURI, propertyName);
+        Statement stmt          = subject.getProperty(prop);
+        boolean propAsResource  = false;
+        boolean propExists      = false;
+        //If the resource have the property with a masterproperty
+        if (stmt != null){
+            propAsResource = stmt.getObject().toString().contains("http://");
+
             StmtIterator propIter = subject.listProperties();
             while(propIter.hasNext()){
                 Statement propStmt = propIter.nextStatement();
-                RDFNode object = propStmt.getObject();
-                if (object instanceof Resource && !object.toString().contains("http://")) {
-                    StmtIterator subIter = ((Resource) object).listProperties();
-                    while(subIter.hasNext()){
-                        Statement subStmt = subIter.nextStatement();
-                        Resource subSubject   = subStmt.getSubject();
-                        Property subProp = subStmt.getPredicate();
-                        RDFNode subObject    = subStmt.getObject();
-                        if(subProp.toString().equals(property)) {
-                            subject = subSubject;
-                            propAsResource = subObject.toString().contains("http://");
-                            prop = subProp;
-                        }
+                Property masterProp = propStmt.getPredicate();
+                if(masterProp.toString().equals(propertyUri)) {
+                    prop        = masterProp;
+                    propExists  = true;
+                    break;
+                }
+            }
+        }
+        //If the resource don't have the property like a master property but can have with a subproperty
+        else{
+            StmtIterator propIter = subject.listProperties();
 
+            while(propIter.hasNext()){
+                Statement propStmt  = propIter.nextStatement();
+                Property property   = propStmt.getPredicate();
+                Resource object     = null;
+
+                try{
+                     object         = (Resource) propStmt.getObject();
+                }catch (Exception e){  }
+
+                if (object != null && object instanceof Resource && property.toString().contains(propertyURI) && !object.toString().contains("http://") ) {
+                    StmtIterator subIter    = ((Resource) object).listProperties();
+                    subject                 = (Resource) object;
+                    while(subIter.hasNext()){
+                        Statement subStmt   = subIter.nextStatement();
+                        Property subProp    = subStmt.getPredicate();
+                        RDFNode subObject   = subStmt.getObject();
+                        if(subProp.toString().equals(propertyUri)) {
+                            propAsResource  = subObject.toString().contains("http://");
+                            prop            = subProp;
+                            propExists      = true;
+                        }
                     }
                 }
             }
         }
+
         subject.removeAll(prop);
 
-        if(propAsResource){
-            Resource propResource = ResourceFactory.createResource(value);
-            model.add(subject, prop, propResource);
-        } else{
-            subject.addProperty(prop,value);
+        if(propExists){
+            if(propAsResource){
+                Resource propResource = ResourceFactory.createResource(newValue);
+                model.add(subject, prop, propResource);
+            } else{
+                subject.addProperty(prop,newValue);
+            }
+            datasetAccessor.putModel(graphURI, model);
+            return ResponseEntity.ok(   new APIResponse(graphURI, resourceId, propertyURI)   );
         }
-
-        datasetAccessor.putModel(graphURI, model);
-        return ResponseEntity.ok().build();
+        else
+            return ResponseEntity.ok(   new APIResponse(graphURI, resourceId, propertyURI)   );
     }
 
-    @GetMapping("/getResources/{workspace}/{property}/{value}")
-    public ResponseEntity<List<ResourceApi>> getResources(@PathVariable String workspace, @PathVariable String property, @PathVariable String value){
-        String graphURI = (workspace.charAt(0) == '/')? workspace : "/" + workspace;
+    @GetMapping("/getResources/{workspace}")
+    public ResponseEntity<List<ResourceApi>> getResources(@PathVariable String workspace, @RequestParam String propertyUri, @RequestParam String value){
+        graphURI = (workspace.charAt(0) == '/')? workspace : "/" + workspace;
         Model model = datasetAccessor.getModel(graphURI);
-        String propertyURI = property.substring(0, property.length() - getPropertyNameSize(property));
-        String propertyName = property.substring(property.length() - getPropertyNameSize(property), property.length());
+        String propertyURI = getPropertyNameSpace(propertyUri);
+        String propertyName = getPropertyName(propertyUri);
         Property prop = ResourceFactory.createProperty(propertyURI, propertyName);
         ResIterator iter = model.listResourcesWithProperty(prop);
-        List<ResourceApi> resourceApis = new ArrayList<>();
+        List<ResourceApi> resources = new ArrayList<>();
         while(iter.hasNext()){
             Resource resource = iter.nextResource();
             StmtIterator stmt = resource.listProperties();
@@ -224,7 +266,7 @@ public class MakeModelController {
                 RDFNode object = triple.getObject();
                 if( object.toString().equals(value) && predicate.equals(prop)){
                     ResourceApi resourceApi = getResourceApi(workspace, resource.getURI());
-                    resourceApis.add(resourceApi);
+                    if (resourceApi != null) resources.add(resourceApi);
                 } else if (object instanceof Resource && !object.toString().contains("http://")){
                     StmtIterator subIter = ((Resource) object).listProperties();
                     while(subIter.hasNext()){
@@ -233,13 +275,13 @@ public class MakeModelController {
                         RDFNode subObject = subTriple.getObject();
                         if(subObject.toString().equals(value) && subProp.equals(prop)) {
                             ResourceApi resourceApi = getResourceApi(workspace, resource.getURI());
-                            resourceApis.add(resourceApi);
+                            if (resourceApi != null) resources.add(resourceApi);
                         }
                     }
                 }
             }
         }
-        return ResponseEntity.ok(resourceApis);
+        return ResponseEntity.ok(resources);
     }
 
 
@@ -273,8 +315,8 @@ public class MakeModelController {
         return ResponseEntity.ok(optGroupMap.values());
     }
 
-    @GetMapping("/getResource/{workspace}/{resourceId}")
-    public ResponseEntity<ResourceApi> getResource(@PathVariable String workspace, @PathVariable String resourceId) {
+    @GetMapping("/getResource/{workspace}")
+    public ResponseEntity<ResourceApi> getResource(@PathVariable String workspace, @RequestParam String resourceId) {
 
         ResourceApi resource = getResourceApi(workspace, resourceId);
 
@@ -291,7 +333,9 @@ public class MakeModelController {
             resourceId = resourceId.replace("|", "/");
             resourceId = resourceId.replace("_", ".");
             Model model = datasetAccessor.getModel(graphURI);
+            if (model == null) return null;
             Resource r = model.getResource(resourceId);
+            if (r == null) return null;
 
             int uriSize             = r.getURI().length();
             int resourceNameSize    = getResourceNameSize(r);
@@ -310,7 +354,6 @@ public class MakeModelController {
         return resource;
     }
 
-
     private int getResourceNameSize(Resource resource){
         int resourceNameSize = 0;
         String resourceUri = resource.getURI();
@@ -318,7 +361,6 @@ public class MakeModelController {
             resourceNameSize++;
         return resourceNameSize;
     }
-
 
     private void showStatements(StmtIterator iter2) {
         while (iter2.hasNext()){
@@ -357,21 +399,30 @@ public class MakeModelController {
             Statement stmt      = iter.nextStatement();
             RDFNode object      = stmt.getObject();
             if (stmt.getPredicate().getLocalName().equals("type")) {
-                String typeNameUri  = ((Resource) object).getURI();
-                int typeNameSize    = getPropertyNameSize(typeNameUri);
-                resourceTypeName    = typeNameUri.substring(typeNameUri.length() - typeNameSize, typeNameUri.length());
+                String typeUri  = ((Resource) object).getURI();
+                resourceTypeName    = getPropertyName(typeUri);
                 break;
             }
         }
         return resourceTypeName;
     }
 
-    private int getPropertyNameSize(String typeUri) {
-         int size = 0;
-         for(int i = typeUri.length() - 1; typeUri.charAt(i) != '/' && typeUri.charAt(i) != '#'; i--)
-             size++;
-         return size;
+    private String getPropertyName(String propertyUri) {
+         int propSize = 0;
+         for(int i = propertyUri.length() - 1; propertyUri.charAt(i) != '/' && propertyUri.charAt(i) != '#'; i--)
+             propSize++;
+         String propertyNameUri = propertyUri.substring(propertyUri.length() - propSize, propertyUri.length());
+         return propertyNameUri;
     }
+
+    private String getPropertyNameSpace(String propertyUri) {
+        int propSize = 0;
+        for(int i = propertyUri.length() - 1; propertyUri.charAt(i) != '/' && propertyUri.charAt(i) != '#'; i--)
+            propSize++;
+        String propertyNameSpace = propertyUri.substring(0, propertyUri.length() - propSize);
+        return propertyNameSpace;
+    }
+
 
     private List<Vocabulary> getVocabularies(List<PrefixedPair> prefixedPairs) {
         List <PrefixedPair> usedVocabularies = getUsedVocabularies(prefixedPairs);

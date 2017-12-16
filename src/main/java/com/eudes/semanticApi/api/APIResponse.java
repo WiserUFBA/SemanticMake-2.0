@@ -21,4 +21,9 @@ public class APIResponse {
      * String the hold the ID of the stored resource, the URI in this case
      */
     String resourceId;
+
+    /**
+     * String that hold de URI of the property
+     */
+    String propertyUri;
 }
