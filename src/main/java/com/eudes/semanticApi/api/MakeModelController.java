@@ -67,14 +67,12 @@ public class MakeModelController {
         Model model = createModel(resource);
         addAsResource(model, resource);
         model.write(System.out);
-
+        String resourceId  = "";
 
         StmtIterator iter = model.listStatements();
-//        while(iter.hasNext()){
-            String resourceId  = iter.nextStatement().getSubject().toString();
-//            resourceId = stmt.getSubject().getURI();
-//            break;
-//        }
+        while(iter.hasNext() && !resourceId.contains("http://")){
+            resourceId  = iter.nextStatement().getSubject().toString();
+        }
 
         graphURI = (workspace.charAt(0) == '/')? workspace : "/" + workspace;
         try{
@@ -86,20 +84,6 @@ public class MakeModelController {
 
         datasetAccessor.add(graphURI, model);
         return ResponseEntity.ok(new APIResponse(graphURI, resourceId, null));
-    }
-
-    @PostMapping("/addProperty/{workspace}")
-    public ResponseEntity addProperty(@PathVariable String workspace, @RequestParam String resourceId, @RequestParam String propertyUri, @RequestParam String value, @RequestParam String subpropertyOf){
-
-        graphURI = (workspace.charAt(0) == '/')? workspace : "/" + workspace;
-        Model model = datasetAccessor.getModel(graphURI);
-        Resource resource = model.getResource(resourceId);
-        String propertyURI = getPropertyNameSpace(propertyUri);
-        String propertyName = getPropertyName(propertyUri);
-        Property prop = ResourceFactory.createProperty(propertyURI, propertyName);
-        resource.addProperty(prop, value);
-//        datasetAccessor.putModel(graphURI, model);
-        return ResponseEntity.ok(new APIResponse(graphURI, resourceId, propertyURI));
     }
 
     /**
