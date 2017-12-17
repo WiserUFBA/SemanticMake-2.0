@@ -67,14 +67,14 @@ public class MakeModelController {
         Model model = createModel(resource);
         addAsResource(model, resource);
         model.write(System.out);
-        String resourceId = "";
+
 
         StmtIterator iter = model.listStatements();
-        while(iter.hasNext()){
-            Statement stmt = iter.nextStatement();
-            resourceId = stmt.getSubject().toString();
-            break;
-        }
+//        while(iter.hasNext()){
+            String resourceId  = iter.nextStatement().getSubject().toString();
+//            resourceId = stmt.getSubject().getURI();
+//            break;
+//        }
 
         graphURI = (workspace.charAt(0) == '/')? workspace : "/" + workspace;
         try{
@@ -152,20 +152,41 @@ public class MakeModelController {
         String propertyName = getPropertyName(propertyUri);
         Property prop = ResourceFactory.createProperty(propertyURI, propertyName);
         Statement stmt = subject.getProperty(prop);
-        if (stmt == null){
+
+        //If the resource have the property with a masterproperty
+        if (stmt != null){
+            StmtIterator propIter   = subject.listProperties();
+            while(propIter.hasNext()){
+                Statement propStmt  = propIter.nextStatement();
+                Property masterProp = propStmt.getPredicate();
+                if(masterProp.toString().equals(propertyUri)) {
+                    prop            = masterProp;
+                    RDFNode object  = stmt.getObject();
+                    if(object instanceof Resource){
+                        ((Resource) object).removeProperties();
+                    }
+                    break;
+                }
+            }
+        }
+        //If the resource don't have the property like a master property but can have with a subproperty
+        else {
             StmtIterator propIter = subject.listProperties();
             while(propIter.hasNext()){
-                Statement propStmt = propIter.nextStatement();
-                RDFNode object = propStmt.getObject();
-                if (object instanceof Resource && !object.toString().contains("http://")) {
-                    StmtIterator subIter = ((Resource) object).listProperties();
+                Statement propStmt  = propIter.nextStatement();
+                Property property   = propStmt.getPredicate();
+                RDFNode object      = null;
+                try{
+                    object          = propStmt.getObject();
+                }catch (Exception e){  }
+                if (object != null && object instanceof Resource && property.toString().contains(propertyURI) && !object.toString().contains("http://") ) {
+                    StmtIterator subIter    = ((Resource) object).listProperties();
+                    subject                 = (Resource) object;
                     while(subIter.hasNext()){
-                        Statement subStmt = subIter.nextStatement();
-                        Resource subSubject   = subStmt.getSubject();
-                        Property subProp = subStmt.getPredicate();
+                        Statement subStmt   = subIter.nextStatement();
+                        Property subProp    = subStmt.getPredicate();
                         if(subProp.toString().equals(propertyUri)) {
-                            subject = subSubject;
-                            prop = subProp;
+                            prop            = subProp;
                         }
                     }
                 }
@@ -173,7 +194,7 @@ public class MakeModelController {
         }
         subject.removeAll(prop);
         datasetAccessor.putModel(graphURI, model);
-        return ResponseEntity.ok( new APIResponse(graphURI, resourceId, propertyURI));
+        return ResponseEntity.ok( new APIResponse(graphURI, resourceId, propertyUri));
     }
 
     @PutMapping("/updateProperty/{workspace}")
