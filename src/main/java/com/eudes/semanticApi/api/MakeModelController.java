@@ -349,7 +349,7 @@ public class MakeModelController {
             resource.setName(getResourceTypeName(r));
             resource.setAbout(r.getURI());
 
-            List<PrefixedPair> prefixedPairs = getPrefixedPairs(model, r);
+            List<PrefixedPair> prefixedPairs = getPrefixedPairs(r);
 
             List<Vocabulary> vocabularies = getVocabularies(prefixedPairs);
 
@@ -453,7 +453,7 @@ public class MakeModelController {
         return vocabularies;
     }
 
-    private List<PrefixedPair> getPrefixedPairs(Model model, Resource r) {
+    private List<PrefixedPair> getPrefixedPairs(Resource r) {
         List<Pair> pairs = new ArrayList<>();
         List<PrefixedPair> prefixedPairs = new ArrayList<>();
         StmtIterator propIter = r.listProperties();                                         //Pega todas as propriedades do recurso
@@ -464,7 +464,7 @@ public class MakeModelController {
 
 
             String vocabURI = prop.getURI().substring(0, prop.getURI().length() - prop.getLocalName().length());
-            String URIPrefix = model.getNsURIPrefix(vocabURI);
+            String URIPrefix = r.getModel().getNsURIPrefix(vocabURI);
 
             if((object instanceof Resource && !prop.getLocalName().equals("type")) && !object.toString().contains("http://")) {
                 Pair pairAsResource = new Pair(prop.getLocalName(), "", true, "");
