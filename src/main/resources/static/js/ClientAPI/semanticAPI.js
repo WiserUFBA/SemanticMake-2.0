@@ -178,8 +178,7 @@ class SemanticAPI{
         this.config.baseURL = this.config.baseURL.substring(0, (this.config.baseURL.length - 1))
       }
       return fetch(`${this.config.baseURL}/${endpoint}`, Object.assign({}, this.defaultParams, params))
-        .then(response => response.json())
-        
+        .then( response => response.json() )
     }
     /**
     * Reutiliza o fetch inteno para fazer uma requisição POST
@@ -253,6 +252,32 @@ class SemanticAPI{
             resource.vocabularies[vocab.prefix] = vocab
           }
           return resource
+        })
+    }
+
+    getResources(propertyUri, value){
+      propertyUri = encodeURIComponent(propertyUri)
+      value       = encodeURIComponent(value)
+      return this.call(`/resources/getResources/${this.config.workspace}?propertyUri=${propertyUri}&value=${value}`, {method: 'GET'})
+        .then(function(resourcesJson){
+          const resourcesList = []
+          for (let res of resourcesJson){
+            const resource  = new Resource();
+            resource.setName(res.name) 
+            resource.setPrefix(res.prefix)
+            resource.setAbout(res.about)
+            for(let vocab of res.vocabularies){
+              const vocabulary  = new Vocabulary()
+              vocabulary.prefix = vocab.prefix
+              vocabulary.uri    = vocab.uri
+              for (let pair of vocab.pairs){
+                vocabulary.pairs.push(pair)
+              }
+              resource.vocabularies[vocab.prefix] = vocab
+            }
+            resourcesList.push(resource)
+          }
+          return resourcesList
         })
     }
 
