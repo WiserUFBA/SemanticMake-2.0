@@ -254,7 +254,7 @@ public class MakeModelController {
     }
 
     @GetMapping("/getResources/{workspace}")
-    public ResponseEntity<List<ResourceApi>> getResources(@PathVariable String workspace, @RequestParam String propertyUri, @RequestParam String value){
+    public ResponseEntity<List<ResourceApi>> getResources(@PathVariable String workspace, @RequestParam String propertyUri, @RequestParam String value, @RequestParam boolean isExactly){
         graphURI = (workspace.charAt(0) == '/')? workspace : "/" + workspace;
         Model model = datasetAccessor.getModel(graphURI);
         String propertyURI = getPropertyNameSpace(propertyUri);
@@ -269,7 +269,8 @@ public class MakeModelController {
                 Statement triple = stmt.nextStatement();
                 Property predicate = triple.getPredicate();
                 RDFNode object = triple.getObject();
-                if( object.toString().equals(value) && predicate.equals(prop)){
+                boolean propertyHasValue = (isExactly)? object.toString().equals(value) : object.toString().contains(value);
+                if( propertyHasValue && predicate.equals(prop)){
                     ResourceApi resourceApi = getResourceApi(workspace, resource.getURI());
                     if (resourceApi != null) resources.add(resourceApi);
                 } else if (object instanceof Resource && !object.toString().contains("http://")){
@@ -278,7 +279,8 @@ public class MakeModelController {
                         Statement subTriple = subIter.nextStatement();
                         Property subProp = subTriple.getPredicate();
                         RDFNode subObject = subTriple.getObject();
-                        if(subObject.toString().equals(value) && subProp.equals(prop)) {
+                        boolean subpropertyHasValue = (isExactly)? subObject.toString().equals(value) : subObject.toString().contains(value);
+                        if(subpropertyHasValue && subProp.equals(prop)) {
                             ResourceApi resourceApi = getResourceApi(workspace, resource.getURI());
                             if (resourceApi != null) resources.add(resourceApi);
                         }
