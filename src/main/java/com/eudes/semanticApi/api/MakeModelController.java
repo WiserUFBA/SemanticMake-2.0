@@ -253,6 +253,15 @@ public class MakeModelController {
             return ResponseEntity.ok(   new APIResponse(graphURI, resourceId, propertyURI)   );
     }
 
+    /**
+     * Método que retorna uma lista de recursoso dada a URI de uma propriedade e seu respectivo valor
+     * @param workspace String com o workspace que será passado
+     * @param propertyUri String com a URI da propriedade
+     * @param value String com o valor da propriedade
+     * @param isExactly Booleano usado para determinar se o valor passado deve ser considerado exatamente como foi passado
+     *                  ou se deve apenas conter o valor passado na propriedade
+     * @return Lista de recursos
+     */
     @GetMapping("/getResources/{workspace}")
     public ResponseEntity<List<ResourceApi>> getResources(@PathVariable String workspace, @RequestParam String propertyUri, @RequestParam String value, @RequestParam boolean isExactly){
         graphURI = (workspace.charAt(0) == '/')? workspace : "/" + workspace;

@@ -178,7 +178,7 @@ class SemanticAPI{
         this.config.baseURL = this.config.baseURL.substring(0, (this.config.baseURL.length - 1))
       }
       return fetch(`${this.config.baseURL}/${endpoint}`, Object.assign({}, this.defaultParams, params))
-        .then( response => response.json() )
+      .then( response => response.json() )
     }
     /**
     * Reutiliza o fetch inteno para fazer uma requisição POST
@@ -255,10 +255,16 @@ class SemanticAPI{
         })
     }
 
-    getResources(propertyUri, value){
+    /**
+     * Função que retonra uma lista de recursos de seu respectivo workspace dada a URI de uma propriedade e seu valor
+     * @param {*} propertyUri URI da propriedade
+     * @param {*} value Valor da propriedade
+     * @param {*} isExactly Booleano que considera se o valor passado deverá ser exatamente igual ao valor passado ou se deve apenas conter o valor passado
+     */
+    getResources(propertyUri, value, isExactly){
       propertyUri = encodeURIComponent(propertyUri)
       value       = encodeURIComponent(value)
-      return this.call(`/resources/getResources/${this.config.workspace}?propertyUri=${propertyUri}&value=${value}`, {method: 'GET'})
+      return this.call(`/resources/getResources/${this.config.workspace}?propertyUri=${propertyUri}&value=${value}&isExactly=${isExactly}`, {method: 'GET'})
         .then(function(resourcesJson){
           const resourcesList = []
           for (let res of resourcesJson){
