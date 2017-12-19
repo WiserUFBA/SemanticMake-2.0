@@ -99,13 +99,19 @@ public class MakeModelController {
         Model model = datasetAccessor.getModel(graphURI);
         Resource r = model.getResource(resourceId);
         StmtIterator iter = r.listProperties();
+        List<Statement> innerResources = new ArrayList<>();
         while (iter.hasNext()) {
             Statement stmt      = iter.nextStatement();
             RDFNode object      = stmt.getObject();
             if (object instanceof Resource && !object.toString().contains("http://")) {
-                ((Resource) object).removeProperties();
+                innerResources.add(stmt);
             }
         }
+        for (Statement innerResource : innerResources){
+            ((Resource)innerResource.getObject()).removeProperties();
+            model.remove(r, innerResource.getPredicate(), innerResource.getObject());
+        }
+
         r.removeProperties();
         datasetAccessor.putModel(graphURI, model);
         return ResponseEntity.ok(new APIResponse(graphURI, resourceId, null));
@@ -547,7 +553,7 @@ public class MakeModelController {
      */
     public void addAsResource(Model model, ResourceApi resource) {
         Resource resourceDefiniton = ResourceFactory
-                .createResource(resource.getAbout() +  resource.getName());
+                .createResource(getResourceUri(resource) +  resource.getName());
         Resource resourceInstance = model.createResource(getResourceID(resource), resourceDefiniton);
 
         for (Vocabulary v : resource.getVocabularies()) {
@@ -632,9 +638,43 @@ public class MakeModelController {
      * @param resource ResourceApi resource passed to treat resource URI
      * @return Returns a String with the resource URI plus a unique identifier
      */
+//    private String getResourceID(ResourceApi resource) {
+//        return resource.getAbout() + UUID.randomUUID();
+//    }
     private String getResourceID(ResourceApi resource) {
-        return resource.getAbout() + UUID.randomUUID();
+        boolean hasLocalName = resourceHasLocalName(resource);
+        String localName =  hasLocalName? getResourceLocalName(resource) : String.valueOf(UUID.randomUUID());
+        return getResourceUri(resource) + localName;
     }
+
+    private boolean resourceHasLocalName(ResourceApi resource) {
+        int localNameSize = getResourceLocalNameSize(resource);
+        return (localNameSize == 37 && (!getResourceLocalName(resource).contains(".")));
+    }
+
+    private int getResourceLocalNameSize(ResourceApi resource) {
+        int localNameSize = 0;
+        String aboutResource = resource.getAbout();
+        for (int x = aboutResource.length() - 2; aboutResource.charAt(x) != '/'; x--)
+            localNameSize++;
+        localNameSize++ ;
+        return localNameSize;
+    }
+
+    private String getResourceLocalName(ResourceApi resource){
+        String resourceLocalName;
+        String resourceAbout = resource.getAbout();
+        resourceLocalName = resourceAbout.substring(resource.getAbout().length() - getResourceLocalNameSize(resource), resourceAbout.length() - 1);
+        return resourceLocalName;
+    }
+
+    private  String getResourceUri(ResourceApi resource){
+        String resourceUri;
+        String aboutResource = resource.getAbout();
+        resourceUri = resourceHasLocalName(resource) ? aboutResource.substring(0, aboutResource.length() - getResourceLocalNameSize(resource)) : aboutResource;
+        return resourceUri;
+    }
+
 
     /**
      * Method responsible for creating a template that will receive the given data:
@@ -644,7 +684,7 @@ public class MakeModelController {
      */
     public Model createModel(ResourceApi resource) {
         Model model = ModelFactory.createDefaultModel();
-        model.setNsPrefix(resource.getPrefix(), resource.getAbout());
+        model.setNsPrefix(resource.getPrefix(), getResourceUri(resource));
         for (Vocabulary v : resource.getVocabularies()) {
             model.setNsPrefix(v.getPrefix(), normalizeURI(v.getUri()));
         }

@@ -1,4 +1,5 @@
 class Resource {
+  
   constructor(name, prefix, uri){
       this.vocabularies   = {}
       this.name           = name
@@ -8,27 +9,30 @@ class Resource {
   setName(name){
     this.name = name
   }
+
   setPrefix(prefix){
     this.prefix = prefix
   }
+
   setAbout(uri){
     this.about = uri
   }
+
   setVocabularies(vocabularies){
     this.vocabularies
   }
+
   addVocabulary(vocabPrefix, uri){
       const vocab                    = new Vocabulary(vocabPrefix, uri)
       this.vocabularies[vocabPrefix] = vocab
-  }    
-  addProperty(vocabPrefix, property){ 
-    
+  }
+
+  addProperty(vocabPrefix, property){
     const propName      = property.propertyName
     const value         = property.value
     const asResource    = property.asResource
     const subPropertyOf = property.subPropertyOf
-    
-    
+
     if (subPropertyOf === '' || subPropertyOf === null || subPropertyOf === undefined){
       const property = { propertyName: propName, value: value, asResource: asResource, subPropertyOf: '' }
       this.vocabularies[vocabPrefix].pairs.push(property)
@@ -39,8 +43,9 @@ class Resource {
       }
       const subproperty = { propertyName: propName, value: value, asResource: asResource, subPropertyOf: subPropertyOf }
       this.vocabularies[vocabPrefix].pairs.push(subproperty)
-    }      
+    }    
   }
+
   propertyExists(vocabPrefix, subPropertyOf){
     for (let pair of this.vocabularies[vocabPrefix].pairs){
       if(pair.propertyName === subPropertyOf)
@@ -48,12 +53,14 @@ class Resource {
     }
     return false
   }
+
   getResourceToSend(){
       const vocabularies      = Object.values(this.vocabularies)
       const resToSend         = Object.assign({}, this)
       resToSend.vocabularies  = vocabularies
       return resToSend
   }
+
   addLanguage(language) {
       if(!this.vocabularyDctermsExists()){
         const vocab = new Vocabulary('dcterms', 'http://purl.org/dc/terms/')
@@ -61,8 +68,8 @@ class Resource {
       }
       const lang = { propertyName: 'language', value: language, asResource: false, subPropertyOf:'' }
       this.vocabularies['dcterms'].pairs.push(lang)
-
   }
+
   addCoordinatesDateTime(){
       if(!this.vocabularySchemaExists()){
         const vocab = new Vocabulary('schema', 'http://schema.org') 
@@ -72,7 +79,6 @@ class Resource {
         const vocab = new Vocabulary('ical', 'http://www.w3.org/2002/12/cal/ical#')
         this.vocabularies['ical'] = vocab 
       }
-
       const locale = { propertyName: 'geocoordinates', value: '', asResource: true, subPropertyOf:'' }
       this.vocabularies['schema'].pairs.push(locale)
       const position = this.getPosition()
@@ -86,24 +92,28 @@ class Resource {
       const created = { propertyName: 'created', value: dateTimeCreated, asResource: false, subPropertyOf:'' }
       this.vocabularies['ical'].pairs.push(created)
     }
+
     vocabularyDctermsExists(){
       for (let vocabulary of Object.values(this.vocabularies))
       if (vocabulary.prefix === "dcterms")
         return true
       return false;
     }
+
     vocabularySchemaExists(){
       for (let vocabulary of Object.values(this.vocabularies))
         if (vocabulary.prefix === "schema")
           return true;
       return false;
     }
+
     vocabularyIcalExists(){
       for (let vocabulary of Object.values(this.vocabularies))
         if (vocabulary.prefix === "ical")
           return true;
       return false;
     }
+
     getPosition(){
       // Verifica se o browser do usuario tem suporte a geolocation
       const p = {
@@ -124,20 +134,24 @@ class Resource {
 }
 
 class Vocabulary{
-    constructor(prefix,uri){
-        this.pairs  = []
-        this.prefix = prefix
-        this.uri    = uri
+    
+  constructor(prefix,uri){
+    this.pairs  = []
+    this.prefix = prefix
+    this.uri    = uri
     }
+
 }
 
 class Property {
+  
   constructor(propertyName, value, asResource, subPropertyOf){
-      this.propertyName   = propertyName
-      this.value          = value
-      this.asResource     = asResource
-      this.subPropertyOf  = subPropertyOf
+    this.propertyName   = propertyName
+    this.value          = value
+    this.asResource     = asResource
+    this.subPropertyOf  = subPropertyOf
   }
+
 }
 
 class SemanticAPI{
@@ -154,8 +168,8 @@ class SemanticAPI{
         throw Error('O workspace não foi informado')
       }
       this.config = config
-      // parametros comuns de todas as requisições
-      // poderia ser passado no config tb
+      // Parâmetros comuns de todas as requisições
+      // Poderia ser passado no config também
       this.defaultParams = {
         headers: {
           'Content-Type': 'application/json'
@@ -180,6 +194,7 @@ class SemanticAPI{
       return fetch(`${this.config.baseURL}/${endpoint}`, Object.assign({}, this.defaultParams, params))
       .then( response => response.json() )
     }
+
     /**
     * Reutiliza o fetch inteno para fazer uma requisição POST
     * @param {String} endpoint URL parcial do endpoint q será invocado
@@ -210,12 +225,12 @@ class SemanticAPI{
     }
     
     /**
-     * Função para deletar recurso 
-     * @param {String} resourceURI URI do recurso, de seu respectivo workspace, que será deletado
-     */
-      deleteResource(resourceURI){
-        resourceURI  = encodeURIComponent(resourceURI);
-        return this.call(`/resources/deleteResource/${this.config.workspace}?resourceId=${resourceURI}`, {method: 'DELETE'})
+    * Função para deletar recurso 
+    * @param {String} resourceURI URI do recurso, de seu respectivo workspace, que será deletado
+    */
+    deleteResource(resourceURI){
+      resourceURI  = encodeURIComponent(resourceURI);
+      return this.call(`/resources/deleteResource/${this.config.workspace}?resourceId=${resourceURI}`, {method: 'DELETE'})
     }
     
     /**
@@ -299,4 +314,51 @@ class SemanticAPI{
       newValue    = encodeURIComponent(newValue);
       return this.call(`/resources/updateProperty/${this.config.workspace}?resourceId=${resourceId}&propertyUri=${propertyUri}&newValue=${newValue}`, {method: 'PUT'})
     }
+
+    /**
+     * Função para adicionar uma nova propriedade a um recurso retornado do servidor
+     * @param {*} resource Recurso retornado do servidor
+     * @param {*} vocabPrefix Prefixo do vocabulário no qual será adicionada a nova propriedade
+     * @param {*} property Nova propriedade que será adicionada
+     */
+    addProperty(resource, vocabPrefix, property){
+      const propName      = property.propertyName
+      const value         = property.value
+      const asResource    = property.asResource
+      const subPropertyOf = property.subPropertyOf
+
+      if (subPropertyOf === '' || subPropertyOf === null || subPropertyOf === undefined){
+        const property = { propertyName: propName, value: value, asResource: asResource, subPropertyOf: '' }
+        resource.vocabularies[vocabPrefix].pairs.push(property)
+      } else {
+        if (!resource.propertyExists(vocabPrefix, subPropertyOf)){
+          const property = { propertyName: subPropertyOf, value: '', asResource: true, subPropertyOf: '' }
+          resource.vocabularies[vocabPrefix].pairs.push(property)
+        }
+        const subproperty = { propertyName: propName, value: value, asResource: asResource, subPropertyOf: subPropertyOf }
+        resource.vocabularies[vocabPrefix].pairs.push(subproperty)
+      } 
+
+      this.deleteResource(resource.about)         
+      this.saveResource(resource)
+    }
+
+    //localNameExists(resource){
+    //  let localNameSize = getLocalNameResource(resource)
+    //  return (localNameSize == 37 && (!getResourceLocalName(resource).includes(".")));
+    //}
+  
+    //getResourceLocalName(resource){
+    //  let localNameSize = 0;
+    //  const aboutResource = resource.about;
+    //  for (let x = aboutResource.length() - 2; aboutResource.charAt(x) != '/'; x--)
+    //      localNameSize++;
+    //  localNameSize++ ;
+    //  return localNameSize;
+    //}
+  
+    //alreadyExistsInDatabase(resource){
+    //  return localNameExists(resource)
+    //}
+
   }
