@@ -65,8 +65,19 @@ btnSubmit.onclick = function(event){
   .then(function(res){
     const newProperty = new Property('waterMark', 'weaky', false, '')
     api.addProperty(res ,'vcard', newProperty)
+    commitChanges(res)
   })
   .catch(error => alert(`Problema ao tentar recuperar o recurso: ${error.message}`))
+
+  api.getResource()
+  .then(res => {
+    res.addVocabulary('vpref', 'http://vocabularyUri#')
+    const newProperty = new Property('batery', 'eveready', false, '')
+    api.addProperty (res, 'vpref', newProperty)
+    api.commitChanges(res);
+
+  })
+  .catch(err => alert(`Problema ao tentar recuperar recursos ${err.msg}`))
 
 
 }   

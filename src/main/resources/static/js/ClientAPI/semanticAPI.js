@@ -338,7 +338,9 @@ class SemanticAPI{
         const subproperty = { propertyName: propName, value: value, asResource: asResource, subPropertyOf: subPropertyOf }
         resource.vocabularies[vocabPrefix].pairs.push(subproperty)
       } 
+    }
 
+    commitChanges(resource){
       this.deleteResource(resource.about)         
       this.saveResource(resource)
     }
