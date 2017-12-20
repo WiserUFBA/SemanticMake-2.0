@@ -56,7 +56,7 @@ public class MakeModelController {
      * @return Returns an HTTP code code with the status of the operation
      */
     @PostMapping("/saveResource/{workspace}")
-    @ApiOperation(value = "REST controller responsible for handling requests and responses to the client", response = ResponseEntity.class)
+    @ApiOperation(value = "Method responsible to save a new resource", response = ResponseEntity.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Saves the resource successfully"),
             @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
@@ -93,6 +93,7 @@ public class MakeModelController {
      * @return Returns an HTTP code code with the status of the operation
      */
     @DeleteMapping("/deleteResource/{workspace}")
+    @ApiOperation(value = "Method responsible to delete a resource given the resource uri", response = ResponseEntity.class)
     public ResponseEntity deleteResource(@PathVariable String workspace, @RequestParam String resourceId) {
 
         graphURI = (workspace.charAt(0) == '/')? workspace : "/" + workspace;
@@ -123,6 +124,7 @@ public class MakeModelController {
      * @return Returns an HTTP code code with the status of the operation
      */
     @DeleteMapping("/deleteGraph/{workspace}")
+    @ApiOperation(value = "Method responsible to delete a especifc graph given the graph name", response = ResponseEntity.class)
     public ResponseEntity deleteGraph (@PathVariable String workspace){
 
         graphURI = (workspace.charAt(0) == '/')? workspace : "/" + workspace;
@@ -133,6 +135,7 @@ public class MakeModelController {
     }
 
     @DeleteMapping("/deleteProperty/{workspace}")
+    @ApiOperation(value = "Method responsible to delete a especific property of a resource given the property uri", response = ResponseEntity.class)
     public  ResponseEntity deleteProperty(@PathVariable String workspace, @RequestParam String resourceId, @RequestParam String propertyUri){
 
         graphURI = (workspace.charAt(0) == '/')? workspace : "/" + workspace;
@@ -188,6 +191,7 @@ public class MakeModelController {
     }
 
     @PutMapping("/updateProperty/{workspace}")
+    @ApiOperation(value = "Method responsible to update a property of a resource", response = ResponseEntity.class)
     public ResponseEntity updateProperty(@PathVariable String workspace, @RequestParam String resourceId, @RequestParam String propertyUri, @RequestParam String newValue){
         graphURI = (workspace.charAt(0) == '/')? workspace : "/" + workspace;
         Model model = datasetAccessor.getModel(graphURI);
@@ -269,6 +273,7 @@ public class MakeModelController {
      * @return Lista de recursos
      */
     @GetMapping("/getResources/{workspace}")
+    @ApiOperation(value = "Method responsible to get all resources that have one value of a property", response = ResponseEntity.class)
     public ResponseEntity<List<ResourceApi>> getResources(@PathVariable String workspace, @RequestParam String propertyUri, @RequestParam String value, @RequestParam boolean isExactly){
         graphURI = (workspace.charAt(0) == '/')? workspace : "/" + workspace;
         Model model = datasetAccessor.getModel(graphURI);
@@ -338,6 +343,7 @@ public class MakeModelController {
     }
 
     @GetMapping("/getResource/{workspace}")
+    @ApiOperation(value = "Method responsible for obtaining a resource given the resource uri", response = ResponseEntity.class)
     public ResponseEntity<ResourceApi> getResource(@PathVariable String workspace, @RequestParam String resourceId) {
 
         ResourceApi resource = getResourceApi(workspace, resourceId);

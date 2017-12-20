@@ -24,7 +24,14 @@ class Resource {
 
   addVocabulary(vocabPrefix, uri){
       const vocab                    = new Vocabulary(vocabPrefix, uri)
-      this.vocabularies[vocabPrefix] = vocab
+      if(!this.vocabExists(vocabPrefix, this.vocabularies))
+        this.vocabularies[vocabPrefix] = vocab
+  }
+
+  vocabExists(vocabPrefix, vocabularies){
+    if(vocabularies[vocabPrefix] === undefined || vocabularies[vocabPrefix === null])
+        return false
+    return true
   }
 
   addProperty(vocabPrefix, property){
@@ -342,25 +349,32 @@ class SemanticAPI{
 
     commitChanges(resource){
       this.deleteResource(resource.about)         
-      this.saveResource(resource)
+      .then(() => {
+        console.log("Recurso antigo deletado")
+        this.saveResource(resource)
+        console.log("Recurso atualizado salvo")
+       })
+      .then(() => {
+        console.log("Pronto")
+       })
     }
 
-    //localNameExists(resource){
-    //  let localNameSize = getLocalNameResource(resource)
-    //  return (localNameSize == 37 && (!getResourceLocalName(resource).includes(".")));
-    //}
+    localNameExists(resource){
+      let localNameSize = getLocalNameResource(resource)
+      return (localNameSize == 37 && (!getResourceLocalName(resource).includes(".")));
+    }
   
-    //getResourceLocalName(resource){
-    //  let localNameSize = 0;
-    //  const aboutResource = resource.about;
-    //  for (let x = aboutResource.length() - 2; aboutResource.charAt(x) != '/'; x--)
-    //      localNameSize++;
-    //  localNameSize++ ;
-    //  return localNameSize;
-    //}
+    getResourceLocalName(resource){
+      let localNameSize = 0;
+      const aboutResource = resource.about;
+      for (let x = aboutResource.length() - 2; aboutResource.charAt(x) != '/'; x--)
+          localNameSize++;
+      localNameSize++ ;
+      return localNameSize;
+    }
   
-    //alreadyExistsInDatabase(resource){
-    //  return localNameExists(resource)
-    //}
+    alreadyExistsInDatabase(resource){
+      return localNameExists(resource)
+    }
 
   }
