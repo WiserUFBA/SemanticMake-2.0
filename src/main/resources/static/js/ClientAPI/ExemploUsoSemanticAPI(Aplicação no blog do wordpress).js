@@ -75,7 +75,6 @@ btnSubmit.onclick = function(event){
     const newProperty = new Property('batery', 'eveready', false, '')
     api.addProperty (res, 'vpref', newProperty)
     api.commitChanges(res);
-
   })
   .catch(err => alert(`Problema ao tentar recuperar recursos ${err.msg}`))
 

@@ -155,7 +155,7 @@
       theme: 'bootstrap'
     });
 
-    addVocabButton.onclick = () => {
+    addVocabButton.onclick = (evt) => {
       if (isEmpty(vocabURIField.value) || isEmpty(vocabPrefixField.value)) return
 
       const prefix  = vocabPrefixField.value
@@ -174,7 +174,7 @@
       //Mostra o recurso na tag '<pre>' de id 'result'
       showResource()
 
-      showCalledFunctions()
+      showCalledFunctions(evt)
     }
 
     $('#subpropName').select2({ 
@@ -200,12 +200,18 @@
     });
 
     //Trata o evento de clique do botão de adicionar propriedades 'addPropButton'
-    addPropButton.onclick = () => {
+    addPropButton.onclick = (evt) => {
 
       const properties  = getProps(getResourceToSend().vocabularies)
       const prefix      = propPrefixField.value
 
-      if(!propExists(properties)){
+      if (isEmpty(propPrefixField.value) || isEmpty(propNameField.value) || isEmpty(propValueField.value)){
+        result.innerHTML += '\n\nCampo(s) requerido(s) vazio(s)'
+        return
+      }
+
+
+      if(!propExists(properties) && isNotEmpty(propValueField.value)){
         const propertyName  = propNameField.value
         const value         = propValueField.value
         const asResource    = propAsResourceCheck.checked
@@ -219,7 +225,7 @@
         }          
       }
       console.log(JSON.stringify(getResourceToSend()))
-      showCalledFunctions()
+      showCalledFunctions(evt)
       //Mostra o recurso na tag '<pre>' de id 'result'
       showResource()
     }
@@ -234,7 +240,7 @@
       }
     })
 
-    addSubpropButton.onclick = () => {
+    addSubpropButton.onclick = (evt) => {
       if (isEmpty(propPrefixField.value) || isEmpty(propNameField.value) || 
           isEmpty(subpropNameField.value) || isEmpty(subpropValueField.value)){
         result.innerHTML += '\n\nCampo(s) requerido(s) vazio(s)'
@@ -270,11 +276,11 @@
         }
       }
       console.log(JSON.stringify(getResourceToSend()))
-      showCalledFunctions()
+      showCalledFunctions(evt)
       //Mostra o recurso na tag '<pre>' de id 'result'
       showResource()
     }
-    saveButton.onclick = () => {
+    saveButton.onclick = (evt) => {
       if (!validateForm()) return
 
       //Reseta alguns campos da página
@@ -282,10 +288,12 @@
       resForm.elements.vocabUri.value     = ''
       resForm.elements.propName.value     = ''
       resForm.elements.propValue.value    = ''
+      
+      showCalledFunctions(evt)
       //Mostra o recurso na tag '<pre>' de id 'result'
       showResource()
       //Envia a cópia do recurso
-      sendResource('workspace')
+      sendResource('workspace-84b4df42')
     }
       //Muda o comportamento padrão da tooltip que é ser mostrada apenas quando se passa o mouse por cima do elemento
       $('[data-toggle="tooltip"]').tooltip({ trigger: 'manual' })
@@ -406,9 +414,9 @@
         body: JSON.stringify(resToSend)
       }).then(function(response) {
         if(response.ok)
-          result.innerHTML += '<br/><br/><h3>Recurso salvo com sucesso</h3>'
+          result.innerHTML += '<br/><br/><h5>Recurso salvo com sucesso</h5>'
         else
-          result.innerHTML += `<br/><br/><h3>Erro ao tentar gravar ontologia</h3><br/>${status}<br/>${status.message}</br>${status.toString}`
+          result.innerHTML += `<br/><br/><h5>Erro ao tentar gravar ontologia</h5><br/>${status}<br/>${status.message}</br>${status.toString}`
       //Este bloco trata o evento da conexão estar indisponível
       }).catch(function(error) {
           result.innerHTML += `<br/><br/><h3>Problema de conexão ao tentar salvar a ontologia<h3><br/><br/>${error.message}`
@@ -557,15 +565,15 @@
         //Verifica se o nome do recurso é vazio e apresenta 'rdf:Desciption' se for
         const rootNodeString = isEmpty(resource.name) ? 'rdf:Description' : `${resource.prefix}:${resource.name}`
 
-        const rdf = `Formato de saída
-<rdf:RDF
-  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns"
-  ${resourceHead}
-  ${vocabulariesString}
-  <${rootNodeString} rdf:about="${resource.about}/uid">
-      ${propsString}
-  </${rootNodeString}>
-</rdf>`;
+        const rdf = `Formato de saída:
+ <rdf:RDF
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns"
+   ${resourceHead}
+   ${vocabulariesString}
+   <${rootNodeString} rdf:about="${resource.about}/uid">
+       ${propsString}
+   </${rootNodeString}>
+ </rdf>`;
 
           //Deve ser usado innerText para apresentar o texto e não o html na página
           result.innerText = rdf;
@@ -588,7 +596,7 @@
       //Slice cria uma cópia do array
       const p1 = props.slice()
       for (let i = 0; i < props.length; i++){
-        //Se a propriedade é uma recurso
+        //Se a propriedade é um recurso
         if (p1[i].asResource){
           //Represents the property that have one simple resource: <vocab:property rdf:resource="http://site.com"/>
           if(!p1[i].verified && isEmpty(p1[i].subPropertyOf) && p1[i].value.includes('http://')){
@@ -614,7 +622,7 @@
                 }//Se subpropriedade não é um recurso
                 else 
                   if (!p1[k].verified && isNotEmpty(p2[k].propertyName) && isNotEmpty(p2[k].value)){
-                    RDFprops.push(`    <${p1[i].prefix}:${p2[k].propertyName}>${p2[k].value}</${p1[i].propertyName}:${p2[k].propertyName}>`)
+                    RDFprops.push(`    <${p1[i].prefix}:${p2[k].propertyName}>${p2[k].value}</${p1[i].prefix}:${p2[k].propertyName}>`)
                 }
                 p1[k].verified = true
               }
@@ -629,24 +637,37 @@
         }
       }
                       
-      RDFprops = RDFprops.join('\n      ')
+      RDFprops = RDFprops.join('\n       ')
       
       return RDFprops        
     }
 
-    function showCalledFunctions(){
-      const res       = getResourceToSend()
-      const props     = getProps(res.vocabularies)
-      let out         = `Funções chamadas\nnew Resource("${res.name}", "${res.prefix}", "${res.about}")\n`
+    function showCalledFunctions(evt){
+      const res         = getResourceToSend()
+      const props       = getProps(res.vocabularies)
+      let vocabularies  = ''
+      let save          = ''
+      
+      RDFprops = []
+
       for (let vocab of res.vocabularies){
-        out += `addVocabulary("${vocab.prefix}", "${vocab.uri}")\n`
+        vocabularies += `r.addVocabulary("${vocab.prefix}", "${vocab.uri}")`
       }
       for(let p of props){
-        out += `addTriple("${p.prefix}", "${p.propertyName}", "${p.value}", "${p.asResource}", "${p.subPropertyOf}")\n`
+        if(p.value != ''){
+          RDFprops.push(`const p = new Property("${p.propertyName}", "${p.value}", "${p.asResource}", "${p.subPropertyOf}")
+ r.addTriple("${p.prefix}", p)`)
+        } 
       }
-      calledFunctions.innerHTML = out
+      let properties = RDFprops.join('\n ')
+      if (evt.target === saveButton) 
+        save =  'r.sendResource(\"workspace\")'
+      let out = `Funções chamadas (exemplo):
+ let r = new Resource("${res.name}", "${res.prefix}", "${res.about}")
+ ${vocabularies}
+ ${properties}
+ ${save}`
+      calledFunctions.innerText = out
     }
- 
-  
 }()
 )
