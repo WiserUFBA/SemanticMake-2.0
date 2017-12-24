@@ -76,8 +76,8 @@
     $(subpropNameField)   .on('select2:close', validateField(isNotEmpty))
     subpropValueField     .addEventListener('blur', validateField(isNotEmpty))
 
-    propValueField        .setAttribute('title', 'Insira um valor')
-    subpropValueField     .setAttribute('title', 'Insira um valor')
+    propValueField        .setAttribute('title', 'Enter a value')
+    subpropValueField     .setAttribute('title', 'Enter a value')
 
     //Trata o evento de 'mudar o valor selecionado' do campo de prefixo do vocabulário, carregando as informações do vocabulário escolhido
     vocabPrefixField.addEventListener('change', (evt) => {
@@ -86,10 +86,10 @@
     
     propAsResourceCheck.addEventListener('click', (evt) => {
       if (propAsResourceCheck.checked){
-        $(propValueField).attr('data-original-title', 'As URIs devem ser válidas: http://... terminando com / ou #')
+        $(propValueField).attr('data-original-title', 'URIs must be valid: http://... ending with / ou #')
         propValueField.onblur = validateField(isValidURL)
       }else{
-        $(propValueField).attr('data-original-title', 'Insira um valor')
+        $(propValueField).attr('data-original-title', 'Enter a value')
         propValueField.onblur = validateField(isNotEmpty)
       }
     })
@@ -97,8 +97,8 @@
     $(propAsResourceCheck).on({
       'mouseenter': (evt) => { 
         if (!hasSubpropCheck.checked){
-          $(propValueField).attr('data-original-title', 'As URIs devem ser válidas: http://... terminando com / ou #')
-          $(evt.target).attr('data-original-title', 'Guarda a URI de outro recurso')
+          $(propValueField).attr('data-original-title', 'URIs must be valid: http://... ending with / ou #')
+          $(evt.target).attr('data-original-title', 'Save the URI from another resource')
           $(evt.target).tooltip('show')
         }
         else {
@@ -151,7 +151,7 @@
         },
         cache: true                
       },
-      placeholder: 'Digite as iniciais da propriedade',
+      placeholder: 'Enter the initials of the property',
       theme: 'bootstrap'
     });
 
@@ -195,7 +195,7 @@
         },
         cache: true                
       },
-      placeholder: 'Digite as iniciais da propriedade',
+      placeholder: 'Enter the initials of the subproperty',
       theme: 'bootstrap'
     });
 
@@ -206,7 +206,7 @@
       const prefix      = propPrefixField.value
 
       if (isEmpty(propPrefixField.value) || isEmpty(propNameField.value) || isEmpty(propValueField.value)){
-        result.innerHTML += '\n\nCampo(s) requerido(s) vazio(s)'
+        result.innerHTML += '\n\nRequired field(s) empty'
         return
       }
 
@@ -232,10 +232,10 @@
 
     subpropAsResourceCheck.addEventListener('click', (evt) => {
       if (propAsResourceCheck.checked && subpropAsResourceCheck.checked){
-        $(subpropValueField).attr('data-original-title', 'As URIs devem ser válidas: http://... terminando com / ou #')
+        $(subpropValueField).attr('data-original-title', 'URIs must be valid: http://... ending with / ou #')
         subpropValueField.onblur = validateField(isValidURL)
       }else{
-        $(subpropValueField).attr('data-original-title', 'Insira um valor')
+        $(subpropValueField).attr('data-original-title', 'Enter a value')
         subpropValueField.onblur = validateField(isNotEmpty)
       }
     })
@@ -243,7 +243,7 @@
     addSubpropButton.onclick = (evt) => {
       if (isEmpty(propPrefixField.value) || isEmpty(propNameField.value) || 
           isEmpty(subpropNameField.value) || isEmpty(subpropValueField.value)){
-        result.innerHTML += '\n\nCampo(s) requerido(s) vazio(s)'
+        result.innerHTML += '\n\nRequired field(s) empty'
         return
       }
       else if (propAsResourceCheck.checked && hasSubpropCheck.checked) {
@@ -414,12 +414,12 @@
         body: JSON.stringify(resToSend)
       }).then(function(response) {
         if(response.ok)
-          result.innerHTML += '<br/><br/><h5>Recurso salvo com sucesso</h5>'
+          result.innerHTML += '<br/><br/><h5>Resource saved successfuly</h5>'
         else
-          result.innerHTML += `<br/><br/><h5>Erro ao tentar gravar ontologia</h5><br/>${status}<br/>${status.message}</br>${status.toString}`
+          result.innerHTML += `<br/><br/><h5>Error trying to write resource</h5><br/>${status}<br/>${status.message}</br>${status.toString}`
       //Este bloco trata o evento da conexão estar indisponível
       }).catch(function(error) {
-          result.innerHTML += `<br/><br/><h3>Problema de conexão ao tentar salvar a ontologia<h3><br/><br/>${error.message}`
+          result.innerHTML += `<br/><br/><h3>Connection problem when trying to save the ontology<h3><br/><br/>${error.message}`
         });
     }
 
@@ -495,7 +495,7 @@
        * A string detro da crase aceita string e variáveis, que podem ser acessadas com a seguinte sintaxe ${variavel}
       */
       const prefixes = Object.keys(resource.vocabularies) 
-      let options    = `<option value="" title="">Selecione</option>`
+      let options    = `<option value="" title="">Select</option>`
       options        += prefixes.map(prefix => (
           `<option value="${prefix}">${prefix}</option>`
       ))
@@ -565,7 +565,7 @@
         //Verifica se o nome do recurso é vazio e apresenta 'rdf:Desciption' se for
         const rootNodeString = isEmpty(resource.name) ? 'rdf:Description' : `${resource.prefix}:${resource.name}`
 
-        const rdf = `Formato de saída:
+        const rdf = `Output format:
  <rdf:RDF
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns"
    ${resourceHead}
@@ -662,7 +662,7 @@
       let properties = RDFprops.join('\n ')
       if (evt.target === saveButton) 
         save =  'r.sendResource(\"workspace\")'
-      let out = `Funções chamadas (exemplo):
+      let out = `Called functions (example):
  let r = new Resource("${res.name}", "${res.prefix}", "${res.about}")
  ${vocabularies}
  ${properties}

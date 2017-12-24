@@ -52,7 +52,7 @@ public class OptGroupBuilder {
             String property = res.getURI().replace(vocabUri, "");
             if (search != null && !property.toLowerCase().contains(search.toLowerCase())) return;
 
-            String domain = "Sem domínio específico";
+            String domain = "Without specific domain";
             Statement domainStmt = res.getProperty(RDFS.domain);
             if (domainStmt != null) {
                 Resource domainResource = domainStmt.getResource();

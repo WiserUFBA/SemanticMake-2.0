@@ -1,18 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8"/>
-    <title>Semantic API use</title>
-    <link rel="stylesheet" type="text/css" href="css/semanticApiInterface.css"/>
-    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
-    <link rel="stylesheet" type="text/css" href="css/select2.min.css"/>
-    <link rel="stylesheet" type="text/css" href="css/select2-bootstrap.min.css"/>
-</head>
-<body>
-<div class="container" >
-    <h3>Creating and saving a ontology instance</h3>
+<div class="container">
     <form id="resForm" class="form-inline">
-        <div class="row">
+        <div class="row centered">
+            <h3 align="left">Creating and saving a ontology instance</h3>
             <h4>Resource</h4>
             <div class="form-group">
                 <div class="input-group">
@@ -20,7 +9,7 @@
                     <span class="input-group-addon">:</span>
                     <input title="Insira um valor" data-toggle="tooltip" type="text" class="form-control" id="resName" placeholder="name (type)"/>
                     <span class="input-group-addon">about</span>
-                    <input style="width: 325px" type="text" class="form-control" id="resAbout" placeholder="http://www.fre.dg/"
+                    <input style="width: 365px" type="text" class="form-control" id="resAbout" placeholder="http://www.fre.dg/"
                            data-toggle="tooltip" title="As URIs devem ser válidas: http://... terminando com / ou #"/>
                 </div>
             </div>
@@ -46,7 +35,7 @@
                         <option value="geo">GEO</option>
                     </select>
                     <span class="input-group-addon">=</span>
-                    <input readonly="readonly" style="width: 300px" type="text" class="form-control" id="vocabUri" placeholder="http://www.foo.tz/"
+                    <input readonly="readonly" style="width: 353px" type="text" class="form-control" id="vocabUri" placeholder="http://www.foo.tz/"
                            data-toggle="tooltip" title="As URIs devem ser válidas: http://... terminando com / ou #" tabindex="-1"/>
                     <span class="input-group-btn">
                         <button type="button" id="addVocab" class="btn btn-secondary">
@@ -74,7 +63,7 @@
             </div>
             <div class="input-group" id="propValueDiv">
                 <span class="input-group-addon">=</span>
-                <input type="text" class="form-control" id="propValue" placeholder="value" data-toggle="tooltip" style="width:250px"/>
+                <input type="text" class="form-control" id="propValue" placeholder="value" data-toggle="tooltip" style="width:302px"/>
                 <div class="input-group-btn">
                     <button type="button" id="addProp" class="btn btn-secondary">
                         <span class="glyphicon glyphicon-plus"></span>
@@ -85,13 +74,14 @@
         <br/>
         <div class="row" id="subpropDiv" style="display: none">
             <div class="form-group">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id="subpropAsResource" value="true" title="Guarda a URI de outro recurso" data-toggle="tooltip"/> Como um recurso &nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="checkbox" id="subpropAsResource" value="true" title="Guarda a URI de outro recurso" data-toggle="tooltip"/> As a resource &nbsp;&nbsp;&nbsp;&nbsp;
                 <div class="input-group">
                     <select data-toggle="tooltip" class="form-control select2-single" id="subpropName" style="width:290px"></select>
                 </div>
                 <div class = "input-group">
                     <span class="input-group-addon">=</span>
-                    <input type="text" class="form-control" id="subpropValue" style="width:250px" placeholder="valor" data-toggle="tooltip" />
+                    <input type="text" class="form-control" id="subpropValue" style="width:302px" placeholder="value" data-toggle="tooltip" />
                     <div class="input-group-btn">
                         <button type="button" id="addSubprop" class="btn btn-secondary">
                             <span class="glyphicon glyphicon-plus"></span>
@@ -111,21 +101,16 @@
             </div>
         </div>
     </form>
+    <br/>
     <div class="row">
         <pre id="result" class="col-md-8">Output format
             <br/><br/>
         </pre>
     </div>
-    <br/>
     <div class="row">
         <pre id="calledFunctions" class="col-md-8">Called functions
             <br/><br/>
         </pre>
     </div>
 </div>
-<script src="js/jquery-3.2.1.min.js"></script>
-<script src="js/select2.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/semanticApiInterface.js"></script>
-</body>
-</html>
+<script src="js/semanticApiInterface.js"/>

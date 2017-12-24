@@ -1,0 +1,249 @@
+<div class="panel-group" id="accordion" >
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">Initial setting</a>
+            </h4>
+        </div>
+        <div id="collapse1" class="panel-collapse collapse in">
+            <div class="panel-body">
+                <div class="code-format">
+                    const config = {<br/>
+                    &nbsp;&nbsp;&nbsp;&nbsp;baseURL: 'http://localhost:8080/',<br/>
+                    &nbsp;&nbsp;&nbsp;&nbsp;workspace: 'workspace-869f1a93'<br/>
+                    }
+                    const api = new SemanticAPI(config)<br/>
+                </div>
+                <div class="text-format text-primary">
+                    First, to start working with the API, you must assign some configuration values that represent the base URL
+                    that is the address of the server where the data will be stored and the workspace where it will be stored. And then
+                    we can create a new <strong>SemanticAPI</strong> object that have functions to manipulate resources and datasets.
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">Mounting a resource</a>
+            </h4>
+        </div>
+        <div id="collapse2" class="panel-collapse collapse">
+            <div class="panel-body">
+                <div class="code-format">
+                    const resource = new Resource('contactData', 'contact', 'http://contactmail.com#Person')<br/>
+                    resource.addVocabulary('schema', 'http://schema.org/')<br/>
+                    resource.addVocabulary('vcard', 'http://www.w3.org/2006/vcard/ns#')<br/>
+                    property = new Property('hasValue', 'email@email.com', false, 'email')<br/>
+                    resource.addProperty('vcard', property)<br/>
+                    property1 = new Property('client', 'YahooMail', false, 'email')<br/>
+                    resource.addProperty('vcard', property1)<br/>
+                    property2  = new Property('name', 'Lucimar da Silva Souza', false, '')<br/>
+                    resource.addProperty('schema', property2)<br/>
+                    property3 = new Property('about', 'Assunto do email', false, '')<br/>
+                    resource.addProperty('schema', property3)<br/>
+                    property4 = new Property ('telephone', '73991809696', false, '' )<br/>
+                    resource.addProperty('schema', property4)<br/>
+                    property5 = new Property('text', 'Mensagem do e-mail', false, '')<br/>
+                    resource.addProperty('schema', property5)<br/>
+                    resource.addCoordinatesDateTime()<br/>
+                    resource.addLanguage('pt-br');<br/>
+                </div>
+                <div class="text-format  text-primary">
+                    In this example is shown the assembly of a new resource. <br/>
+                    First is used the function <strong>addVocabulary</strong>, from <strong>Resource</strong>, that have three the parameters: type, prefix and uri respectively<br/>
+                    Then instances of <strong>Vocabulary</strong> object are created. To create one Vocabulary is necessary his prefix and namespace uri<br/>
+                    Later are created new instances of <strong>Property</strong>. Each property has: name, value, a boolean that determines if the property will be stored as a Resouce (the uri of the object),
+                    and the last parameter determines the parent property. If this parameter is filled means that this property is actualy a property of a blank node belonging to the resource.
+                    Then is called the function addProperty of <strong>Resource</strong> class passing as parameters the vocab prefix and the property created early.
+                    The above example also show two functions <strong>addCoordinatesDateTime</strong> and <strong>addLanguage</strong>:<br/>The first add the local, date and hour of where and when is being done the resource.<br/>
+                    The second add a property that store the language of the resource added.
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapse3">Saving a resource</a>
+            </h4>
+        </div>
+        <div id="collapse3" class="panel-collapse collapse">
+            <div class="panel-body">
+                <div class="code-format">
+                    api.saveResource(resource)<br/>
+                    .then(json => alert(`Recurso salvo com sucesso\nSeu workspace é: ${json.workspace}<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\nO ID do recurso é: ${json.resourceId}`);)<br/>
+                    .catch(error => alert(`Problem trying save the resource: \n${error.message}`))<br/>
+                </div>
+                <div class="text-format text-primary">
+                    The <strong>saveResource</strong> function saves one resource later that it is mounted. This function belongs to the SemanticAPI class. Is used the object of this class created previously
+                    to call the function passing as parameter the resource created before. This function returns a promise to treat the cases of success or wrong in the operation. In the promise treatment
+                    events can be captured one object that have two variables: workspace and resourceId.
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapse8">Getting a resource</a>
+            </h4>
+        </div>
+        <div id="collapse8" class="panel-collapse collapse">
+            <div class="panel-body">
+                <div class="code-format">
+                    api.getResource("http://contactmail.com#Person/0d608605-b10b-4833-91d2-00ec1755c335")<br/>
+                    .then(resource => { alert(`O recurso '${resource.about}' foi retornado`)})<br/>
+                    .catch(error => alert(`Problem trying retrieve the resource: ${error.message}`))<br/>
+                </div>
+                <div class="text-format text-primary">
+                    The <strong>getResource</strong> capture one resource given your uri. This function belongs to the SemanticAPI classe. Is used the object of this class created previously
+                    to call the function passing as parameter the resource created before. This function returns a promise to treat the cases of success or wrong in the operation. The resource searched
+                    can be captured in the promise treatment event.
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapse9">Getting resources</a>
+            </h4>
+        </div>
+        <div id="collapse9" class="panel-collapse collapse">
+            <div class="panel-body">
+                <div class="code-format">
+                    api.getResources('http://schema.org/name', 'Souza', false)<br/>
+                    .then(resources => console.log(resources))<br/>
+                    .catch(err => alert(`Problem trying deleting the resources: ${err.msg}`))<br/>
+                </div>
+                <div class="text-format text-primary">
+                    <strong>getResources</strong> capture the resources that have a given value to one property uri. This function belongs to the SemanticAPI classe.
+                    Is used the object of this class created previously to call the function passing as parameter the resource created before.
+                    This function returns a promise to treat the cases of success or wrong in the operation. The resources searched can be captured in the promise treatment event.
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapse5">Deleting a resource</a>
+            </h4>
+        </div>
+        <div id="collapse5" class="panel-collapse collapse">
+            <div class="panel-body">
+                <div class="code-format">
+                    api.deleteResource("http://qwer/dc64413c-0597-4c5e-bd3e-f743e7a2b5c7")<br/>
+                    .then(json => alert(`O recurso '${json.resourceId}' foi removido do workspce '${json.workspace}'`))<br/>
+                    .catch(error => alert(`Problem trying deleting the resource: ${error.message}`))<br/>
+                </div>
+                <div class="text-format text-primary">
+                    Given the uri of a resource the function <strong>deleteResource</strong> of the class SemanticAPI it´s able to delete a resource.
+                    This function returns a promise to treat the cases of success or wrong in the operation. In the promise treatment events can be captured
+                    one object that have two variables: workspace and resourceId.
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapse10">Updating resource</a>
+            </h4>
+        </div>
+        <div id="collapse10" class="panel-collapse collapse">
+            <div class="panel-body">
+                <div class="code-format">
+                    api.getResource()<br/>
+                    .then(resource => {<br/>
+                    &nbsp;&nbsp;&nbsp;&nbsp;resource.addVocabulary('vpref', 'http://vocabularyUri#')<br/>
+                    &nbsp;&nbsp;&nbsp;&nbsp;const newProperty = new Property('batery', 'eveready', false, '')<br/>
+                    &nbsp;&nbsp;&nbsp;&nbsp;api.addProperty (resource, 'vpref', newProperty)<br/>
+                    &nbsp;&nbsp;&nbsp;&nbsp;resource.addProperty ('vpref', newProperty) //Another way to add a property<br/>
+                    &nbsp;&nbsp;&nbsp;&nbsp;api.commitChanges(res);<br/>
+                    })<br/>
+                    .catch(err => alert(`Error to fetch the resource ${err.msg}`))<br/>
+                </div>
+                <div class="text-format text-primary">
+                    Once captured one specific resource we can edit it adding vocabularies, properties, add a language or the coordinates and time.
+                    The resource searched can be captured in the promise treatment event. And then can be edited as in example above.
+                    But to make all changes permanent in dataset should be called the function <strong>commitChanges</strong>, belonging to the <strong>SemanticAPI</strong> class also.
+                    Should be given one special attention to the function <strong>addProperty</strong> wich in this case belong to SemanticAPI class but exits another
+                    way to add a new property calling the addProperty of <strong>Resource</strong>. In the first case the difference is that the first parameter should be the resource that
+                    will have the property added. Finnaly <strong>commitChanges</strong> is called to make the changes permanent in dataset.
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapse6">Updating a property</a>
+            </h4>
+        </div>
+        <div id="collapse6" class="panel-collapse collapse">
+            <div class="panel-body">
+                <div class="code-format">
+                    api.updateProperty('http://contactmail.com#Person/8ff4d538-a20a-4ba9-a51d-554357ecfcad', 'http://www.w3.org/2006/vcard/ns#client', 'Gmail')<br/>
+                    .then(json => alert(`The resource '${json.resourceId}' was updated in workspce '${json.workspace}'<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;specifically in the property '${json.propertyUri}}'`);)<br/>
+                    .catch(error => alert(`Problem trying update the property: ${error.message})<br/><br/>
+                    Another sample:<br/>
+                    api.updateProperty('http://contactmail.com#Person/8ff4d538-a20a-4ba9-a51d-554357ecfcad',<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'http://schema.org/geocoordinates#latitude', '369852147');
+                </div>
+                <div class="text-format text-primary">
+                    In this example is showed the function <strong>updateProperty</strong> belonging to the <strong>SemanticAPI</strong> class.
+                    This function returns a promise to treat the cases of success or wrong in the operation. In the promise treatment events can be captured
+                    one object that have three variables: workspace, resourceId and propertyUri.
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapse7">Deleting a property</a>
+            </h4>
+        </div>
+        <div id="collapse7" class="panel-collapse collapse">
+            <div class="panel-body">
+                <div class="code-format">
+                    api.deleteProperty('http://contactmail.com#Person/affa9dce-7e1a-42ba-8fe8-2b96c40bcb5b','<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'http://schema.org/geocoordinates')<br/>
+                    .then(json => alert(`Was removed the property '${json.propertyUri}','<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;from resource '${json.resourceId}' and workspace '${json.workspace}'`))<br/>
+                    .catch(error => alert(`Problem trying deleting the resource:\n${error.message})<br/>
+                </div>
+                <div class="text-format text-primary">
+                    In this example is showed the function <strong>deleteProperty</strong> belonging to the <strong>SemanticAPI</strong> class.
+                    This function returns a promise to treat the cases of success or wrong in the operation. In the promise treatment events can be captured
+                    one object that have three variables: workspace, resourceId and propertyUri.
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapse4">Deleting a graph</a>
+            </h4>
+        </div>
+        <div id="collapse4" class="panel-collapse collapse">
+            <div class="panel-body">
+                <div class="code-format">
+                    api.deleteGraph()<br/>
+                    .then(json => alert(`Workspace '${json.workspace}' removed`))<br/>
+                    .catch(error => alert(`Problem trying deleting the graph:\n${error.message})<br/>
+                </div>
+                <div class="text-format text-primary">
+                    In this example is showed the function <strong>deleteGraph</strong> belonging to the <strong>SemanticAPI</strong> class.
+                    This function returns a promise to treat the cases of success or wrong in the operation. In the promise treatment events can be captured
+                    one object that have the name of workspace related.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

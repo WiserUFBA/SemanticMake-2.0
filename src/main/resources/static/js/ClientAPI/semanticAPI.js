@@ -376,5 +376,4 @@ class SemanticAPI{
     alreadyExistsInDatabase(resource){
       return localNameExists(resource)
     }
-
   }
