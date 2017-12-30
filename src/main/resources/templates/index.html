@@ -3,31 +3,589 @@
 <head>
     <meta charset="UTF-8"/>
     <title>Title</title>
-    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="css/index.css"/>
+    <link rel="stylesheet" type="text/css" href="css/semanticApiInterface.css"/>
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
     <link rel="stylesheet" type="text/css" href="css/select2.min.css"/>
     <link rel="stylesheet" type="text/css" href="css/select2-bootstrap.min.css"/>
-    <link rel="stylesheet" type="text/css" href="css/more.css"/>
+    <link rel="stylesheet" type="text/css" href="css/shCore.css" />
+    <link rel="stylesheet" type="text/css" href="css/shThemeDefault.css" />
 </head>
 <body>
-    <ul class="nav nav-tabs tabs-up col-lg-6 col-lg-offset-3" id="funcionalities">
-        <li><a href="/createAndSave/" data-target="#createAndSave" class="media_node active span" id="contactsTab" data-toggle="tabajax" rel="tooltip">Create and Save</a></li>
-        <li><a href="/more/" data-target="#more" class="media_node span" id="moreTab" data-toggle="tabajax" rel="tooltip">More</a></li>
-    </ul>
 
-    <div class="tab-content col-lg-6 col-lg-offset-3">
-        <div class="tab-pane active" id="createAndSave">
+<div class="container">
+    <h1>Semantic API</h1>
+    <div>
+        <ul class="nav nav-tabs">
+            <li class="active"><a data-toggle="tab" href="#create-and-save">Create and save</a></li>
+            <li><a data-toggle="tab" href="#how-it-works">How it works</a></li>
+            <li><a data-toggle="tab" href="#examples">Examples</a></li>
+        </ul>
+        <div class="tab-content">
+            <div id="create-and-save" class="tab-pane fade in active">
+                <div class="container col-lg-offset-2" >
+                    <div class="row">
+                        <h3>Creating and saving an ontology instance</h3>
+                    </div>
+                    <form id="resForm" class="form-inline">
+                        <div class="row">
+                            <h4>Resource</h4>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="resPrefix" placeholder="prefixo" data-toggle="tooltip" title="Insira um valor"/>
+                                    <span class="input-group-addon">:</span>
+                                    <input title="Insira um valor" data-toggle="tooltip" type="text" class="form-control" id="resName" placeholder="name (type)"/>
+                                    <span class="input-group-addon">about</span>
+                                    <input style="width: 325px" type="text" class="form-control" id="resAbout" placeholder="http://www.fre.dg/"
+                                           data-toggle="tooltip" title="As URIs devem ser válidas: http://... terminando com / ou #"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <h4>Vocabularies</h4>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon">xmlns:</span>
+                                    <!--A tootip de aviso para selecionar um valor no momento da validação não está aparecendo quando não é selecionado um valor-->
+                                    <select class="form-control" id="vocabPrefix">
+                                        <option value="" title="">Select a vocabulry</option>
+                                        <option value="cc">Creative Commons (CC)</option>
+                                        <option value="dcat">Data Catalog (DCAT)</option>
+                                        <option value="dce">Dublin Core Metadata Element Set (DCE)</option>
+                                        <option value="dcterms">Dublin Core Metadata Iniative Terms (DCTERMS)</option>
+                                        <option value="event">Event</option>
+                                        <option value="foaf">FOAF</option>
+                                        <option value="prov">PROV</option>
+                                        <option value="vcard">VCARD</option>
+                                        <option value="schema">Shema.org</option>
+                                        <option value="skos">SKOS</option>
+                                        <option value="geo">GEO</option>
+                                    </select>
+                                    <span class="input-group-addon">=</span>
+                                    <input readonly="readonly" style="width: 300px" type="text" class="form-control" id="vocabUri" placeholder="http://www.foo.tz/"
+                                           data-toggle="tooltip" title="As URIs devem ser válidas: http://... terminando com / ou #" tabindex="-1"/>
+                                    <span class="input-group-btn">
+                        <button type="button" id="addVocab" class="btn btn-secondary">
+                          <span class="glyphicon glyphicon-plus"/>
+                        </button>
+                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <br/>
+                        <div class="row">
+                            <div>
+                                <span style="font-size:18px">Properties</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <input type="checkbox" id="propAsResource" value="true" title="Guarda a URI de outro recurso" data-toggle="tooltip"/> As a resource &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <input type="checkbox" id="hasSubproperty" title="Insere um Blank Node no recurso" data-toggle="tooltip" /> Has subproperties
+                            </div>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <select data-toggle="tooltip" title="Selecione um valor" placeholder="prefix" class="form-control" style="width: 150px" id="propPrefix"></select>
+                                </div>
+                                <div class="input-group">
+                                    <span class="input-group-addon">:</span>
+                                    <select data-toggle="tooltip" class="form-control select2-single" id="propName" style="width:290px"></select>
+                                </div>
+                            </div>
+                            <div class="input-group" id="propValueDiv">
+                                <span class="input-group-addon">=</span>
+                                <input type="text" class="form-control" id="propValue" placeholder="value" data-toggle="tooltip" style="width:250px"/>
+                                <div class="input-group-btn">
+                                    <button type="button" id="addProp" class="btn btn-secondary">
+                                        <span class="glyphicon glyphicon-plus"></span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <br/>
+                        <div class="row" id="subpropDiv" style="display: none">
+                            <div class="form-group">
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id="subpropAsResource" value="true" title="Guarda a URI de outro recurso" data-toggle="tooltip"/> Como um recurso &nbsp;&nbsp;&nbsp;&nbsp;
+                                <div class="input-group">
+                                    <select data-toggle="tooltip" class="form-control select2-single" id="subpropName" style="width:290px"></select>
+                                </div>
+                                <div class = "input-group">
+                                    <span class="input-group-addon">=</span>
+                                    <input type="text" class="form-control" id="subpropValue" style="width:250px" placeholder="valor" data-toggle="tooltip" />
+                                    <div class="input-group-btn">
+                                        <button type="button" id="addSubprop" class="btn btn-secondary">
+                                            <span class="glyphicon glyphicon-plus"></span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <button type="button" id="save" class="btn btn-secondary btn-lg">
+                                        <span class="glyphicon glyphicon-upload"></span>
+                                        Save
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="row">
+                        <pre id="result" class="col-md-8">Output format
+                            <br/><br/>
+                        </pre>
+                    </div>
+                    <br/>
+                    <div class="row">
+                        <pre id="calledFunctions" class="col-md-8">Called functions
+                            <br/><br/>
+                        </pre>
+                    </div>
+                </div>
+            </div>
+            <div id="how-it-works" class="tab-pane fade">
+                <br/>
+                <div class="container col-lg-offset-1 col-lg-10">
+                    <ul class="nav nav-pills nav-stacked col-md-2">
+                        <li class="active"><a href="#semantic_api" data-toggle="pill">Semantic API</a></li>
+                        <li><a href="#resource" data-toggle="pill">Resource</a></li>
+                        <li><a href="#vocabulary" data-toggle="pill">Vocabulary</a></li>
+                        <li><a href="#property" data-toggle="pill">Property</a></li>
+                    </ul>
+                    <div class="tab-content col-md-10">
+                        <div class="tab-pane active panel panel-default " id="semantic_api">
+                            <div class="panel-heading">
+                                <h1 class="panel-title">SemanticAPI class</h1>
+                            </div>
+                            <div class="panel-content">
+                                <p>Used for make the initial configurations, make some operations on and mainly store one resource in the dataset.</p>
+                                <p>The contructor sctructure will be showed bellow:</p>
+                                <pre class="brush: js">
+                                    class SemanticAPI{
+                                        constructor(config){
+                                            ...
+                                            this.config = config
+                                            this.defaultParams = {
+                                                headers: {
+                                                  'Content-Type': 'application/json'
+                                                }
+                                            }
+                                        }
+                                    }
+                                </pre>
+                                <p>The methods of the class are:</p>
+                                <pre class="brush: js">
+                                    //Used to persist a resouce in dataset
+                                    saveResource(resource)
 
-        </div>
+                                    //Used to delete a resource from dataset given the resource URI
+                                    deleterResource(resourceUri)
 
-        <div class="tab-pane  urlbox span8" id="more">
+                                    //Delete the workspace where the SemanticAPI object is configured to
+                                    deleteGraph()
 
+                                    //Delete an property of a resource given both URI's
+                                    deleteProperty(resourceUri, propertyUri)
+
+                                    //Retrieve the resource given his URI
+                                    getResource(resourceUri)
+
+                                    /* Retrive all resources the corresponde to the match of equality of property and
+                                     * value. This function consider if all value are exactly like the passed if
+                                     * isExactly (a boolean) is true. Otherwise is considered all values that contais
+                                     * the passed value
+                                     */
+                                    getResources(propertyUri, value, isExactly)
+
+                                    /* Update a property of a resource given the URI of the resource, of the property
+                                     * and the new value respectivaly
+                                     */
+                                    updateProperty(resourceUri, propertyUri, newValue)
+
+                                    /* Add a property to one resource given the the resourcec(in this case firstly the
+                                     * resource must be retrieved of server), the vocabulary prefix and an property
+                                     * created previously
+                                     */
+                                    addProperty(resource, vocabPrefix, property)
+
+                                    /* Since one resource was retrieved by the server and had various changes this
+                                     * function make all changes persistent in the dataset
+                                     */
+                                    commitChanges()
+
+                                    //Verify if one resource already exists on the dataset
+                                    alreadyExistsInDatabase(resource)
+
+                                    //Get the local name of the resource retrieved
+                                    getResourceLocalName(resource)
+                                </pre>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane panel panel-default" id="resource">
+                            <div class="panel-heading">
+                                <h1 class="panel-title">Resource class</h1>
+                            </div>
+                            <div class="panel-content">
+                                <p>This class has funtions que enables the assembly of a resource</p>
+                                <p>The contructor sctructure will be showed bellow:</p>
+                                <pre class="brush: js">
+                                    class Resource {
+                                        constructor(name, prefix, uri){
+                                        this.vocabularies   = {}
+                                        this.type           = name
+                                        this.prefix         = prefix
+                                        this.about          = uri
+                                        }
+                                        ...
+                                    }
+                                </pre>
+                                <p>The methods of the class are:</p>
+                                <pre class="brush: js">
+                                    //Assign the type of the resource
+                                    setType(type)
+
+                                    //Assign the prefix of the resource
+                                    setPrefix(prefix)
+
+                                    //Assign the prefix of the resource
+                                    setAbout(about)
+
+                                    //Assign the vocabularies of the resource
+                                    setVocabularies(vocabularies)
+
+                                    //Assign a new vocabulary to the resource
+                                    //This function creates a new instance of a vocabulary e add to the resource
+                                    addVocabulary(vocabPrefix, uri)
+
+                                    //Verify if a vocabularie prefix already exists in the list of passed vocabularies
+                                    vocabExists(vocabPrefix, vocabularies)
+
+                                    //Add a new property to one vocabulary
+                                    addProperty(vocabPrefix, property)
+
+                                    //Add a new property with a language to one resource
+                                    addLanguage(language)
+
+                                    //Add latitude, longitude, date and time of creating of the resource
+                                    addCoordinatesDateTime
+                                </pre>
+                            </div>
+                        </div>
+                        <div class="tab-pane panel panel-default" id="vocabulary">
+                            <div class="panel-heading">
+                                <h1 class="panel-title">Vocabulary class</h1>
+                            </div>
+                            <div class="panel-content">
+                                <p>This class é very simple, it only has a constructor of a vocabulary to add to a resource</p>
+                                <p>The contructor sctructure will be showed bellow:</p>
+                                <pre class="brush: js">
+                                    class Vocabulary{
+                                        constructor(prefix,uri){
+                                        this.pairs  = []
+                                        this.prefix = prefix
+                                        this.uri    = uri
+                                        }
+                                    }
+                                </pre>
+                            </div>
+                        </div>
+                        <div class="tab-pane panel panel-default" id="property">
+                            <div class="panel-heading">
+                                <h1 class="panel-title">Property class</h1>
+                            </div>
+                            <div class="panel-content">
+                                <p>This class only has a constructor of a property to add to a resource</p>
+                                <p>The contructor sctructure will be showed bellow:</p>
+                                <pre class="brush: js">
+                                    class Property {
+                                        constructor(propertyName, value, asResource, subPropertyOf){
+                                        this.propertyName   = propertyName
+                                        this.value          = value
+                                        this.asResource     = asResource
+                                        this.subPropertyOf  = subPropertyOf
+                                        }
+                                    }
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="examples" class="tab-pane fade">
+                <div class="container col-lg-offset-1 col-lg-10">
+                    <div class="panel-group" id="collapse">
+                        <br/>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <div>
+                                    <a href="#initial_setting"  class="panel-title" data-toggle="collapse">
+                                        <span class="glyphicon glyphicon-cog"></span>
+                                        Initial setting
+                                    </a>
+                                </div>
+                            </div>
+                            <div id="initial_setting" class="collapse in">
+                                <pre class="brush: js">
+                                    const config = {<br/>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;baseURL: 'http://localhost:8080/',
+                                    &nbsp;&nbsp;&nbsp;&nbsp;workspace: 'workspace-869f1a93'
+                                    }
+                                    const api = new SemanticAPI(config)
+                                </pre>
+                                <div class="panel-content text-format">
+                                    First, to start working with the API, you must assign some configuration values that represent the base URL
+                                    that is the address of the server where the data will be stored and the workspace where it will be stored. And then
+                                    we can create a new <strong>SemanticAPI</strong> object that have functions to manipulate resources and datasets.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <a href="#mount_resource" class="panel-title" data-toggle="collapse">
+                                    <span class="glyphicon glyphicon-edit"></span>
+                                    Mounting a resource
+                                </a>
+                            </div>
+                            <div id="mount_resource" class="collapse">
+                                <pre class="brush: js">
+                                    const resource = new Resource('contactData', 'contact', 'http://contactmail.com#Person')
+                                    resource.addVocabulary('schema', 'http://schema.org/')
+                                    resource.addVocabulary('vcard', 'http://www.w3.org/2006/vcard/ns#')
+                                    property = new Property('hasValue', 'email@email.com', false, 'email')
+                                    resource.addProperty('vcard', property)
+                                    property1 = new Property('client', 'YahooMail', false, 'email')
+                                    resource.addProperty('vcard', property1)
+                                    property2  = new Property('name', 'Lucimar da Silva Souza', false, '')
+                                    resource.addProperty('schema', property2)
+                                    property3 = new Property('about', 'Assunto do email', false, '')
+                                    resource.addProperty('schema', property3)
+                                    property4 = new Property ('telephone', '73991809696', false, '' )
+                                    resource.addProperty('schema', property4)
+                                    property5 = new Property('text', 'Mensagem do e-mail', false, '')
+                                    resource.addProperty('schema', property5)
+                                </pre>
+                                 <div class="panel-content text-format">
+                                    &nbsp;&nbsp;&nbsp;&nbsp;In this example is shown the assembly of a new resource. First is used the function <strong>addVocabulary</strong>, from <strong>Resource</strong>, that have three the parameters: type, prefix and uri respectively
+                                    Then instances of <strong>Vocabulary</strong> object are created.<br/>&nbsp;&nbsp;&nbsp;&nbsp;To create one Vocabulary is necessary to pass his prefix and namespace uri. Later are created new instances of <strong>Property</strong>. Each property has: name, value,
+                                    a boolean that determines if the property will be stored as a Resouce (the uri of the object), and the last parameter determines the parent property. If this parameter is filled means that this property is actualy a property of a
+                                    blank node belonging to the resource. Then is called the function addProperty of <strong>Resource</strong> class passing as parameters the vocab prefix and the property created early.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <a href="#saving_resource" class="panel-title" data-toggle="collapse">
+                                    <span class="glyphicon glyphicon-saved"></span>
+                                    Saving a resource
+                                </a>
+                            </div>
+                            <div id="saving_resource" class="collapse">
+                                <pre class="brush: js">
+                                    api.saveResource(resource)<br/>
+                                    .then(json => alert(`Recurso salvo com sucesso\nSeu workspace é: ${json.workspace}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\nO ID do recurso é: ${json.resourceId}`);)
+                                    .catch(error => alert(`Problem trying save the resource: \n${error.message}`))
+                                </pre>
+                                <div class="panel-content text-format">
+                                    The <strong>saveResource</strong> function saves one resource later that it is mounted. This function belongs to the SemanticAPI class. Is used the object of this class created previously
+                                    to call the function passing as parameter the resource created before. This function returns a promise to treat the cases of success or fail in the operation. In the promise treatment
+                                    events can be captured one object that have two variables: workspace and resourceId.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <a href="#getting_resource" class="panel-title" data-toggle="collapse">
+                                    <span class="glyphicon glyphicon-import"></span>
+                                    Getting a resource
+                                </a>
+                            </div>
+                            <div id="getting_resource" class="collapse">
+                                <pre class="brush: js">
+                                    api.getResource("http://contactmail.com#Person/0d608605-b10b-4833-91d2-00ec1755c335")
+                                    .then(resource => { alert(`O recurso '${resource.about}' foi retornado`)})
+                                    .catch(error => alert(`Problem trying retrieve the resource: ${error.message}`))
+                                </pre>
+                                <div class="panel-content text-format">
+                                    The function <strong>getResource</strong> capture one resource given your uri. This function belongs to the SemanticAPI classe. Is used the object of this class created previously
+                                    to call the function passing as parameter the resource created before. This function returns a promise to treat the cases of success or fail in the operation. The resource searched
+                                    can be captured in the promise treatment event.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <a href="#getting_resources" class="panel-title" data-toggle="collapse">
+                                    <span class="glyphicon glyphicon-import"></span>
+                                    Getting resources
+                                </a>
+                            </div>
+                            <div id="getting_resources" class="collapse">
+                                <pre class="brush: js">
+                                    api.getResources('http://schema.org/name', 'Souza', false)
+                                    .then(resources => console.log(resources))
+                                    .catch(err => alert(`Problem trying deleting the resources: ${err.msg}`))
+                                </pre>
+                                <div class="panel-content text-format">
+                                    The function <strong>getResources</strong> capture the resources that have a given value to one property uri. This function belongs to the SemanticAPI classe.
+                                    Is used the object of this class created previously to call the function passing as parameter the resource created before.
+                                    This function returns a promise to treat the cases of success or fail in the operation. The resources searched can be captured in the promise treatment event.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <a href="#deleting_resource" class="panel-title" data-toggle="collapse">
+                                    <span class="glyphicon glyphicon-trash"></span>
+                                    Deleting a resource
+                                </a>
+                            </div>
+                            <div id="deleting_resource" class="collapse">
+                                <pre class="brush: js">
+                                    api.deleteResource("http://qwer/dc64413c-0597-4c5e-bd3e-f743e7a2b5c7")
+                                    .then(json => alert(`O recurso '${json.resourceId}' foi removido do workspce '${json.workspace}'`))
+                                    .catch(error => alert(`Problem trying deleting the resource: ${error.message}`))
+                                </pre>
+                                <div class="panel-content text-format">
+                                    Given the uri of a resource the function <strong>deleteResource</strong> of the class SemanticAPI it´s able to delete a resource.
+                                    This function returns a promise to treat the cases of success or fail in the operation. In the promise treatment events can be captured
+                                    one object that have two variables: workspace and resourceId.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <a href="#updating_resource" class="panel-title" data-toggle="collapse">
+                                    <span class="glyphicon glyphicon-refresh"></span>
+                                    Updating a resource
+                                </a>
+                            </div>
+                            <div id="updating_resource" class="collapse">
+                                <pre class="brush: js">
+                                    api.getResource()<br/>
+                                    .then(resource => {<br/>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;resource.addVocabulary('vpref', 'http://vocabularyUri#')
+                                    &nbsp;&nbsp;&nbsp;&nbsp;const newProperty = new Property('batery', 'eveready', false, '')
+                                    &nbsp;&nbsp;&nbsp;&nbsp;api.addProperty (resource, 'vpref', newProperty)
+                                    &nbsp;&nbsp;&nbsp;&nbsp;[resource.addProperty ('vpref', newProperty)] //Another way to add a property
+                                    &nbsp;&nbsp;&nbsp;&nbsp;api.commitChanges(res);
+                                    })
+                                    .catch(err => alert(`Error to fetch the resource ${err.msg}`))
+                                </pre>
+                                <div class="panel-content text-format">
+                                    Once captured one specific resource we can edit it adding vocabularies, properties, add a language or the coordinates and time.
+                                    The resource searched can be captured in the promise treatment event. And then can be edited as in example above.
+                                    But to make all changes permanent in dataset should be called the function <strong>commitChanges</strong>, belonging to the <strong>SemanticAPI</strong> class also.
+                                    Should be given one special attention to the function <strong>addProperty</strong> wich in this case belong to SemanticAPI class but exits another
+                                    way to add a new property calling the addProperty of <strong>Resource</strong>. In the first case the difference is that the first parameter should be the resource that
+                                    will have the property added. Finnaly <strong>commitChanges</strong> is called to make the changes permanent in dataset.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <a href="#updating_property" class="panel-title" data-toggle="collapse">
+                                    <span class="glyphicon glyphicon-refresh"></span>
+                                    Updating a property
+                                </a>
+                            </div>
+                            <div id="updating_property" class="collapse">
+                                <pre class="brush: js">
+                                    api.updateProperty('http://contactmail.com#Person/8ff4d538-a20a-4ba9-a51d-554357ecfcad',&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'http://www.w3.org/2006/vcard/ns#client', 'Gmail')
+                                    .then(json => alert(`The resource '${json.resourceId}' was updated in workspce '${json.workspace}'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;specifically in the property '${json.propertyUri}}'`);)
+                                    .catch(error => alert(`Problem trying update the property: ${error.message})
+                                    Another sample:
+                                    api.updateProperty('http://contactmail.com#Person/8ff4d538-a20a-4ba9-a51d-554357ecfcad',&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'http://schema.org/geocoordinates#latitude', '369852147');
+                                </pre>
+                                <div class="panel-content text-format">
+                                    In this example is showed the function <strong>updateProperty</strong> belonging to the <strong>SemanticAPI</strong> class. It update the value of a property of a resource
+                                    This function receive three parameters: resource uri, property uri e the new value to the property. This function return also a promise to treat the cases of success or
+                                    fail in the operation. In the promise treatment events can be captured one object that have three variables: workspace, resourceId and propertyUri.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <a href="#deleting_property" class="panel-title" data-toggle="collapse">
+                                    <span class="glyphicon glyphicon-trash"></span>
+                                    Deleting a property
+                                </a>
+                            </div>
+                            <div id="deleting_property" class="collapse">
+                                <pre class="brush: js">
+                                    api.deleteProperty('http://contactmail.com#Person/affa9dce-7e1a-42ba-8fe8-2b96c40bcb5b','&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'http://schema.org/geocoordinates')
+                                    .then(json => alert(`Was removed the property '${json.propertyUri}','&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;from resource '${json.resourceId}' and workspace '${json.workspace}'`))
+                                    .catch(error => alert(`Problem trying deleting the resource:\n${error.message})
+                                </pre>
+                                <div class="panel-content text-format">
+                                    In this example is showed the function <strong>deleteProperty</strong> belonging to the <strong>SemanticAPI</strong> class. It delete one property of a resource.
+                                    This function receive two parameters: resource uri and property uri. This function returns a promise to treat the cases of success or fail in the operation. In the
+                                    promise treatment events can be captured one object that have three variables: workspace, resourceId and propertyUri.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <a href="#deleting_graph" class="panel-title" data-toggle="collapse">
+                                    <span class="glyphicon glyphicon-trash"></span>
+                                    Deleting a graph
+                                </a>
+                            </div>
+                            <div id="deleting_graph" class="collapse">
+                                <pre class="brush: js">
+                                    api.deleteGraph()
+                                    .then(json => alert(`Workspace '${json.workspace}' removed`))
+                                    .catch(error => alert(`Problem trying deleting the graph:\n${error.message})
+                                </pre>
+                                <div class="panel-content text-format">
+                                    In this example is showed the function <strong>deleteGraph</strong> belonging to the <strong>SemanticAPI</strong> class. It delete a graph.
+                                    This function receive the name os the graph (workspace) that will be deleted.This function returns a promise to treat the cases of success or fail
+                                    in the operation. In the promise treatment events can be captured one object that have the name of workspace related.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <a href="#utilities" class="panel-title" data-toggle="collapse">
+                                    <span class="glyphicon glyphicon-option-horizontal"></span>
+                                    Utilities
+                                </a>
+                            </div>
+                            <div id="utilities" class="collapse">
+                                <pre class="brush: js">
+                                    const resource = new Resource('contactData', 'contact', 'http://contactmail.com#Person')
+                                    resource.addCoordinatesDateTime()
+                                    resource.addLanguage('pt-br')
+                                </pre>
+                                <div class="panel-content text-format">
+                                    The above example shows two functions <strong>addCoordinatesDateTime</strong> and <strong>addLanguage</strong>:<br/>
+                                    The first add optionaly the local, date and hour of where and when is being done the resource.<br/>
+                                    The second add optionaly a property that store the language of the resource added.
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+</div>
+
 </body>
-<script src="js/jquery-3.2.1.min.js"/>
-<script src="js/select2.min.js"/>
-<script src="js/bootstrap.min.js"/>
-<script src="js/index.js"/>
+    <script src="js/jquery-3.2.1.min.js"/>
+    <script src="js/select2.min.js"/>
+    <script src="js/bootstrap.min.js"/>
+    <script src="js/index.js"/>
+    <script src="js/semanticApiInterface.js"></script>
+
+    <script src="js/shCore.js"/>
+    <script src="js/shBrushJScript.js"/>
+    <script type="text/javascript">
+        SyntaxHighlighter.all()
+    </script>
 </html>
 

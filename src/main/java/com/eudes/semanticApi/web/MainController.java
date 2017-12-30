@@ -11,18 +11,7 @@ public class MainController {
         return "index";
     }
 
-    @GetMapping("/createAndSave")
-    public String createSave() {
-        return "createAndSave";
-    }
-
-    @GetMapping ("/more")
-        public String more (){
-        return "more";
-        }
-
-
-    @GetMapping("/semanticApiInterface")
+    @GetMapping("/SemanticApiInterface")
     public String saveFromRDFModel2() {
         return "semanticApiInterface";
     }

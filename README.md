@@ -23,7 +23,7 @@ storage location and returned the name of the address so that new insertions in 
 
 ### Use
 
-Must import client library into JavaScript that is directed to this API. There are methods to add
+It's necessary import client library into JavaScript that is directed to this API. There are methods to add
 vocabularies (addVocabulary), triples (addTriple) and save the contents of the resource (saveResource). There are four
 representation of content:
 
@@ -133,6 +133,7 @@ are useful for facilitating the creation of the resource in an atomic operation.
 ```javascript
    const config = { 
      baseURL: 'http://localhost:8080/'
+     workspace: 'workspace-123456'
    }
    const api = new SemanticAPI(config)
    const resource = new Resource('contactData', 'contact', 'http://contactmail.com#Person')
