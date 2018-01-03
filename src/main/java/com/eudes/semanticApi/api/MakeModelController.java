@@ -351,6 +351,36 @@ public class MakeModelController {
         return ResponseEntity.ok(resource);
     }
 
+    @GetMapping("/getResourcesByType")
+    @ApiOperation(value = "Method responsible for obtaining a resource given the resource type", response = ResponseEntity.class)
+    ResponseEntity<List<ResourceApi>> getResourcesByType(@RequestParam List<String> workspaces, @RequestParam String type){
+        List<ResourceApi> resourcesApi = new ArrayList<>();
+
+        for (String workspace:  workspaces) {
+            graphURI = (workspace.charAt(0) == '/')? workspace : "/" + workspace;
+            Model model = datasetAccessor.getModel(graphURI);
+
+            ResIterator resIter = model.listSubjects();
+            List<Resource> resources = new ArrayList<>();
+            while(resIter.hasNext()){
+                Resource resource = resIter.nextResource();
+                try{
+                    if (resource.getURI().contains("http://"))
+                        resources.add(resource);
+                }catch (Exception e){
+                }
+            }
+            for(Resource resource: resources){
+                if (getResourceTypeName(resource).equals(type)){
+                    ResourceApi r =  getResourceApi(workspace, resource.getURI());
+                    resourcesApi.add(r);
+                }
+            }
+
+        }
+        return ResponseEntity.ok(resourcesApi);
+    }
+
     private ResourceApi getResourceApi(String workspace, String resourceId) {
 
         ResourceApi resource = new ResourceApi();
@@ -390,35 +420,35 @@ public class MakeModelController {
         return resourceNameSize;
     }
 
-//    private void showStatements(StmtIterator iter2) {
-//        while (iter2.hasNext()){
-//            Statement stmt      = iter2.nextStatement();  // get next statement
-//            Resource subject    = stmt.getSubject();     // get the subject
-//            Property predicate  = stmt.getPredicate();   // get the predicate
-//            RDFNode object      = stmt.getObject();      // get the object
-//
-//            System.out.print(subject.toString());
-//            System.out.print(" " + predicate.toString() + " ");
-//            if (object instanceof Resource) {
-//                StmtIterator subiter = ((Resource) object).listProperties();
-//                while(subiter.hasNext()){
-//                    Statement subStmt = subiter.nextStatement();
-//                    Resource subsubject     = subStmt.getSubject();     // get the subject
-//                    Property subpredicate   = subStmt.getPredicate();   // get the predicate
-//                    RDFNode subobject       = subStmt.getObject();      // get the object
-//                    System.out.println(subsubject.toString());
-//                    System.out.print(" " + subpredicate.toString() + " ");
-//                    System.out.print(" \"" + subobject.toString() + "\"");
-//                }
-//                System.out.print(object.toString());
-//            } else {
-//                // object is a literal
-//                System.out.print(" \"" + object.toString() + "\"");
-//            }
-//
-//            System.out.println(" .");
-//        }
-//    }
+    private void showStatements(StmtIterator iter2) {
+        while (iter2.hasNext()){
+            Statement stmt      = iter2.nextStatement();  // get next statement
+            Resource subject    = stmt.getSubject();     // get the subject
+            Property predicate  = stmt.getPredicate();   // get the predicate
+            RDFNode object      = stmt.getObject();      // get the object
+
+            System.out.print(subject.toString());
+            System.out.print(" " + predicate.toString() + " ");
+            if (object instanceof Resource) {
+                StmtIterator subiter = ((Resource) object).listProperties();
+                while(subiter.hasNext()){
+                    Statement subStmt = subiter.nextStatement();
+                    Resource subsubject     = subStmt.getSubject();     // get the subject
+                    Property subpredicate   = subStmt.getPredicate();   // get the predicate
+                    RDFNode subobject       = subStmt.getObject();      // get the object
+                    System.out.println(subsubject.toString());
+                    System.out.print(" " + subpredicate.toString() + " ");
+                    System.out.print(" \"" + subobject.toString() + "\"");
+                }
+                System.out.print(object.toString());
+            } else {
+                // object is a literal
+                System.out.print(" \"" + object.toString() + "\"");
+            }
+
+            System.out.println(" .");
+        }
+    }
 
     private String getResourceTypeName(Resource resource) {
         StmtIterator iter = resource.listProperties();

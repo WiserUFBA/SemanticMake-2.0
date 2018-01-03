@@ -215,6 +215,9 @@
 
                                     //Get the local name of the resource retrieved
                                     getResourceLocalName(resource)
+
+                                    //Get all resources of same given type in all given workpaces
+                                    getResourcesByType(workspaces, type)
                                 </pre>
                             </div>
                         </div>
@@ -426,6 +429,29 @@
                                 </pre>
                                 <div class="panel-content text-format">
                                     The function <strong>getResources</strong> capture the resources that have a given value to one property uri. This function belongs to the SemanticAPI classe.
+                                    Is used the object of this class created previously to call the function passing as parameter the resource created before.
+                                    This function returns a promise to treat the cases of success or fail in the operation. The resources searched can be captured in the promise treatment event.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <a href="#getting_resources_by_type" class="panel-title" data-toggle="collapse">
+                                    <span class="glyphicon glyphicon-import"></span>
+                                    Getting resources by type
+                                </a>
+                            </div>
+                            <div id="getting_resources_by_type" class="collapse">
+                                <pre class="brush: js">
+                                    let workspaces = []
+                                    workspaces.push("/workspace")
+                                    workspaces.push("/workspace-84b4df42")
+                                    api.getResourcesByType(workspaces, "TypeResource")
+                                    .then(resources => console.log(resources))
+                                    .catch(err => 'Erro ao tentar recuperar recursos por tipo')
+                                </pre>
+                                <div class="panel-content text-format">
+                                    The function <strong>getResourcesByType</strong> capture the resources that have a given type. This function belongs to the SemanticAPI classe.
                                     Is used the object of this class created previously to call the function passing as parameter the resource created before.
                                     This function returns a promise to treat the cases of success or fail in the operation. The resources searched can be captured in the promise treatment event.
                                 </div>

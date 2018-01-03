@@ -2,12 +2,13 @@ class Resource {
   
   constructor(name, prefix, uri){
       this.vocabularies   = {}
-      this.name           = name
+      this.type           = name
       this.prefix         = prefix
       this.about          = uri
   }
-  setName(name){
-    this.name = name
+
+  setType(type){
+    this.type = type
   }
 
   setPrefix(prefix){
@@ -23,7 +24,7 @@ class Resource {
   }
 
   addVocabulary(vocabPrefix, uri){
-      const vocab                    = new Vocabulary(vocabPrefix, uri)
+      const vocab = new Vocabulary(vocabPrefix, uri)
       if(!this.vocabExists(vocabPrefix, this.vocabularies))
         this.vocabularies[vocabPrefix] = vocab
   }
@@ -347,16 +348,28 @@ class SemanticAPI{
       } 
     }
 
+    getResourcesByType(workspaces, type){
+
+      for(let i = 0; i < workspaces.length; i++) {
+        if (workspaces[i].startsWith('/')) {
+          //Begin the extraction at position 1, and extract the rest of the string:
+          workspaces[i] = workspaces[i].substring(1) 
+        }
+        if (this.config.baseURL.endsWith('/')){
+          this.config.baseURL = this.config.baseURL.substring(0, (this.config.baseURL.length - 1))
+        }
+      }
+      return this.call(`resources/getResourcesByType?workspaces=${workspaces}&type=${type}`, {method: 'GET'})
+
+    }
+
     commitChanges(resource){
       this.deleteResource(resource.about)         
       .then(() => {
         console.log("Recurso antigo deletado")
-        this.saveResource(resource)
-        console.log("Recurso atualizado salvo")
+        return this.saveResource(resource).then(() => {console.log("Recurso atualizado salvo")})
        })
-      .then(() => {
-        console.log("Pronto")
-       })
+      .then(() => {console.log("Pronto")})
     }
 
     localNameExists(resource){
@@ -376,4 +389,5 @@ class SemanticAPI{
     alreadyExistsInDatabase(resource){
       return localNameExists(resource)
     }
+
   }
