@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8"/>
-    <title>Title</title>
+    <title>SemanticJS Framework</title>
     <link rel="stylesheet" type="text/css" href="css/index.css"/>
     <link rel="stylesheet" type="text/css" href="css/semanticApiInterface.css"/>
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
@@ -14,129 +14,202 @@
 <body>
 
 <div class="container">
-    <h1>Semantic API</h1>
+    <h1>SemanticJS Framework</h1>
     <div>
         <ul class="nav nav-tabs">
-            <li class="active"><a data-toggle="tab" href="#create-and-save">Create and save</a></li>
+            <li class="active"><a data-toggle="tab" href="#what-is-it">What is It</a></li>
+            <li><a data-toggle="tab" href="#create-and-save">API Teaching</a></li>
             <li><a data-toggle="tab" href="#how-it-works">How it works</a></li>
             <li><a data-toggle="tab" href="#examples">Examples</a></li>
         </ul>
         <div class="tab-content">
-            <div id="create-and-save" class="tab-pane fade in active">
-                <div class="container col-lg-offset-2" >
-                    <div class="row">
-                        <h3>Creating and saving an ontology instance</h3>
-                    </div>
-                    <form id="resForm" class="form-inline">
-                        <div class="row">
-                            <h4>Resource</h4>
-                            <div class="form-group">
-                                <div class="input-group">
-                                    <input type="text" class="form-control" id="resPrefix" placeholder="prefixo" data-toggle="tooltip" title="Insira um valor"/>
-                                    <span class="input-group-addon">:</span>
-                                    <input title="Insira um valor" data-toggle="tooltip" type="text" class="form-control" id="resName" placeholder="name (type)"/>
-                                    <span class="input-group-addon">about</span>
-                                    <input style="width: 325px" type="text" class="form-control" id="resAbout" placeholder="http://www.fre.dg/"
-                                           data-toggle="tooltip" title="As URIs devem ser válidas: http://... terminando com / ou #"/>
-                                </div>
-                            </div>
+            <div id="what-is-it" class="tab-pane fade in active">
+                <div class="container col-lg-offset-1 col-lg-10" >
+                    <br/>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h1 class="panel-title">Description</h1>
                         </div>
-                        <div class="row">
-                            <h4>Vocabularies</h4>
-                            <div class="form-group">
-                                <div class="input-group">
-                                    <span class="input-group-addon">xmlns:</span>
-                                    <!--A tootip de aviso para selecionar um valor no momento da validação não está aparecendo quando não é selecionado um valor-->
-                                    <select class="form-control" id="vocabPrefix">
-                                        <option value="" title="">Select a vocabulry</option>
-                                        <option value="cc">Creative Commons (CC)</option>
-                                        <option value="dcat">Data Catalog (DCAT)</option>
-                                        <option value="dce">Dublin Core Metadata Element Set (DCE)</option>
-                                        <option value="dcterms">Dublin Core Metadata Iniative Terms (DCTERMS)</option>
-                                        <option value="event">Event</option>
-                                        <option value="foaf">FOAF</option>
-                                        <option value="prov">PROV</option>
-                                        <option value="vcard">VCARD</option>
-                                        <option value="schema">Shema.org</option>
-                                        <option value="skos">SKOS</option>
-                                        <option value="geo">GEO</option>
-                                    </select>
-                                    <span class="input-group-addon">=</span>
-                                    <input readonly="readonly" style="width: 300px" type="text" class="form-control" id="vocabUri" placeholder="http://www.foo.tz/"
-                                           data-toggle="tooltip" title="As URIs devem ser válidas: http://... terminando com / ou #" tabindex="-1"/>
-                                    <span class="input-group-btn">
-                        <button type="button" id="addVocab" class="btn btn-secondary">
-                          <span class="glyphicon glyphicon-plus"/>
-                        </button>
-                    </span>
+                        <div class="panel-body">
+                            <center>
+                                <h2>A easy way to make semantic data trough Javascript</h2>
+                                <h4>Are four elements to help you in this activitie</h4>
+                            </center>
+                            <div class="row">
+                                <div class="col-xs-6 col-md-3">
+                                    <div class="thumbnail">
+                                        <img src="images/api.png" width="170"/>
+                                        <div class="caption">
+                                            <br/><br/>
+                                            <h3>Semantic API</h3>
+                                            <p>Tool focused mainly in authoring and publishing of linked data.
+                                                Has operations of storage and update but besides these it has functions of consultations and exclusion in triple stores</p>
+                                            <br/><br/><br/><br/><br/>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                        <br/>
-                        <div class="row">
-                            <div>
-                                <span style="font-size:18px">Properties</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <input type="checkbox" id="propAsResource" value="true" title="Guarda a URI de outro recurso" data-toggle="tooltip"/> As a resource &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <input type="checkbox" id="hasSubproperty" title="Insere um Blank Node no recurso" data-toggle="tooltip" /> Has subproperties
-                            </div>
-                            <div class="form-group">
-                                <div class="input-group">
-                                    <select data-toggle="tooltip" title="Selecione um valor" placeholder="prefix" class="form-control" style="width: 150px" id="propPrefix"></select>
+                                <div class="col-xs-6 col-md-3">
+                                    <div class="thumbnail">
+                                        <img src="images/teach.jpg" width="170"/>
+                                        <div class="caption">
+                                            <h3>Teaching application</h3>
+                                            <p>this application helps you understand how the API works.
+                                                This application helps to understand how the API works. showing the assembly of a new resource, showing at the same time both
+                                                the resource being assembled and the code necessary to persist the data in the presented form </p>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="input-group">
-                                    <span class="input-group-addon">:</span>
-                                    <select data-toggle="tooltip" class="form-control select2-single" id="propName" style="width:290px"></select>
+                                <div class="col-xs-6 col-md-3">
+                                    <div class="thumbnail">
+                                        <img src="images/documentation.png" width="130"/>
+                                        <div class="caption">
+                                            <br/><br/>
+                                            <h3>Documentation</h3>
+                                            <p>The server side of api was done in java and has REST architecture. This is useful in implementation through collaborative work</p>
+                                            <br/><br/><br/><br/><br/><br/><br/>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="input-group" id="propValueDiv">
-                                <span class="input-group-addon">=</span>
-                                <input type="text" class="form-control" id="propValue" placeholder="value" data-toggle="tooltip" style="width:250px"/>
-                                <div class="input-group-btn">
-                                    <button type="button" id="addProp" class="btn btn-secondary">
-                                        <span class="glyphicon glyphicon-plus"></span>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <br/>
-                        <div class="row" id="subpropDiv" style="display: none">
-                            <div class="form-group">
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id="subpropAsResource" value="true" title="Guarda a URI de outro recurso" data-toggle="tooltip"/> Como um recurso &nbsp;&nbsp;&nbsp;&nbsp;
-                                <div class="input-group">
-                                    <select data-toggle="tooltip" class="form-control select2-single" id="subpropName" style="width:290px"></select>
-                                </div>
-                                <div class = "input-group">
-                                    <span class="input-group-addon">=</span>
-                                    <input type="text" class="form-control" id="subpropValue" style="width:250px" placeholder="valor" data-toggle="tooltip" />
-                                    <div class="input-group-btn">
-                                        <button type="button" id="addSubprop" class="btn btn-secondary">
-                                            <span class="glyphicon glyphicon-plus"></span>
-                                        </button>
+                                <div class="col-xs-6 col-md-3">
+                                    <div class="thumbnail">
+                                        <img src="images/testing.png" width="120"/>
+                                        <div class="caption">
+                                            <h3>API test application </h3>
+                                            <p>There is also an application that tests all server-side methods. There are input fields to receive the data.
+                                                Responses are returned according to the data passed. Click <a href="/swagger-ui.html">here</a> to open the application</p>
+                                            <br/><br/><br/>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="form-group">
-                                <div class="input-group">
-                                    <button type="button" id="save" class="btn btn-secondary btn-lg">
-                                        <span class="glyphicon glyphicon-saved"></span>
-                                        Save
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                    <div class="row">
-                        <pre id="result" class="col-md-8">Output format
-                            <br/><br/>
-                        </pre>
                     </div>
+                </div>
+            </div>
+            <div id="create-and-save" class="tab-pane fade">
+                <div class="container col-lg-offset-1 col-lg-10" >
                     <br/>
-                    <div class="row">
-                        <pre id="calledFunctions" class="col-md-8">Called functions
-                            <br/><br/>
-                        </pre>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h1 class="panel-title">Creating and saving an ontology instance</h1>
+                        </div>
+                        <div class="panel-body col-lg-offset-1">
+                                <form id="resForm" class="form-inline">
+                                    <div class="row">
+                                        <h4>Resource</h4>
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" id="resPrefix" placeholder="prefixo" data-toggle="tooltip" title="Insira um valor"/>
+                                                <span class="input-group-addon">:</span>
+                                                <input title="Insira um valor" data-toggle="tooltip" type="text" class="form-control" id="resName" placeholder="name (type)"/>
+                                                <span class="input-group-addon">about</span>
+                                                <input style="width: 285px" type="text" class="form-control" id="resAbout" placeholder="http://www.fre.dg/"
+                                                       data-toggle="tooltip" title="As URIs devem ser válidas: http://... terminando com / ou #"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <h4>Vocabularies</h4>
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <span class="input-group-addon">xmlns:</span>
+                                                <!--A tootip de aviso para selecionar um valor no momento da validação não está aparecendo quando não é selecionado um valor-->
+                                                <select class="form-control" id="vocabPrefix">
+                                                    <option value="" title="">Select a vocabulry</option>
+                                                    <option value="cc">Creative Commons (CC)</option>
+                                                    <option value="dcat">Data Catalog (DCAT)</option>
+                                                    <option value="dce">Dublin Core Metadata Element Set (DCE)</option>
+                                                    <option value="dcterms">Dublin Core Metadata Iniative Terms (DCTERMS)</option>
+                                                    <option value="event">Event</option>
+                                                    <option value="foaf">FOAF</option>
+                                                    <option value="prov">PROV</option>
+                                                    <option value="vcard">VCARD</option>
+                                                    <option value="schema">Shema.org</option>
+                                                    <option value="skos">SKOS</option>
+                                                    <option value="geo">GEO</option>
+                                                </select>
+                                                <span class="input-group-addon">=</span>
+                                                <input readonly="readonly" style="width: 270px" type="text" class="form-control" id="vocabUri" placeholder="http://www.foo.tz/"
+                                                       data-toggle="tooltip" title="As URIs devem ser válidas: http://... terminando com / ou #" tabindex="-1"/>
+                                                <span class="input-group-btn">
+                                                <button type="button" id="addVocab" class="btn btn-secondary">
+                                                  <span class="glyphicon glyphicon-plus"/>
+                                                </button>
+                                            </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br/>
+                                    <div class="row">
+                                        <div>
+                                            <span style="font-size:18px">Properties</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            <input type="checkbox" id="propAsResource" value="true" title="Guarda a URI de outro recurso" data-toggle="tooltip"/> As a resource&nbsp;&nbsp;
+                                            <input type="checkbox" id="hasSubproperty" title="Insere um Blank Node no recurso" data-toggle="tooltip" /> Has subproperties&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            <input type="checkbox" id="addDateTime" title="Adiciona a data e a hora da inserção do resurso" data-toggle="tooltip" /> addDateTime&nbsp;&nbsp;
+                                            <input type="checkbox" id="addCoordinates" title="Adiciona a data e a hora da inserção do resurso" data-toggle="tooltip" /> addCoordinates&nbsp;&nbsp;
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <select data-toggle="tooltip" title="Selecione um valor" placeholder="prefix" class="form-control" style="width: 150px" id="propPrefix"></select>
+                                            </div>
+                                            <div class="input-group">
+                                                <span class="input-group-addon">:</span>
+                                                <select data-toggle="tooltip" class="form-control select2-single" id="propName" style="width:260px"></select>
+                                            </div>
+                                        </div>
+                                        <div class="input-group" id="propValueDiv">
+                                            <span class="input-group-addon">=</span>
+                                            <input type="text" class="form-control" id="propValue" placeholder="value" data-toggle="tooltip" style="width:250px"/>
+                                            <div class="input-group-btn">
+                                                <button type="button" id="addProp" class="btn btn-secondary">
+                                                    <span class="glyphicon glyphicon-plus"></span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br/>
+                                    <div class="row" id="subpropDiv" style="display: none">
+                                        <div class="form-group">
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id="subpropAsResource" value="true" title="Guarda a URI de outro recurso" data-toggle="tooltip"/> Como um recurso &nbsp;&nbsp;&nbsp;&nbsp;
+                                            <div class="input-group">
+                                                <select data-toggle="tooltip" class="form-control select2-single" id="subpropName" style="width:260px"></select>
+                                            </div>
+                                            <div class = "input-group">
+                                                <span class="input-group-addon">=</span>
+                                                <input type="text" class="form-control" id="subpropValue" style="width:250px" placeholder="valor" data-toggle="tooltip" />
+                                                <div class="input-group-btn">
+                                                    <button type="button" id="addSubprop" class="btn btn-secondary">
+                                                        <span class="glyphicon glyphicon-plus"></span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <button type="button" id="save" class="btn btn-secondary btn-lg">
+                                                    <span class="glyphicon glyphicon-saved"></span>
+                                                    Save
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                                <div class="row">
+                                    <pre id="result" class="col-md-11">Output format
+                                        <br/><br/>
+                                    </pre>
+                                </div>
+                                <br/>
+                                <div class="row">
+                                    <pre id="calledFunctions" class="col-md-11">Called functions
+                                        <br/><br/>
+                                    </pre>
+                                </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -382,7 +455,8 @@
                             </div>
                             <div id="saving_resource" class="collapse">
                                 <pre class="brush: js">
-                                    api.saveResource(resource)<br/>
+                                    const resourceToSend = resource.getResourceToSend()
+                                    api.saveResource(resource)
                                     .then(json => alert(`Recurso salvo com sucesso\nSeu workspace é: ${json.workspace}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\nO ID do recurso é: ${json.resourceId}`);)
                                     .catch(error => alert(`Problem trying save the resource: \n${error.message}`))
@@ -486,8 +560,8 @@
                             </div>
                             <div id="updating_resource" class="collapse">
                                 <pre class="brush: js">
-                                    api.getResource()<br/>
-                                    .then(resource => {<br/>
+                                    api.getResource("http://contactmail.com#Person/b1a43405-0f58-4971-b29d-6a01f588cb81")
+                                    .then(resource => {
                                     &nbsp;&nbsp;&nbsp;&nbsp;resource.addVocabulary('vpref', 'http://vocabularyUri#')
                                     &nbsp;&nbsp;&nbsp;&nbsp;const newProperty = new Property('batery', 'eveready', false, '')
                                     &nbsp;&nbsp;&nbsp;&nbsp;api.addProperty (resource, 'vpref', newProperty)
@@ -520,6 +594,7 @@
                                     .then(json => alert(`The resource '${json.resourceId}' was updated in workspce '${json.workspace}'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;specifically in the property '${json.propertyUri}}'`);)
                                     .catch(error => alert(`Problem trying update the property: ${error.message})
+
                                     Another sample:
                                     api.updateProperty('http://contactmail.com#Person/8ff4d538-a20a-4ba9-a51d-554357ecfcad',&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'http://schema.org/geocoordinates#latitude', '369852147');
@@ -562,6 +637,13 @@
                             </div>
                             <div id="deleting_graph" class="collapse">
                                 <pre class="brush: js">
+                                    const config = {
+                                        baseURL: 	'http://localhost:8080/',
+                                        workspace:	'workspace-2791660b'
+                                    }
+
+                                    const api = new SemanticAPI(config)
+
                                     api.deleteGraph()
                                     .then(json => alert(`Workspace '${json.workspace}' removed`))
                                     .catch(error => alert(`Problem trying deleting the graph:\n${error.message})
@@ -583,13 +665,29 @@
                             <div id="utilities" class="collapse">
                                 <pre class="brush: js">
                                     const resource = new Resource('contactData', 'contact', 'http://contactmail.com#Person')
-                                    resource.addCoordinatesDateTime()
-                                    resource.addLanguage('pt-br')
+                                    resource.addDateTime()
+                                    api.addCoordinatesAndSave(resource)
+                                    api.setTripleStoreAddress(config)
+
                                 </pre>
                                 <div class="panel-content text-format">
-                                    The above example shows two functions <strong>addCoordinatesDateTime</strong> and <strong>addLanguage</strong>:<br/>
-                                    The first add optionaly the local, date and hour of where and when is being done the resource.<br/>
-                                    The second add optionaly a property that store the language of the resource added.
+                                    The above example shows two functions <strong>addDateTime</strong> and <strong>addCoordinatesAndSave</strong>:<br/>
+                                    The first add optionaly the date and hour of when is being done the resource.<br/>
+                                    The second add optionaly the latitude and longitude properties to the resource. Whenever this operation is called consequently it saves the resource consecutively.<br/><br/>
+                                    Below we will see an example of the last function, <strong>setTripleStoreAddress</strong>. It assigns a new address to the triple store if you do not want to use the API service
+
+                                <pre class="brush: js">
+                                    const config = {
+                                        baseURL: 		'http://localhost:8080/',
+                                        workspace:		'content',
+                                        datasetAddress: 'http://127.0.0.1:3030',
+                                        datasetName:	'SemanticContent2'
+                                    }
+
+                                    const api = new SemanticAPI(config)
+                                    api.setTripleStoreAddress(config)
+                                </pre>
+
                                 </div>
                             </div>
                         </div>

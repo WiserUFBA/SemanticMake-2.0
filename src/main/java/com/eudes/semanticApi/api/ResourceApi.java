@@ -26,7 +26,7 @@ public class ResourceApi {
      */
     private String prefix;
     /**
-     * Created resource name
+     * Created resource type
      */
     private String name;
     /**

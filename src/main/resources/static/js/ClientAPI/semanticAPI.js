@@ -2,7 +2,7 @@ class Resource {
   
   constructor(name, prefix, uri){
       this.vocabularies   = {}
-      this.type           = name
+      this.name           = name
       this.prefix         = prefix
       this.about          = uri
   }
@@ -78,23 +78,12 @@ class Resource {
       this.vocabularies['dcterms'].pairs.push(lang)
   }
 
-  addCoordinatesDateTime(){
-      if(!this.vocabularySchemaExists()){
-        const vocab = new Vocabulary('schema', 'http://schema.org') 
-        this.vocabularies['schema'] = vocab 
-      }
+  addDateTime(){
       if(!this.vocabularyIcalExists()){
         const vocab = new Vocabulary('ical', 'http://www.w3.org/2002/12/cal/ical#')
         this.vocabularies['ical'] = vocab 
       }
-      const locale = { propertyName: 'geocoordinates', value: '', asResource: true, subPropertyOf:'' }
-      this.vocabularies['schema'].pairs.push(locale)
-      const position = this.getPosition()
-      const latitude = { propertyName: 'latitude', value: position.latitude, asResource: false, subPropertyOf:'geocoordinates' }
-      this.vocabularies['schema'].pairs.push(latitude)
-      const longitude = { propertyName: 'longitude', value: position.longitude, asResource: false, subPropertyOf:'geocoordinates' }
-      this.vocabularies['schema'].pairs.push(longitude)
-      
+
       const now = new Date()
       const dateTimeCreated = `${now.getFullYear()}/${now.getMonth()}/${now.getDay()} ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`
       const created = { propertyName: 'created', value: dateTimeCreated, asResource: false, subPropertyOf:'' }
@@ -121,24 +110,6 @@ class Resource {
           return true;
       return false;
     }
-
-    getPosition(){
-      // Verifica se o browser do usuario tem suporte a geolocation
-      const p = {
-        latitude: '',
-        longitude: ''
-      }
-      if ( navigator.geolocation ){
-          navigator.geolocation.getCurrentPosition( 
-            function( position ){
-              p.latitude  = position.coords.latitude
-              p.longitude = position.coords.longitude  
-            }
-          );
-      }
-      return p
-    }    
-      
 }
 
 class Vocabulary{
@@ -148,7 +119,6 @@ class Vocabulary{
     this.prefix = prefix
     this.uri    = uri
     }
-
 }
 
 class Property {
@@ -170,11 +140,14 @@ class SemanticAPI{
     */
     constructor(config){
       if (!config || !config.baseURL) {
-        throw Error('baseURL nao foi informada')
+        throw Error('baseURL não foi informada')
       }
-      if (!config.workspace){
-        throw Error('O workspace não foi informado')
-      }
+      if(config.datasetAddress === undefined || config.datasetAddress === null || config.datasetAddress === '')
+        config.datasetAddress = 'http://localhost:3030'
+      if(config.datasetName === undefined || config.datasetName === null || config.datasetName === '')
+      config.datasetName = 'SemanticContent'
+      if(config.workspace === undefined || config.workspace === null || config.workspace === '')
+        config.workspace = 'empty'
       this.config = config
       // Parâmetros comuns de todas as requisições
       // Poderia ser passado no config também
@@ -200,7 +173,7 @@ class SemanticAPI{
         this.config.baseURL = this.config.baseURL.substring(0, (this.config.baseURL.length - 1))
       }
       return fetch(`${this.config.baseURL}/${endpoint}`, Object.assign({}, this.defaultParams, params))
-      .then( response => response.json() )
+      .then((response) => { response.json() })
     }
 
     /**
@@ -223,6 +196,10 @@ class SemanticAPI{
     saveResource(resource){
       const resourceToSend = resource.getResourceToSend()
       return this.post(`/resources/saveResource/${this.config.workspace}`, resourceToSend)
+    }
+
+    setTripleStoreAddress(config){
+      return this.post(`/resources/setTripleStoreAddress?datasetAddress=${config.datasetAddress}&datasetName=${config.datasetName}`)
     }
 
     /**
@@ -390,4 +367,32 @@ class SemanticAPI{
       return localNameExists(resource)
     }
 
-  }
+    addCoordinatesAndSave(resource){
+      //Variável necessária pra usar a referência correta da instância do objeto SemanticAPI
+      let api = this;
+      // Verifica se o browser do usuario tem suporte a geolocation
+      if ( navigator.geolocation ){
+          navigator.geolocation.getCurrentPosition( 
+            function(position){
+              if(!resource.vocabularySchemaExists()){
+                const vocab = new Vocabulary('schema', 'http://schema.org')
+                resource.vocabularies['schema'] = vocab
+              }
+              const locale = { propertyName: 'geocoordinates', value: '', asResource: true, subPropertyOf:'' }
+              resource.vocabularies['schema'].pairs.push(locale)
+              
+              const latitude = { propertyName: 'latitude', value: position.coords.latitude, asResource: false, subPropertyOf:'geocoordinates' }
+              resource.vocabularies['schema'].pairs.push(latitude)
+              const longitude = { propertyName: 'longitude', value: position.coords.longitude, asResource: false, subPropertyOf:'geocoordinates' }
+              resource.vocabularies['schema'].pairs.push(longitude)
+              console.log(resource)
+              return api.saveResource(resource).then((response) => { 
+                if ((api.config.workspace === undefined || api.config.workspace === null || api.config.workspace === ''))
+                  console.log(`O recurso salvo automaticamente em ${response.json().workspace} pois não o workspace não foi definido. Guarde o nome deste workspace para futuras gravações`)
+                console.log('Coodenadas adicionadas')
+              })
+            }
+          );
+      }
+    }
+}

@@ -32,6 +32,9 @@
     const subpropAsResourceCheck  = document.getElementById('subpropAsResource')
     const hasSubpropCheck         = document.getElementById('hasSubproperty')
 
+    const addDateTimeCheck          = document.getElementById('addDateTime')
+    const addCoordinatescheck       = document.getElementById('addCoordinates')
+    const serverApplicationAddress  = document.getElementById('serverApplicationAddress')
 
     const vocabs = {
       cc: 'http://creativecommons.org/ns#',
@@ -198,6 +201,7 @@
       placeholder: 'Enter the initials of the subproperty',
       theme: 'bootstrap'
     });
+
 
     //Trata o evento de clique do botão de adicionar propriedades 'addPropButton'
     addPropButton.onclick = (evt) => {
@@ -400,15 +404,26 @@
       Object.assign(resource, { prefix, name, about })
     }
 
+    
     //Envia o recurso
     function sendResource(workspace) {
-      //Adiciona local, data e hora de salvamento do recurso
-      addCoordinatesDateTime()
-      //Faz uma cópia do resultado e atrabui à variávek resToShow
-      const resToSend = getResourceToSend()
-      //Envia o conteúdo (cópia do recurso) ao servidor
+      //Adiciona data e hora de salvamento do recurso
+      if(addDateTimeCheck.checked)
+        addDateTime()      
       
-      fetch(`/resources/saveResource/${workspace}`, {
+      //Adiciona coordenadas
+      if(addCoordinatescheck.checked){
+        addCoordinatesAndSave(workspace)
+      } else{
+        //Faz uma cópia do resultado e atrabui à variável resToSend
+        const resToSend = getResourceToSend()
+        //Envia o conteúdo (cópia do recurso) ao servidor
+        fetchSendResource(workspace, resToSend)
+      }
+    }
+
+    function fetchSendResource(workspace, resToSend){
+      return fetch(`/resources/saveResource/${workspace}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json; charset=utf-8'},
         body: JSON.stringify(resToSend)
@@ -420,32 +435,50 @@
       //Este bloco trata o evento da conexão estar indisponível
       }).catch(function(error) {
           result.innerHTML += `<br/><br/><h3>Connection problem when trying to save the ontology<h3><br/><br/>${error.message}`
-        });
+      });
     }
 
-    function addCoordinatesDateTime(){
-      if(!vocabularySchemaExists()){
-        const vocab = { prefix: 'schema', uri: 'http://schema.org', pairs: [] }
-        resource.vocabularies['schema'] = vocab 
-      }
+    function addDateTime() {
       if(!vocabularyIcalExists()){
         const vocab = { prefix: 'ical', uri: 'http://www.w3.org/2002/12/cal/ical#', pairs: [] }
         resource.vocabularies['ical'] = vocab 
       }
-      const locale = { propertyName: 'geocoordinates', value: '', asResource: true, subPropertyOf:'' }
-      resource.vocabularies['schema'].pairs.push(locale)
-      const position = getPosition()
-      const latitude = { propertyName: 'latitude', value: position.latitude, asResource: false, subPropertyOf:'geocoordinates' }
-      resource.vocabularies['schema'].pairs.push(latitude)
-      const longitude = { propertyName: 'longitude', value: position.longitude, asResource: false, subPropertyOf:'geocoordinates' }
-      resource.vocabularies['schema'].pairs.push(longitude)
-      
       now = new Date()
       const dateTimeCreated = `${now.getFullYear()}/${now.getMonth()}/${now.getDay()} ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`
       const created = { propertyName: 'created', value: dateTimeCreated, asResource: false, subPropertyOf:'' }
       resource.vocabularies['ical'].pairs.push(created)    
     }
-  
+    //Trecho para pegar a geolocalização
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    function addCoordinatesAndSave(workspace){
+      //Verifica se o navegador tem suporte a geolocalização
+      if (navigator.geolocation)
+        navigator.geolocation.getCurrentPosition(function (position){
+            if(!vocabularySchemaExists()){
+              const vocab = { prefix: 'schema', uri: 'http://schema.org', pairs: [] }
+              resource.vocabularies['schema'] = vocab 
+            }
+            const locale = { propertyName: 'geocoordinates', value: '', asResource: true, subPropertyOf:'' }
+            resource.vocabularies['schema'].pairs.push(locale)
+      
+            const latitude = { propertyName: 'latitude', value: position.coords.latitude, asResource: false, subPropertyOf:'geocoordinates' }
+            resource.vocabularies['schema'].pairs.push(latitude)
+            const longitude = { propertyName: 'longitude', value: position.coords.longitude, asResource: false, subPropertyOf:'geocoordinates' }
+            resource.vocabularies['schema'].pairs.push(longitude)
+      
+            //Faz uma cópia do resultado e atrabui à variável resToSend
+            const resToSend = getResourceToSend()
+            console.log(resToSend)
+            //Envia o conteúdo (cópia do recurso) ao servidor
+            fetchSendResource(workspace, resToSend)
+          })
+      else
+        console.log("Browser doesn't support geolocation!");
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     function vocabularySchemaExists(){
       for (let vocabulary of Object.values(resource.vocabularies))
         if (vocabulary.prefix === 'schema')
@@ -460,30 +493,12 @@
       return false;
     }
     
-    function getPosition(){
-      // Verifica se o browser do usuario tem suporte a geolocation
-      const p = {
-        latitude: '',
-        longitude: ''
-      }
-      if ( navigator.geolocation ){
-          navigator.geolocation.getCurrentPosition( 
-            function( position ){
-              p.latitude  = position.coords.latitude
-              p.longitude = position.coords.longitude  
-            }
-          );
-      }
-      return p
-    }
-
     //Faz um recurso para ser enviado
     function getResourceToSend() {
       const vocabularies      = Object.values(resource.vocabularies)
       const resToSend         = Object.assign({}, resource)
       resToSend.vocabularies  = vocabularies
       return resToSend
-
     }
 
     //Função para atualizar a lista de prefixos do campo select de prefixos dos vocabulários usados
@@ -646,9 +661,8 @@
       const res         = getResourceToSend()
       const props       = getProps(res.vocabularies)
       let vocabularies  = ''
-      let save          = ''
-      
-      RDFprops = []
+      let utilities     = []
+      RDFprops          = []
 
       for (let vocab of res.vocabularies){
         vocabularies += `r.addVocabulary("${vocab.prefix}", "${vocab.uri}")`
@@ -660,13 +674,24 @@
         } 
       }
       let properties = RDFprops.join('\n ')
-      if (evt.target === saveButton) 
-        save =  'r.sendResource(\"workspace\")'
+      let end = ''
+      if (evt.target === saveButton){
+        let dateTime = (addDateTimeCheck.checked)? 'r.addDateTime()' :'r.addDateTime(\"workspace\")'
+        if(addDateTimeCheck.checked){
+          utilities.push('r.addDateTime()')
+        }
+        if(addCoordinatescheck.checked){
+          utilities.push('r.addCoordinatesAndSave()')
+        }else{
+          utilities.push('r.sendResource(\"workspace\")')
+        }
+        end = utilities.join('\n ')
+      }
       let out = `Called functions (example):
  let r = new Resource("${res.name}", "${res.prefix}", "${res.about}")
  ${vocabularies}
  ${properties}
- ${save}`
+ ${end}`
       calledFunctions.innerText = out
     }
 }()

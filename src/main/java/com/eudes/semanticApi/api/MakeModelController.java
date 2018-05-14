@@ -49,6 +49,21 @@ public class MakeModelController {
         datasetAccessor = DatasetAccessorFactory.createHTTP(fusekiURI);
     }
 
+
+    /**
+     * Method responsible for assign the triple store address e the dataset name
+     * @param datasetAddress The triple store address
+     * @param datasetName The dataset name
+     * @return This method returns true
+     */
+    @PostMapping("/setTripleStoreAddress")
+    @ApiOperation(value = "Method for assign the triple store address", response = ResponseEntity.class)
+    public ResponseEntity setTripleStoreAddres(@RequestParam String datasetAddress, @RequestParam String datasetName){
+        fusekiURI = datasetAddress + "/" + datasetName;
+        System.out.print("Mudou o endereço da triple store para " + fusekiURI);
+        return ResponseEntity.ok(true);
+    }
+
     /**
      * Method responsible for receiving and saving the resource passed in the client defined ontology
      * <br> The resource is passed in JSON format
@@ -79,7 +94,7 @@ public class MakeModelController {
             if(datasetAccessor.getModel(graphURI) == null)
                 graphURI = "/workspace-" + UUID.randomUUID().toString().substring(0,8);
         }catch (Exception e){
-
+            System.out.println("Não conseguiu recuperar o modelo com o workspace passado");
         }
 
         datasetAccessor.add(graphURI, model);
@@ -353,7 +368,7 @@ public class MakeModelController {
 
     @GetMapping("/getResourcesByType")
     @ApiOperation(value = "Method responsible for obtaining a resource given the resource type", response = ResponseEntity.class)
-    ResponseEntity<List<ResourceApi>> getResourcesByType(@RequestParam List<String> workspaces, @RequestParam String type){
+    public ResponseEntity<List<ResourceApi>> getResourcesByType(@RequestParam List<String> workspaces, @RequestParam String type){
         List<ResourceApi> resourcesApi = new ArrayList<>();
 
         for (String workspace:  workspaces) {
