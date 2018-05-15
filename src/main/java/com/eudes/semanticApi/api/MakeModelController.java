@@ -52,9 +52,9 @@ public class MakeModelController {
 
     /**
      * Method responsible for assign the triple store address e the dataset name
-     * @param datasetAddress The triple store address
-     * @param datasetName The dataset name
-     * @return This method returns true
+     * @param datasetAddress String to hold the triple store address
+     * @param datasetName String to hold the dataset name
+     * @return Returns true
      */
     @PostMapping("/setTripleStoreAddress")
     @ApiOperation(value = "Method for assign the triple store address", response = ResponseEntity.class)
@@ -68,7 +68,8 @@ public class MakeModelController {
      * Method responsible for receiving and saving the resource passed in the client defined ontology
      * <br> The resource is passed in JSON format
      * @param resource Resource passed by client
-     * @return Returns an HTTP code code with the status of the operation
+     * @param workspace Returns a ResponseEntity containing a APIResponse
+     * @return
      */
     @PostMapping("/saveResource/{workspace}")
     @ApiOperation(value = "Method responsible to save a new resource", response = ResponseEntity.class)
@@ -103,9 +104,9 @@ public class MakeModelController {
 
     /**
      * Method responisble for delete one especified resouce
-     * @param workspace String that contains the name of the workspace where the resource is
-     * @param resourceId String that contains the ID of the resource to be deleted
-     * @return Returns an HTTP code code with the status of the operation
+     * @param workspace String to hold the name of the workspace where the resource is
+     * @param resourceId String to hold the ID of the resource to be deleted
+     * @return Returns a ResponseEntity containing a APIResponse
      */
     @DeleteMapping("/deleteResource/{workspace}")
     @ApiOperation(value = "Method responsible to delete a resource given the resource uri", response = ResponseEntity.class)
@@ -134,9 +135,9 @@ public class MakeModelController {
     }
 
     /**
-     *
-     * @param workspace String that contains the name of the workspace to be deleted
-     * @return Returns an HTTP code code with the status of the operation
+     * Method responsible for to delete one specifc graph given his name that we call workspace
+     * @param workspace String to hold the name of the workspace to be deleted
+     * @return Returns a ResponseEntity containing a APIResponse
      */
     @DeleteMapping("/deleteGraph/{workspace}")
     @ApiOperation(value = "Method responsible to delete a especifc graph given the graph name", response = ResponseEntity.class)
@@ -149,6 +150,13 @@ public class MakeModelController {
         return ResponseEntity.ok(new APIResponse(graphURI, null, null));
     }
 
+    /**
+     * Method responsible for to delete one specifc property in a resource
+     * @param workspace String to hold the graph name that contains the resource
+     * @param resourceId String to hold the resource URI
+     * @param propertyUri String to hold the property URI that will be deleted
+     * @return Returns a ResponseEntity containing a APIResponse
+     */
     @DeleteMapping("/deleteProperty/{workspace}")
     @ApiOperation(value = "Method responsible to delete a especific property of a resource given the property uri", response = ResponseEntity.class)
     public  ResponseEntity deleteProperty(@PathVariable String workspace, @RequestParam String resourceId, @RequestParam String propertyUri){
@@ -205,6 +213,14 @@ public class MakeModelController {
         return ResponseEntity.ok( new APIResponse(graphURI, resourceId, propertyUri));
     }
 
+    /**
+     * Method responsible for to update one specifc property in a resource
+     * @param workspace String to hold the graph name that contains the resource
+     * @param resourceId String to hold the resource URI
+     * @param propertyUri String to hold the property that will be deleted
+     * @param newValue String to hold the new value to assign to the property
+     * @return Returns a ResponseEntity containing a APIResponse
+     */
     @PutMapping("/updateProperty/{workspace}")
     @ApiOperation(value = "Method responsible to update a property of a resource", response = ResponseEntity.class)
     public ResponseEntity updateProperty(@PathVariable String workspace, @RequestParam String resourceId, @RequestParam String propertyUri, @RequestParam String newValue){
@@ -279,13 +295,13 @@ public class MakeModelController {
     }
 
     /**
-     * Método que retorna uma lista de recursoso dada a URI de uma propriedade e seu respectivo valor
-     * @param workspace String com o workspace que será passado
-     * @param propertyUri String com a URI da propriedade
-     * @param value String com o valor da propriedade
-     * @param isExactly Booleano usado para determinar se o valor passado deve ser considerado exatamente como foi passado
-     *                  ou se deve apenas conter o valor passado na propriedade
-     * @return Lista de recursos
+     * Method that retorns a list of resources given one URI of hid property and his respective value
+     * @param workspace String to hold the graph name that will be passed
+     * @param propertyUri String to hold the property URI
+     * @param value String to hold the property value
+     * @param isExactly Boolean usedo to determine if the passed value must be considered exactly like was passed
+     *                  or if must only to contain the value passed on the property
+     * @return Returns a ResponseEntity containing a list of resources
      */
     @GetMapping("/getResources/{workspace}")
     @ApiOperation(value = "Method responsible to get all resources that have one value of a property", response = ResponseEntity.class)
@@ -357,8 +373,14 @@ public class MakeModelController {
         return ResponseEntity.ok(optGroupMap.values());
     }
 
+    /**
+     * Method for obtaining a resource given his URI
+     * @param workspace String to hold the graph nome that contain the resource searched
+     * @param resourceId String to hold the resource ID searched
+     * @return Returns a ResponseEntity containing a APIResponse
+     */
     @GetMapping("/getResource/{workspace}")
-    @ApiOperation(value = "Method responsible for obtaining a resource given the resource uri", response = ResponseEntity.class)
+    @ApiOperation(value = "Method responsible for obtaining a resource given his uri", response = ResponseEntity.class)
     public ResponseEntity<ResourceApi> getResource(@PathVariable String workspace, @RequestParam String resourceId) {
 
         ResourceApi resource = getResourceApi(workspace, resourceId);
@@ -366,8 +388,14 @@ public class MakeModelController {
         return ResponseEntity.ok(resource);
     }
 
+    /**
+     * Method responsible for obtaining a list of resources given the resource type
+     * @param workspaces A string list that hold the graphs names that contain the resource searched
+     * @param type String to hold the resource type
+     * @return Returns a ResponseEntity containing a APIResponse
+     */
     @GetMapping("/getResourcesByType")
-    @ApiOperation(value = "Method responsible for obtaining a resource given the resource type", response = ResponseEntity.class)
+    @ApiOperation(value = "Method responsible for obtaining a list of resources given the resource type", response = ResponseEntity.class)
     public ResponseEntity<List<ResourceApi>> getResourcesByType(@RequestParam List<String> workspaces, @RequestParam String type){
         List<ResourceApi> resourcesApi = new ArrayList<>();
 

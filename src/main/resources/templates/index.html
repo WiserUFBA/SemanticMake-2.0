@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8"/>
-    <title>SemanticJS Framework</title>
+    <title>SemanticMake Framework</title>
     <link rel="stylesheet" type="text/css" href="css/index.css"/>
     <link rel="stylesheet" type="text/css" href="css/semanticApiInterface.css"/>
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
@@ -65,7 +65,7 @@
                                         <div class="caption">
                                             <br/><br/>
                                             <h3>Documentation</h3>
-                                            <p>The server side of api was done in java and has REST architecture. This is useful in implementation through collaborative work</p>
+                                            <p>The server side of api was done in java and has REST architecture. The <a href="documentation/javadoc/index.html"> documentation</a> is useful in implementation through collaborative work.</p>
                                             <br/><br/><br/><br/><br/><br/><br/>
                                         </div>
                                     </div>
@@ -520,9 +520,9 @@
                                     let workspaces = []
                                     workspaces.push("/workspace")
                                     workspaces.push("/workspace-84b4df42")
-                                    api.getResourcesByType(workspaces, "TypeResource")
+                                    api.getResourcesByType(workspaces, "resourceType")
                                     .then(resources => console.log(resources))
-                                    .catch(err => 'Erro ao tentar recuperar recursos por tipo')
+                                    .catch(err => 'Error trying to retrieve resources by type')
                                 </pre>
                                 <div class="panel-content text-format">
                                     The function <strong>getResourcesByType</strong> capture the resources that have a given type. This function belongs to the SemanticAPI classe.
