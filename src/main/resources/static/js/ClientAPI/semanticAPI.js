@@ -43,20 +43,20 @@ class Resource {
 
     if (subPropertyOf === '' || subPropertyOf === null || subPropertyOf === undefined){
       const property = { propertyName: propName, value: value, asResource: asResource, subPropertyOf: '' }
-      this.vocabularies[vocabPrefix].pairs.push(property)
+      this.vocabularies[vocabPrefix].properties.push(property)
     } else {
       if (!this.propertyExists(vocabPrefix, subPropertyOf)){
         const property = { propertyName: subPropertyOf, value: '', asResource: true, subPropertyOf: '' }
-        this.vocabularies[vocabPrefix].pairs.push(property)
+        this.vocabularies[vocabPrefix].properties.push(property)
       }
       const subproperty = { propertyName: propName, value: value, asResource: asResource, subPropertyOf: subPropertyOf }
-      this.vocabularies[vocabPrefix].pairs.push(subproperty)
+      this.vocabularies[vocabPrefix].properties.push(subproperty)
     }    
   }
 
   propertyExists(vocabPrefix, subPropertyOf){
-    for (let pair of this.vocabularies[vocabPrefix].pairs){
-      if(pair.propertyName === subPropertyOf)
+    for (let property of this.vocabularies[vocabPrefix].properties){
+      if(property.propertyName === subPropertyOf)
         return true
     }
     return false
@@ -75,7 +75,7 @@ class Resource {
         this.vocabularies['dcterms'] = vocab 
       }
       const lang = { propertyName: 'language', value: language, asResource: false, subPropertyOf:'' }
-      this.vocabularies['dcterms'].pairs.push(lang)
+      this.vocabularies['dcterms'].properties.push(lang)
   }
 
   addDateTime(){
@@ -87,7 +87,7 @@ class Resource {
       const now = new Date()
       const dateTimeCreated = `${now.getFullYear()}/${now.getMonth()}/${now.getDay()} ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`
       const created = { propertyName: 'created', value: dateTimeCreated, asResource: false, subPropertyOf:'' }
-      this.vocabularies['ical'].pairs.push(created)
+      this.vocabularies['ical'].properties.push(created)
     }
 
     vocabularyDctermsExists(){
@@ -115,7 +115,7 @@ class Resource {
 class Vocabulary{
     
   constructor(prefix,uri){
-    this.pairs  = []
+    this.properties  = []
     this.prefix = prefix
     this.uri    = uri
     }
@@ -246,8 +246,8 @@ class SemanticAPI{
             const vocabulary  = new Vocabulary()
             vocabulary.prefix = vocab.prefix
             vocabulary.uri    = vocab.uri
-            for (let pair of vocab.pairs){
-              vocabulary.pairs.push(pair)
+            for (let property of vocab.properties){
+              vocabulary.properties.push(property)
             }
             resource.vocabularies[vocab.prefix] = vocab
           }
@@ -276,8 +276,8 @@ class SemanticAPI{
               const vocabulary  = new Vocabulary()
               vocabulary.prefix = vocab.prefix
               vocabulary.uri    = vocab.uri
-              for (let pair of vocab.pairs){
-                vocabulary.pairs.push(pair)
+              for (let property of vocab.properties){
+                vocabulary.properties.push(property)
               }
               resource.vocabularies[vocab.prefix] = vocab
             }
@@ -314,14 +314,14 @@ class SemanticAPI{
 
       if (subPropertyOf === '' || subPropertyOf === null || subPropertyOf === undefined){
         const property = { propertyName: propName, value: value, asResource: asResource, subPropertyOf: '' }
-        resource.vocabularies[vocabPrefix].pairs.push(property)
+        resource.vocabularies[vocabPrefix].properties.push(property)
       } else {
         if (!resource.propertyExists(vocabPrefix, subPropertyOf)){
           const property = { propertyName: subPropertyOf, value: '', asResource: true, subPropertyOf: '' }
-          resource.vocabularies[vocabPrefix].pairs.push(property)
+          resource.vocabularies[vocabPrefix].properties.push(property)
         }
         const subproperty = { propertyName: propName, value: value, asResource: asResource, subPropertyOf: subPropertyOf }
-        resource.vocabularies[vocabPrefix].pairs.push(subproperty)
+        resource.vocabularies[vocabPrefix].properties.push(subproperty)
       } 
     }
 
@@ -379,12 +379,12 @@ class SemanticAPI{
                 resource.vocabularies['schema'] = vocab
               }
               const locale = { propertyName: 'geocoordinates', value: '', asResource: true, subPropertyOf:'' }
-              resource.vocabularies['schema'].pairs.push(locale)
+              resource.vocabularies['schema'].properties.push(locale)
               
               const latitude = { propertyName: 'latitude', value: position.coords.latitude, asResource: false, subPropertyOf:'geocoordinates' }
-              resource.vocabularies['schema'].pairs.push(latitude)
+              resource.vocabularies['schema'].properties.push(latitude)
               const longitude = { propertyName: 'longitude', value: position.coords.longitude, asResource: false, subPropertyOf:'geocoordinates' }
-              resource.vocabularies['schema'].pairs.push(longitude)
+              resource.vocabularies['schema'].properties.push(longitude)
               console.log(resource)
               return api.saveResource(resource).then((response) => { 
                 if ((api.config.workspace === undefined || api.config.workspace === null || api.config.workspace === ''))

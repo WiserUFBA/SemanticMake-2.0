@@ -1,4 +1,4 @@
-package com.eudes.semanticApi.api;
+package com.semanticMake.semanticApi.api;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

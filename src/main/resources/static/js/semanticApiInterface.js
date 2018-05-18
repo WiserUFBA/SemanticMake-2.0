@@ -169,7 +169,7 @@
       }
 
       toggleValid(vocabURIField, true)
-      const vocab = { prefix, uri, pairs: [] } 
+      const vocab = { prefix, uri, properties: [] } 
       //Atribui o objeto 'vocab' (inicialmente sem pares) ao vocabulário de prefixo ('prefix'), do recurso
       resource.vocabularies[prefix] = vocab
       //Atualiza a lista de prefixos dos vocabulários usados no campo select
@@ -220,12 +220,12 @@
         const value         = propValueField.value
         const asResource    = propAsResourceCheck.checked
         const subPropertyOf = ''
-        const pair = { propertyName, value, asResource, subPropertyOf }
+        const property = { propertyName, value, asResource, subPropertyOf }
         if (!propAsResourceCheck.checked) {
-          resource.vocabularies[prefix].pairs.push(pair)
+          resource.vocabularies[prefix].properties.push(property)
         }
         else if(propAsResourceCheck.checked && propValueField.value.includes('http://')){
-          resource.vocabularies[prefix].pairs.push(pair)
+          resource.vocabularies[prefix].properties.push(property)
         }          
       }
       console.log(JSON.stringify(getResourceToSend()))
@@ -263,19 +263,19 @@
               const value         = ''
               const asResource    = propAsResourceCheck.checked
               const subPropertyOf = ''
-              const pair = { propertyName, value, asResource, subPropertyOf }
-              resource.vocabularies[prefix].pairs.push(pair)
+              const property = { propertyName, value, asResource, subPropertyOf }
+              resource.vocabularies[prefix].properties.push(property)
           }
           const propertyName  = subpropNameField.value
           const value         = subpropValueField.value
           const asResource    = subpropAsResourceCheck.checked
           const subPropertyOf = propNameField.value
-          const pair = { propertyName, value, asResource, subPropertyOf }
+          const property = { propertyName, value, asResource, subPropertyOf }
           if (!subpropAsResourceCheck.checked) {
-            resource.vocabularies[prefix].pairs.push(pair)
+            resource.vocabularies[prefix].properties.push(property)
           }
           else if(subpropAsResourceCheck.checked && subpropValueField.value.includes('http://')){
-            resource.vocabularies[prefix].pairs.push(pair)
+            resource.vocabularies[prefix].properties.push(property)
           }          
         }
       }
@@ -340,13 +340,13 @@
         return function(evt) {
           //Pega o elemento que disparou a função
           const elem = evt.target
-          //Verifica se a URL é válida
+          //Verifica se a URL é válida ou se o valor é vazio (de acordo com a função passada)
           const valid = validationFunc(elem.value)
-          //Configura o valor do elemento com válido
+          //Configura o valor do elemento como válido
           toggleValid(elem, valid)
           //Configura o estado da tooltip para ser mostrada ou escondida
           const tooltipAction = !valid ? 'show' : 'hide'
-          //Apresenta o esconde a tooltip
+          //Apresenta ou esconde a tooltip
           $(elem).tooltip(tooltipAction);
         }
       }
@@ -428,10 +428,14 @@
         headers: { 'Content-Type': 'application/json; charset=utf-8'},
         body: JSON.stringify(resToSend)
       }).then(function(response) {
-        if(response.ok)
+        if(response.ok){
+          result.classList.add('save-success')
           result.innerHTML += '<br/><br/><h5>Resource saved successfuly</h5>'
-        else
+        }
+        else{
+          result.classList.add('has-error')
           result.innerHTML += `<br/><br/><h5>Error trying to write resource</h5><br/>${status}<br/>${status.message}</br>${status.toString}`
+        }
       //Este bloco trata o evento da conexão estar indisponível
       }).catch(function(error) {
           result.innerHTML += `<br/><br/><h3>Connection problem when trying to save the ontology<h3><br/><br/>${error.message}`
@@ -440,13 +444,13 @@
 
     function addDateTime() {
       if(!vocabularyIcalExists()){
-        const vocab = { prefix: 'ical', uri: 'http://www.w3.org/2002/12/cal/ical#', pairs: [] }
+        const vocab = { prefix: 'ical', uri: 'http://www.w3.org/2002/12/cal/ical#', properties: [] }
         resource.vocabularies['ical'] = vocab 
       }
       now = new Date()
       const dateTimeCreated = `${now.getFullYear()}/${now.getMonth()}/${now.getDay()} ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`
       const created = { propertyName: 'created', value: dateTimeCreated, asResource: false, subPropertyOf:'' }
-      resource.vocabularies['ical'].pairs.push(created)    
+      resource.vocabularies['ical'].properties.push(created)    
     }
     //Trecho para pegar a geolocalização
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -456,16 +460,16 @@
       if (navigator.geolocation)
         navigator.geolocation.getCurrentPosition(function (position){
             if(!vocabularySchemaExists()){
-              const vocab = { prefix: 'schema', uri: 'http://schema.org', pairs: [] }
+              const vocab = { prefix: 'schema', uri: 'http://schema.org', properties: [] }
               resource.vocabularies['schema'] = vocab 
             }
             const locale = { propertyName: 'geocoordinates', value: '', asResource: true, subPropertyOf:'' }
-            resource.vocabularies['schema'].pairs.push(locale)
+            resource.vocabularies['schema'].properties.push(locale)
       
             const latitude = { propertyName: 'latitude', value: position.coords.latitude, asResource: false, subPropertyOf:'geocoordinates' }
-            resource.vocabularies['schema'].pairs.push(latitude)
+            resource.vocabularies['schema'].properties.push(latitude)
             const longitude = { propertyName: 'longitude', value: position.coords.longitude, asResource: false, subPropertyOf:'geocoordinates' }
-            resource.vocabularies['schema'].pairs.push(longitude)
+            resource.vocabularies['schema'].properties.push(longitude)
       
             //Faz uma cópia do resultado e atrabui à variável resToSend
             const resToSend = getResourceToSend()
@@ -519,36 +523,36 @@
       resForm.elements.propPrefix.value = prefixes[prefixes.length - 1]
     }
 
-    function propListSize(pairs){
-      let qtPairs = 0
-      for(let pair of pairs){
-         qtPairs++
+    function propListSize(properties){
+      let qtProperties = 0
+      for(let property of properties){
+         qtProperties++
       }
-      return qtPairs
+      return qtProperties
     }
 
-    function propExists(pairs){
+    function propExists(properties){
       
-      if (propListSize(pairs) == 0)       
+      if (propListSize(properties) == 0)       
         return false
       
-      if (propListSize(pairs) > 0)
+      if (propListSize(properties) > 0)
         if(hasSubpropCheck.checked){
-          for (let pair of pairs)
+          for (let property of properties)
             if(isNotEmpty(propNameField.value) && isNotEmpty(subpropNameField.value) && 
-               isNotEmpty(subpropValueField.value) && pair.propertyName == propNameField.value){
+               isNotEmpty(subpropValueField.value) && property.propertyName == propNameField.value){
                   //Agora que atendeu a condição do valor do campo do nome da propriedade ser igual ao nome da propriedade no par
                   //Verifica se existe algum outro par que tenha a propriedade vigente como subpropriedade
-                  const propMaster = pair.propertyName
-                  for (let pair2 of pairs)
-                    if ((pair2.subPropertyOf == propMaster) && (pair2.propertyName == subpropNameField.value))
+                  const propMaster = property.propertyName
+                  for (let property2 of properties)
+                    if ((property2.subPropertyOf == propMaster) && (property2.propertyName == subpropNameField.value))
                       return true
             }
         return false
         }
         else {
-          for (let pair of pairs)
-            if(isNotEmpty(propNameField.value) && isNotEmpty(propValueField.value) && pair.propertyName == propNameField.value)
+          for (let property of properties)
+            if(isNotEmpty(propNameField.value) && isNotEmpty(propValueField.value) && property.propertyName == propNameField.value)
               return true
             return false
         }
@@ -558,11 +562,11 @@
       let props = [];
       //Adiciona um prefixo a cada par de valores com o mesmo prefixo do vocabulário
       for (let vocab of vocabularies) {
-          const pairs = vocab.pairs.map(pair =>
-              Object.assign({}, pair, { prefix: vocab.prefix })
+          const properties = vocab.properties.map(property =>
+              Object.assign({}, property, { prefix: vocab.prefix })
           )
           //Adiciona o par (agora com o prefixo) à lista de propriedades
-          props = props.concat(pairs)
+          props = props.concat(properties)
       }
       return props
     }
@@ -602,11 +606,11 @@
       let props = [];
       //Adiciona um prefixo a cada par de valores com o mesmo prefixo do vocabulário
       for (let vocab of vocabularies) {
-          const pairs = vocab.pairs.map(pair =>
-              Object.assign({}, pair, { prefix: vocab.prefix, verified: false })
+          const properties = vocab.properties.map(property =>
+              Object.assign({}, property, { prefix: vocab.prefix, verified: false })
           )
           //Adiciona o par (agora com o prefixo) à lista de propriedades
-          props = props.concat(pairs)
+          props = props.concat(properties)
       }
       //Slice cria uma cópia do array
       const p1 = props.slice()

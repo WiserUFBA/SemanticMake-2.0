@@ -1,5 +1,6 @@
-package com.eudes.semanticApi.api;
+package com.semanticMake.semanticApi.api;
 
+import com.semanticMake.framework.VProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -20,5 +21,5 @@ public class PrefixedPair {
     /**
      * Pair to hold the PreixedPair pair
      */
-    Pair pair;
+    VProperty vProperty;
 }

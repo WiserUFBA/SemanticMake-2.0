@@ -1,9 +1,9 @@
 
-# Semantic API
+# SemanticMake
 
-Project developed to assist in the development of web applications that aim to store semantic content. The API
-was developed in JAVA using the JENA framework, which facilitates the manipulation of semantic content. It is abstracted the
-storage location and returned the name of the address so that new insertions in the workspace are made.
+Project developed to assist the development of web applications that aim to store semantic content. This framework was
+developed in Java a with the help of the JENA framework to get more facilitates in the the manipulation of 
+semantic content. 
 
 ## Content
 - [Requisites](#requisites)
@@ -11,21 +11,25 @@ storage location and returned the name of the address so that new insertions in 
 - [ClientApi](#client-api) 
     - [Property Format](#resource-format)
     - [Sample of use](#sample-of-use)
+    - [Swagger UI (Application tests)](#swagger-ui)
 - [Documentation](#documentation)
     - [Javadoc](#javadoc)
-    - [Swagger UI](#swagger-ui)
 
 ### Requisites
-
+  
 - [Java 8+](http://www.oracle.com/technetwork/pt/java/javase/downloads/jdk8-downloads-2133151.html)
-- [Maven 3+](https://maven.apache.org/install.html)
 - [Fuseki 3+](https://jena.apache.org/download/#jena-fuseki): Must be running and have a dataset called SemanticContent.
+- [Intellij Lombok Plugin](https://github.com/mplushnikov/lombok-intellij-plugin): Version: 0.14.16 
+- [Spring Framework](https://projects.spring.io/spring-boot/): Boot starter version: 1.5.7
+- [Maven 3+](https://maven.apache.org/install.html): This dependency manager is responsible for all dependencies of this project 
 
 ### Use
 
-It's necessary import client library into JavaScript that is directed to this API. There are methods to add
-vocabularies (addVocabulary), triples (addTriple) and save the contents of the resource (saveResource). There are four
-representation of content:
+To use this framework it is necessary to import the * .jar created by this project and to use its available classes
+as required. New classes and objects can be added furthermore to those provided by SemanticMake. If
+there is interest in using the API it's necessary import client library into JavaScript that is directed to this API. There 
+are methods to add vocabularies (addVocabulary), triples (addTriple) and save the contents of the resource (saveResource), 
+As well as those available in the framework. In this API There are four representation of property in a resource (ontology):
 
 - A property like triple that guards subject, predicate and literal
     ``` javascript
@@ -100,13 +104,14 @@ in question.
 
 ### Client API
 
-There is a constructor method, "SemanticAPI", which receives the base url that has the address of where the api is. 
-To create a new resource you must use the constructor method of the "Resource" class. To add new vocabularies to a 
-resource you must use the "addVocabulary" method of Resource, to add new triples you must use the "addTriple" method of 
-"Resource". At the end of this document there is a section showing an example of using the client side for API. Such methods 
-are useful for facilitating the creation of the resource in an atomic operation.
+As well as the classes and objects provided by SemanticMake, the API has classes and objects for its operation: a 
+constructor method, "SemanticAPI", which receives the base url that has the address of where the api is. To create a 
+new resource (ontology instance) you must use the constructor method of the "Resource" class. To add new vocabularies to 
+a resource you must use the "addVocabulary" method of Resource, to add new triples you must use the "addTriple" method of
+"Resource". At the end of this document there is a section showing an example of using the client side for API. Such 
+methods are useful for facilitating the creation of the resource in an atomic operation.
 
-### Resource Format
+### Resource Format (Ontology instance)
 
 ```javascript
 {
@@ -148,13 +153,13 @@ are useful for facilitating the creation of the resource in an atomic operation.
 
 ## Documentation
 
-In the next two sections is showed two ways to present the operation of the API
+The framework presentation application has the documentation of both the framework as well as the API.
 
-## Javadoc
+- (Framework): The documentation of the framework was made by the automatic generation of documentation in the Javadoc style by Intellij, 
+based on comments from the source code.
+- (API): The API documentation is shown in the framework presentation application
 
-The Javadoc folder contains all the documentation of all Java files that were used.
-
-## Swagger UI
+## Swagger UI (API testing application)
 
 To test the operation of all API methods, [Swagger](http://localhost:8080/swagger-ui.html) provides an interface with 
 input field, use and output examples to test the tool. This was the alternative used for documentation of REST methods.

@@ -16,13 +16,13 @@
   with the .ttl file as input -->
 <owl:Ontology rdf:about="http://www.w3.org/ns/dcat">
 		<rdf:type rdf:resource="http://purl.org/vocommons/voaf#Vocabulary" />
-		<rdfs:label xml:lang="en">The data catalog vocabulary</rdfs:label>
+		<rdfs:label xml:lang="en">The data catalog smVocabulary</rdfs:label>
 		<rdfs:label xml:lang="es">El vocabulario de catálogo de datos</rdfs:label>
 		<rdfs:label xml:lang="ar">أنطولوجية فهارس قوائم البيانات</rdfs:label>
 		<rdfs:label xml:lang="el">Το λεξιλόγιο των καταλόγων δεδομένων</rdfs:label>
 		<rdfs:label xml:lang="fr">Le vocabulaire des jeux de données </rdfs:label>
 		<rdfs:label xml:lang="ja">データ・カタログ語彙（DCAT）</rdfs:label>
-		<rdfs:comment xml:lang="en">DCAT is an RDF vocabulary designed to facilitate interoperability between data catalogs published on the Web.
+		<rdfs:comment xml:lang="en">DCAT is an RDF smVocabulary designed to facilitate interoperability between data catalogs published on the Web.
           By using DCAT to describe datasets in data catalogs, publishers increase discoverability and enable 
           applications easily to consume metadata from multiple catalogs. It further enables decentralized 
           publishing of catalogs and facilitates federated dataset search across sites. Aggregated DCAT metadata can 

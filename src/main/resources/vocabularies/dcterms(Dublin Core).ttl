@@ -379,7 +379,7 @@ dcterms:TGN
     rdfs:comment "The set of places specified by the Getty Thesaurus of Geographic Names."@en ;
     rdfs:isDefinedBy <http://purl.org/dc/terms/> ;
     rdfs:label "TGN"@en ;
-    rdfs:seeAlso <http://www.getty.edu/research/tools/vocabulary/tgn/index.html> .
+    rdfs:seeAlso <http://www.getty.edu/research/tools/smVocabulary/tgn/index.html> .
 
 dcterms:UDC
     dcterms:hasVersion <http://dublincore.org/usage/terms/history/#UDC-003> ;
@@ -536,7 +536,7 @@ dcterms:contributor
     rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/contributor> .
 
 dcterms:coverage
-    dcterms:description "Spatial topic and spatial applicability may be a named place or a location specified by its geographic coordinates. Temporal topic may be a named period, date, or date range. A jurisdiction may be a named administrative entity or a geographic place to which the resource applies. Recommended best practice is to use a controlled vocabulary such as the Thesaurus of Geographic Names [TGN]. Where appropriate, named places or time periods can be used in preference to numeric identifiers such as sets of coordinates or date ranges."@en ;
+    dcterms:description "Spatial topic and spatial applicability may be a named place or a location specified by its geographic coordinates. Temporal topic may be a named period, date, or date range. A jurisdiction may be a named administrative entity or a geographic place to which the resource applies. Recommended best practice is to use a controlled smVocabulary such as the Thesaurus of Geographic Names [TGN]. Where appropriate, named places or time periods can be used in preference to numeric identifiers such as sets of coordinates or date ranges."@en ;
     dcterms:hasVersion <http://dublincore.org/usage/terms/history/#coverageT-001> ;
     dcterms:issued "2008-01-14"^^<http://www.w3.org/2001/XMLSchema#date> ;
     dcterms:modified "2008-01-14"^^<http://www.w3.org/2001/XMLSchema#date> ;
@@ -652,7 +652,7 @@ dcterms:extent
     rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/format>, dcterms:format .
 
 dcterms:format
-    dcterms:description "Examples of dimensions include size and duration. Recommended best practice is to use a controlled vocabulary such as the list of Internet Media Types [MIME]."@en ;
+    dcterms:description "Examples of dimensions include size and duration. Recommended best practice is to use a controlled smVocabulary such as the list of Internet Media Types [MIME]."@en ;
     dcterms:hasVersion <http://dublincore.org/usage/terms/history/#formatT-001> ;
     dcterms:issued "2008-01-14"^^<http://www.w3.org/2001/XMLSchema#date> ;
     dcterms:modified "2008-01-14"^^<http://www.w3.org/2001/XMLSchema#date> ;
@@ -798,7 +798,7 @@ dcterms:issued
     rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/date>, dcterms:date .
 
 dcterms:language
-    dcterms:description "Recommended best practice is to use a controlled vocabulary such as RFC 4646 [RFC4646]."@en ;
+    dcterms:description "Recommended best practice is to use a controlled smVocabulary such as RFC 4646 [RFC4646]."@en ;
     dcterms:hasVersion <http://dublincore.org/usage/terms/history/#languageT-001> ;
     dcterms:issued "2008-01-14"^^<http://www.w3.org/2001/XMLSchema#date> ;
     dcterms:modified "2008-01-14"^^<http://www.w3.org/2001/XMLSchema#date> ;
@@ -969,7 +969,7 @@ dcterms:spatial
     rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/coverage>, dcterms:coverage .
 
 dcterms:subject
-    dcterms:description "Typically, the subject will be represented using keywords, key phrases, or classification codes. Recommended best practice is to use a controlled vocabulary."@en ;
+    dcterms:description "Typically, the subject will be represented using keywords, key phrases, or classification codes. Recommended best practice is to use a controlled smVocabulary."@en ;
     dcterms:hasVersion <http://dublincore.org/usage/terms/history/#subjectT-002> ;
     dcterms:issued "2008-01-14"^^<http://www.w3.org/2001/XMLSchema#date> ;
     dcterms:modified "2012-06-14"^^<http://www.w3.org/2001/XMLSchema#date> ;
@@ -1013,7 +1013,7 @@ dcterms:title
     rdfs:subPropertyOf <http://purl.org/dc/elements/1.1/title> .
 
 dcterms:type
-    dcterms:description "Recommended best practice is to use a controlled vocabulary such as the DCMI Type Vocabulary [DCMITYPE]. To describe the file format, physical medium, or dimensions of the resource, use the Format element."@en ;
+    dcterms:description "Recommended best practice is to use a controlled smVocabulary such as the DCMI Type Vocabulary [DCMITYPE]. To describe the file format, physical medium, or dimensions of the resource, use the Format element."@en ;
     dcterms:hasVersion <http://dublincore.org/usage/terms/history/#typeT-001> ;
     dcterms:issued "2008-01-14"^^<http://www.w3.org/2001/XMLSchema#date> ;
     dcterms:modified "2008-01-14"^^<http://www.w3.org/2001/XMLSchema#date> ;

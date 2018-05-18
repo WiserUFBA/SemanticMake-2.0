@@ -27,7 +27,7 @@
     <dct:contributor>Dave Beckett</dct:contributor>
     <dct:contributor>Nikki Rogers</dct:contributor>
     <dct:contributor>Participants in W3C's Semantic Web Deployment Working Group.</dct:contributor>
-    <dct:description xml:lang="en">An RDF vocabulary for describing the basic structure and content of concept schemes such as thesauri, classification schemes, subject heading lists, taxonomies, 'folksonomies', other types of controlled vocabulary, and also concept schemes embedded in glossaries and terminologies.</dct:description>
+    <dct:description xml:lang="en">An RDF smVocabulary for describing the basic structure and content of concept schemes such as thesauri, classification schemes, subject heading lists, taxonomies, 'folksonomies', other types of controlled smVocabulary, and also concept schemes embedded in glossaries and terminologies.</dct:description>
     <dct:creator>Alistair Miles</dct:creator>
     <dct:creator>Sean Bechhofer</dct:creator>
     <rdfs:seeAlso rdf:resource="http://www.w3.org/TR/skos-reference/"/>
@@ -44,7 +44,7 @@
     <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2004/02/skos/core"/>
     <skos:definition xml:lang="en">A set of concepts, optionally including statements about semantic relationships between those concepts.</skos:definition>
     <skos:scopeNote xml:lang="en">A concept scheme may be defined to include concepts from different sources.</skos:scopeNote>
-    <skos:example xml:lang="en">Thesauri, classification schemes, subject heading lists, taxonomies, 'folksonomies', and other types of controlled vocabulary are all examples of concept schemes. Concept schemes are also embedded in glossaries and terminologies.</skos:example>
+    <skos:example xml:lang="en">Thesauri, classification schemes, subject heading lists, taxonomies, 'folksonomies', and other types of controlled smVocabulary are all examples of concept schemes. Concept schemes are also embedded in glossaries and terminologies.</skos:example>
     <!-- S2 -->
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
     <!-- S9 -->
@@ -208,7 +208,7 @@
   <rdf:Description rdf:about="#editorialNote">
     <rdfs:label xml:lang="en">editorial note</rdfs:label>
     <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2004/02/skos/core"/>
-    <skos:definition xml:lang="en">A note for an editor, translator or maintainer of the vocabulary.</skos:definition>
+    <skos:definition xml:lang="en">A note for an editor, translator or maintainer of the smVocabulary.</skos:definition>
     <!-- S16 -->
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
     <!-- S17 -->
@@ -382,7 +382,7 @@
     <rdfs:label xml:lang="en">is in mapping relation with</rdfs:label>
     <rdfs:isDefinedBy rdf:resource="http://www.w3.org/2004/02/skos/core"/>
     <skos:definition xml:lang="en">Relates two concepts coming, by convention, from different schemes, and that have comparable meanings</skos:definition>
-    <rdfs:comment xml:lang="en">These concept mapping relations mirror semantic relations, and the data model defined below is similar (with the exception of skos:exactMatch) to the data model defined for semantic relations. A distinct vocabulary is provided for concept mapping relations, to provide a convenient way to differentiate links within a concept scheme from links between concept schemes. However, this pattern of usage is not a formal requirement of the SKOS data model, and relies on informal definitions of best practice.</rdfs:comment>
+    <rdfs:comment xml:lang="en">These concept mapping relations mirror semantic relations, and the data model defined below is similar (with the exception of skos:exactMatch) to the data model defined for semantic relations. A distinct smVocabulary is provided for concept mapping relations, to provide a convenient way to differentiate links within a concept scheme from links between concept schemes. However, this pattern of usage is not a formal requirement of the SKOS data model, and relies on informal definitions of best practice.</rdfs:comment>
     <!-- S38 -->
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
     <!-- S39 -->

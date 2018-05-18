@@ -1,6 +1,6 @@
-package com.eudes.semanticApi.util;
+package com.semanticMake.semanticApi.util;
 
-import com.eudes.semanticApi.api.Pair;
+import com.semanticMake.framework.VProperty;
 import lombok.Data;
 
 /**
@@ -13,15 +13,15 @@ public class Verified {
      * The contructor the receive one Pair to make the object to be verfied
      * @param data The Pair
      */
-    public Verified(Pair data){
-        this.pair = data;
+    public Verified(VProperty data){
+        this.property = data;
         this.verified = false;
     }
 
     /**
      * Type of object to verify, in this case a Pair that represents a property
      */
-    private Pair pair;
+    private VProperty property;
 
     /**
      * Flag to verify if the data was verified

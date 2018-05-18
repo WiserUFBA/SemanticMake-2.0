@@ -1,8 +1,8 @@
-package com.eudes.semanticApi.util;
+package com.semanticMake.semanticApi.util;
 
 
-import com.eudes.semanticApi.api.OptGroup;
-import com.eudes.semanticApi.api.Option;
+import com.semanticMake.semanticApi.api.OptGroup;
+import com.semanticMake.semanticApi.api.Option;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;

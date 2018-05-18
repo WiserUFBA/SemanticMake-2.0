@@ -14,7 +14,7 @@
 <body>
 
 <div class="container">
-    <h1>SemanticJS Framework</h1>
+    <h1>SemanticMake Framework</h1>
     <div>
         <ul class="nav nav-tabs">
             <li class="active"><a data-toggle="tab" href="#what-is-it">What is It</a></li>
@@ -219,7 +219,7 @@
                     <ul class="nav nav-pills nav-stacked col-md-2">
                         <li class="active"><a href="#semantic_api" data-toggle="pill">Semantic API</a></li>
                         <li><a href="#resource" data-toggle="pill">Resource</a></li>
-                        <li><a href="#vocabulary" data-toggle="pill">Vocabulary</a></li>
+                        <li><a href="#smVocabulary" data-toggle="pill">Vocabulary</a></li>
                         <li><a href="#property" data-toggle="pill">Property</a></li>
                     </ul>
                     <div class="tab-content col-md-10">
@@ -273,7 +273,7 @@
                                     updateProperty(resourceUri, propertyUri, newValue)
 
                                     /* Add a property to one resource given the the resourcec(in this case firstly the
-                                     * resource must be retrieved of server), the vocabulary prefix and an property
+                                     * resource must be retrieved of server), the smVocabulary prefix and an property
                                      * created previously
                                      */
                                     addProperty(resource, vocabPrefix, property)
@@ -327,14 +327,14 @@
                                     //Assign the vocabularies of the resource
                                     setVocabularies(vocabularies)
 
-                                    //Assign a new vocabulary to the resource
-                                    //This function creates a new instance of a vocabulary e add to the resource
+                                    //Assign a new smVocabulary to the resource
+                                    //This function creates a new instance of a smVocabulary e add to the resource
                                     addVocabulary(vocabPrefix, uri)
 
                                     //Verify if a vocabularie prefix already exists in the list of passed vocabularies
                                     vocabExists(vocabPrefix, vocabularies)
 
-                                    //Add a new property to one vocabulary
+                                    //Add a new property to one smVocabulary
                                     addProperty(vocabPrefix, property)
 
                                     //Add a new property with a language to one resource
@@ -345,12 +345,12 @@
                                 </pre>
                             </div>
                         </div>
-                        <div class="tab-pane panel panel-default" id="vocabulary">
+                        <div class="tab-pane panel panel-default" id="smVocabulary">
                             <div class="panel-heading">
                                 <h1 class="panel-title">Vocabulary class</h1>
                             </div>
                             <div class="panel-content">
-                                <p>This class é very simple, it only has a constructor of a vocabulary to add to a resource</p>
+                                <p>This class é very simple, it only has a constructor of a smVocabulary to add to a resource</p>
                                 <p>The contructor sctructure will be showed bellow:</p>
                                 <pre class="brush: js">
                                     class Vocabulary{

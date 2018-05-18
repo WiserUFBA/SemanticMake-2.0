@@ -7506,7 +7506,7 @@
 <rdf:Description rdf:about="http://schema.org/code">
 	<rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
 	<rdfs:label xml:lang="en">Code</rdfs:label>
-	<rdfs:comment xml:lang="en">A medical code for the entity, taken from a controlled vocabulary or ontology such as ICD-9, DiseasesDB, MeSH, SNOMED-CT, RxNorm, etc.</rdfs:comment>
+	<rdfs:comment xml:lang="en">A medical code for the entity, taken from a controlled smVocabulary or ontology such as ICD-9, DiseasesDB, MeSH, SNOMED-CT, RxNorm, etc.</rdfs:comment>
 	<rdfs:domain rdf:resource="http://schema.org/MedicalEntity"/>
 	<rdfs:range rdf:resource="http://schema.org/MedicalCode"/>
 	<rdfs:isDefinedBy rdf:resource="http://schema.org/MedicalEntity"/>
