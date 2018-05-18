@@ -25,6 +25,24 @@ public class SMVocabulary {
     private List<VProperty> properties = new ArrayList<>();
 
     /**
+     * The object constructor
+     * @param uri - The vocabulary URI
+     * @param prefix - The vocabulary prefix
+     * @param properties - The vocabulary properties
+     */
+    public SMVocabulary(String uri, String prefix, List<VProperty> properties) {
+        this.uri = uri;
+        this.prefix = prefix;
+        this.properties = properties;
+    }
+
+    /**
+     * The object constructor without the params
+     */
+    public SMVocabulary() {
+    }
+
+    /**
      * Get method to the resource URI
      * @return A string containing the resource URI value
      */
@@ -41,38 +59,42 @@ public class SMVocabulary {
     }
 
     /**
-     *
-     * @return
+     * This method should return the vocabulary properties
+     * @return - A list of vocabulary properties
      */
     public List<VProperty> getProperties() {
         return this.properties;
     }
 
-
     /**
-     * Set method to the vocabulary URI
-     * @param uri
+     * This method assign vocabulary URI
+     * @param uri - The vocabulary URI to assign
      */
     public void setUri(String uri) {
         this.uri = uri;
     }
 
     /**
-     * Set method to the vocaulry prefix
-     * @param prefix
+     * This method assign vocabulary URI
+     * @param prefix - The vocabulary prefix to assign
      */
     public void setPrefix(String prefix) {
         this.prefix = prefix;
     }
 
     /**
-     * Set method to the vocabulary properties
-     * @param properties
+     * This method assign the vocabulary properties
+     * @param properties The vocabulary properties to assign
      */
     public void setProperties(List<VProperty> properties) {
         this.properties = properties;
     }
 
+    /**
+     * Indicates whether some other object is "equal to" this one
+     * @param o - the reference object with which to compare
+     * @return true if this object is the same as the obj argument; false otherwise
+     */
     public boolean equals(Object o) {
         if(o == this) {
             return true;
@@ -122,10 +144,21 @@ public class SMVocabulary {
         }
     }
 
+    /**
+     * The method should check the equality of objects
+     * @param other Another object instance
+     * @return true if the other object is an instance of the class in which canEqual is (re)defined, false otherwise
+     */
     protected boolean canEqual(Object other) {
         return other instanceof SMVocabulary;
     }
 
+
+    /**
+     * Returns a hash code value for the object.
+     * <br> This method is supported for the benefit of hash tables such as those provided by HashMap
+     * @return a hash code value for this object
+     */
     public int hashCode() {
         boolean PRIME = true;
         byte result = 1;
@@ -138,17 +171,11 @@ public class SMVocabulary {
         return result1;
     }
 
+    /**
+     * A method to print the object like string
+     * @return A string that represents the resource
+     */
     public String toString() {
         return "SMVocabulary(uri=" + this.getUri() + ", prefix=" + this.getPrefix() + ", pairs=" + this.getProperties() + ")";
     }
-
-    public SMVocabulary(String uri, String prefix, List<VProperty> properties) {
-        this.uri = uri;
-        this.prefix = prefix;
-        this.properties = properties;
-    }
-
-    public SMVocabulary() {
-    }
-
 }

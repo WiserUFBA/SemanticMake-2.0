@@ -11,7 +11,7 @@ import java.util.List;
 public class SMResource {
 
     /**
-     * Prefixo do recurso criado
+     * Created resource prefix
      */
     private String prefix;
 
@@ -118,6 +118,11 @@ public class SMResource {
         this.vocabularies = vocabularies;
     }
 
+    /**
+     * Indicates whether some other object is "equal to" this one
+     * @param o - the reference object with which to compare
+     * @return true if this object is the same as the obj argument; false otherwise
+     */
     public boolean equals(Object o) {
         if(o == this) {
             return true;
@@ -177,10 +182,20 @@ public class SMResource {
         }
     }
 
+    /**
+     * The method should check the equality of objects
+     * @param other Another object instance
+     * @return true if the other object is an instance of the class in which canEqual is (re)defined, false otherwise
+     */
     protected boolean canEqual(Object other) {
         return other instanceof SMResource;
     }
 
+    /**
+     * Returns a hash code value for the object.
+     * <br> This method is supported for the benefit of hash tables such as those provided by HashMap
+     * @return a hash code value for this object
+     */
     public int hashCode() {
         boolean PRIME = true;
         byte result = 1;

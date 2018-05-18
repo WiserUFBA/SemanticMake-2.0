@@ -11,7 +11,7 @@ semantic content.
 - [ClientApi](#client-api) 
     - [Property Format](#resource-format)
     - [Sample of use](#sample-of-use)
-    - [Swagger UI (Application tests)](#swagger-ui)
+    - [Swagger UI (Application of API tests)](#swagger-ui)
 - [Documentation](#documentation)
     - [Javadoc](#javadoc)
 
@@ -29,7 +29,7 @@ To use this framework it is necessary to import the * .jar created by this proje
 as required. New classes and objects can be added furthermore to those provided by SemanticMake. If
 there is interest in using the API it's necessary import client library into JavaScript that is directed to this API. There 
 are methods to add vocabularies (addVocabulary), triples (addTriple) and save the contents of the resource (saveResource), 
-As well as those available in the framework. In this API There are four representation of property in a resource (ontology):
+As well as those available in the framework. In this API there are four representation of property in a resource (ontology):
 
 - A property like triple that guards subject, predicate and literal
     ``` javascript

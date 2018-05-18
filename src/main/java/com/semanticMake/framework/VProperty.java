@@ -13,6 +13,13 @@ public class VProperty {
     private boolean asResource;
     private String subPropertyOf;
 
+    /**
+     * The constructor
+     * @param propertyName - The property name
+     * @param value - The property value
+     * @param asResource - The value that represents if the resource must be represented like a resource
+     * @param subPropertyOf - The parent property
+     */
     @ConstructorProperties({"propertyName", "value", "asResource", "subPropertyOf"})
     public VProperty(String propertyName, String value, boolean asResource, String subPropertyOf) {
         this.propertyName = propertyName;
@@ -21,34 +28,66 @@ public class VProperty {
         this.subPropertyOf = subPropertyOf;
     }
 
+    /**
+     * This method should return the property name
+     * @return - A string with the property name
+     */
     public String getPropertyName() {
         return this.propertyName;
     }
 
+    /**
+     * This method should return the property value
+     * @return - A string with the property value
+     */
     public String getValue() {
         return this.value;
     }
 
+    /**
+     * Verify if the resource must be represented like a resource
+     * @return true if this object must be represented like a resource; false otherwise
+     */
     public boolean isAsResource() {
         return this.asResource;
     }
 
+    /**
+     * This method should return the parent subproperty
+     * @return - A string with the parent subproperty
+     */
     public String getSubPropertyOf() {
         return this.subPropertyOf;
     }
 
+    /**
+     * This method assign the property name
+     * @param propertyName - The property name
+     */
     public void setPropertyName(String propertyName) {
         this.propertyName = propertyName;
     }
 
+    /**
+     * This method assign the property value
+     * @param value - The property value
+     */
     public void setValue(String value) {
         this.value = value;
     }
 
+    /**
+     * This method assign if the resource must be represented like a resource
+     * @param asResource - true if property must be represented like a resouce, false otherwise
+     */
     public void setAsResource(boolean asResource) {
         this.asResource = asResource;
     }
 
+    /**
+     * This method assign the parent property
+     * @param subPropertyOf - The parent property
+     */
     public void setSubPropertyOf(String subPropertyOf) {
         this.subPropertyOf = subPropertyOf;
     }
@@ -102,10 +141,20 @@ public class VProperty {
         }
     }
 
+    /**
+     * The method should check the equality of objects
+     * @param other Another object instance
+     * @return true if the other object is an instance of the class in which canEqual is (re)defined, false otherwise
+     */
     protected boolean canEqual(Object other) {
         return other instanceof VProperty;
     }
 
+    /**
+     * Returns a hash code value for the object.
+     * <br> This method is supported for the benefit of hash tables such as those provided by HashMap
+     * @return a hash code value for this object
+     */
     public int hashCode() {
         boolean PRIME = true;
         byte result = 1;
@@ -119,6 +168,10 @@ public class VProperty {
         return result1;
     }
 
+    /**
+     * A method to print the object like string
+     * @return A string that represents the resource
+     */
     public String toString() {
         return "Property(propertyName=" + this.getPropertyName() + ", value=" + this.getValue() + ", asResource=" + this.isAsResource() + ", subPropertyOf=" + this.getSubPropertyOf() + ")";
     }

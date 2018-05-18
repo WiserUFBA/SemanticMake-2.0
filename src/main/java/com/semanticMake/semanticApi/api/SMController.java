@@ -46,12 +46,143 @@ public class SMController {
     private DatasetAccessor datasetAccessor = null;
 
     /**
+     * This method should return the dataset URI
+     * @return - A string with the dataset URI
+     */
+
+    /**
      * Start SMController with the URL of the Fuseki server where the ontologies will be stored
      */
     public SMController() {
         datasetAccessor = DatasetAccessorFactory.createHTTP(fusekiURI);
     }
 
+    public String getFusekiURI() {
+        return fusekiURI;
+    }
+
+    /**
+     * This method should assign the URI to connect do the triple store
+     * @param fusekiURI - The dataset URI
+     */
+    public void setFusekiURI(String fusekiURI) {
+        this.fusekiURI = fusekiURI;
+    }
+
+    /**
+     * This method should return the graph URI
+     * @return - A string with the graph URI
+     */
+    public String getGraphURI() {
+        return graphURI;
+    }
+
+    /**
+     * Sets the accessible description of this object.
+     * @param graphURI - The graph URI to be assigned
+     */
+    public void setGraphURI(String graphURI) {
+        this.graphURI = graphURI;
+    }
+
+    /**
+     *  This method should return the object DatasetAccessor
+     * @return- The object DatasetAccessor
+     */
+    public DatasetAccessor getDatasetAccessor() {
+        return datasetAccessor;
+    }
+
+    /**
+     * This method should assign the a dataset accessor
+     * @param datasetAccessor - a Datasetaccessor object
+     */
+    public void setDatasetAccessor(DatasetAccessor datasetAccessor) {
+        this.datasetAccessor = datasetAccessor;
+    }
+
+    /**
+     * Method responsible for normalizing the URI of the created resource by adding '/' if necessary
+     * @param uri String that stores the URI
+     * @return Returns a String from a normalized URI
+     */
+    public String normalizeURI(String uri) {
+        return (uri.endsWith("/") || uri.endsWith("#")) ? uri : uri + "/";
+    }
+
+    /**
+     * This method should retrieve the resource ID
+     * @param resource The resource
+     * @return A string with the ID resource
+     */
+    public String getResourceID(SMResource resource) {
+        boolean hasLocalName = resourceHasLocalName(resource);
+        String localName =  hasLocalName? getResourceLocalName(resource) : String.valueOf(UUID.randomUUID());
+        return getResourceUri(resource) + localName;
+    }
+
+    /**
+     * This method should verify if the resource has the local name
+     * @param resource The resource
+     * @return true if this resource has a local name, false otherwise
+     */
+    public boolean resourceHasLocalName(SMResource resource) {
+        int localNameSize = getResourceLocalNameSize(resource);
+        return (localNameSize == 37 && (!getResourceLocalName(resource).contains(".")));
+    }
+
+    /**
+     * This method should retrieve the local name size of the resource
+     * @param resource The resource
+     * @return An int with the the local name size of the resource
+     */
+    public int getResourceLocalNameSize(SMResource resource) {
+        int localNameSize = 0;
+        String aboutResource = resource.getAbout();
+        for (int x = aboutResource.length() - 2; aboutResource.charAt(x) != '/'; x--)
+            localNameSize++;
+        localNameSize++ ;
+        return localNameSize;
+    }
+
+    /**
+     * This method should retrieve the local name of the resource
+     * @param resource The resource
+     * @return A string with the local name of the resource
+     */
+    public String getResourceLocalName(SMResource resource){
+        String resourceLocalName;
+        String resourceAbout = resource.getAbout();
+        resourceLocalName = resourceAbout.substring(resource.getAbout().length() - getResourceLocalNameSize(resource), resourceAbout.length() - 1);
+        return resourceLocalName;
+    }
+
+    /**
+     * This method should retrieve URI resource
+     * @param resource The resource
+     * @return A string with the resource URI
+     */
+    public String getResourceUri(SMResource resource){
+        String resourceUri;
+        String aboutResource = resource.getAbout();
+        resourceUri = resourceHasLocalName(resource) ? aboutResource.substring(0, aboutResource.length() - getResourceLocalNameSize(resource)) : aboutResource;
+        return resourceUri;
+    }
+
+    /**
+     * Method responsible for creating a template that will receive the given data:
+     * <br> Vocabularies with their respective prefixes and properties with their values
+     * @param resource SMResource with the data to insert into the template
+     * @return Returns a Model with the passed data
+     */
+    public Model createModel(SMResource resource) {
+        Model model = ModelFactory.createDefaultModel();
+        model.setNsPrefix(resource.getPrefix(), getResourceUri(resource));
+        for (SMVocabulary v : resource.getVocabularies()) {
+            model.setNsPrefix(v.getPrefix(), normalizeURI(v.getUri()));
+        }
+        return model;
+    }
 
     /**
      * Method responsible for assign the triple store address e the dataset name
@@ -72,7 +203,7 @@ public class SMController {
      * <br> The resource is passed in JSON format
      * @param resource Resource passed by client
      * @param workspace Returns a ResponseEntity containing a APIResponse
-     * @return
+     * @return The ResponseEntity with resource ID and his graph URI
      */
     @PostMapping("/saveResource/{workspace}")
     @ApiOperation(value = "Method responsible to save a new resource", response = ResponseEntity.class)
@@ -98,7 +229,7 @@ public class SMController {
             if(datasetAccessor.getModel(graphURI) == null)
                 graphURI = "/workspace-" + UUID.randomUUID().toString().substring(0,8);
         }catch (Exception e){
-            System.out.println("Não conseguiu recuperar o modelo com o workspace passado");
+            System.out.println("Could not recover past workspace");
         }
 
         datasetAccessor.add(graphURI, model);
@@ -325,7 +456,7 @@ public class SMController {
                 RDFNode object = triple.getObject();
                 boolean propertyHasValue = (isExactly)? object.toString().equals(value) : object.toString().contains(value);
                 if( propertyHasValue && predicate.equals(prop)){
-                    SMResource smResource = getResourceApi(workspace, resource.getURI());
+                    SMResource smResource = getSMResource(workspace, resource.getURI());
                     if (smResource != null) resources.add(smResource);
                 } else if (object instanceof Resource && !object.toString().contains("http://")){
                     StmtIterator subIter = ((Resource) object).listProperties();
@@ -335,7 +466,7 @@ public class SMController {
                         RDFNode subObject = subTriple.getObject();
                         boolean subpropertyHasValue = (isExactly)? subObject.toString().equals(value) : subObject.toString().contains(value);
                         if(subpropertyHasValue && subProp.equals(prop)) {
-                            SMResource smResource = getResourceApi(workspace, resource.getURI());
+                            SMResource smResource = getSMResource(workspace, resource.getURI());
                             if (smResource != null) resources.add(smResource);
                         }
                     }
@@ -386,7 +517,7 @@ public class SMController {
     @ApiOperation(value = "Method responsible for obtaining a resource given his uri", response = ResponseEntity.class)
     public ResponseEntity<SMResource> getResource(@PathVariable String workspace, @RequestParam String resourceId) {
 
-        SMResource resource = getResourceApi(workspace, resourceId);
+        SMResource resource = getSMResource(workspace, resourceId);
 
         return ResponseEntity.ok(resource);
     }
@@ -418,7 +549,7 @@ public class SMController {
             }
             for(Resource resource: resources){
                 if (getResourceTypeName(resource).equals(type)){
-                    SMResource r =  getResourceApi(workspace, resource.getURI());
+                    SMResource r =  getSMResource(workspace, resource.getURI());
                     resourcesApi.add(r);
                 }
             }
@@ -427,7 +558,13 @@ public class SMController {
         return ResponseEntity.ok(resourcesApi);
     }
 
-    private SMResource getResourceApi(String workspace, String resourceId) {
+    /**
+     * This method should return a complete resource
+     * @param workspace - The graph name in the dataset to search the resource
+     * @param resourceId - The resource ID of the resource
+     * @return A SMResource
+     */
+    public SMResource getSMResource(String workspace, String resourceId) {
 
         SMResource resource = new SMResource();
 
@@ -458,7 +595,12 @@ public class SMController {
         return resource;
     }
 
-    private int getResourceNameSize(Resource resource){
+    /**
+     * This method should return the property name
+     * @param resource - The resource
+     * @return - An int with the name size of the resource
+     */
+    public int getResourceNameSize(Resource resource){
         int resourceNameSize = 0;
         String resourceUri = resource.getURI();
         for (int x = resourceUri.length(); resourceUri.charAt(x - 1) != '/'; x--)
@@ -496,7 +638,12 @@ public class SMController {
         }
     }
 
-    private String getResourceTypeName(Resource resource) {
+    /**
+     * This method should return the resource type
+     * @param resource - The resource
+     * @return - A string with the resource type
+     */
+    public String getResourceTypeName(Resource resource) {
         StmtIterator iter = resource.listProperties();
         String resourceTypeName = null;
         while (iter.hasNext()) {
@@ -511,7 +658,12 @@ public class SMController {
         return resourceTypeName;
     }
 
-    private String getPropertyName(String propertyUri) {
+    /**
+     * This method should return the property name
+     * @param propertyUri The complete property URI
+     * @return A string with the property name
+     */
+    public String getPropertyName(String propertyUri) {
          int propSize = 0;
          for(int i = propertyUri.length() - 1; propertyUri.charAt(i) != '/' && propertyUri.charAt(i) != '#'; i--)
              propSize++;
@@ -519,12 +671,96 @@ public class SMController {
          return propertyNameUri;
     }
 
-    private String getPropertyNameSpace(String propertyUri) {
+    /**
+     * This method should return the property namespace
+     * @param propertyUri The complete property URI
+     * @return A string with the property name
+     */
+    public String getPropertyNameSpace(String propertyUri) {
         int propSize = 0;
         for(int i = propertyUri.length() - 1; propertyUri.charAt(i) != '/' && propertyUri.charAt(i) != '#'; i--)
             propSize++;
         String propertyNameSpace = propertyUri.substring(0, propertyUri.length() - propSize);
         return propertyNameSpace;
+    }
+
+    /**
+     * Method responsible for creating a new resource according to the data passed according to the predefined ontology
+     * <br> The vocabularies, properties and values will be passed to create the new instance of the ontology
+     * @param model Model that will receive the data of the new ontology to be created
+     * @param resource A SMResource with data from the new ontology
+     */
+    public void addAsResource(Model model, SMResource resource) {
+        Resource resourceDefiniton = ResourceFactory
+                .createResource(getResourceUri(resource) +  resource.getName());
+        Resource resourceInstance = model.createResource(getResourceID(resource), resourceDefiniton);
+
+        for (SMVocabulary v : resource.getVocabularies()) {
+            ArrayList<Verified> verifiedPairs = new ArrayList<>();
+            for(VProperty p : v.getProperties()){
+                verifiedPairs.add(new Verified(p));
+            }
+            for (int i = 0; i < verifiedPairs.size(); i++) {
+                String propertyName = verifiedPairs.get(i).getProperty().getPropertyName();
+                //Represents the property like a a comom tag: <vocab:property>value</vocab:property>
+                //If the pair was'nt verified yet and the value of his property isn't empty and the value of his property not contais "http://" and is a resource and the value of the subproperty is empty
+                if (!verifiedPairs.get(i).isVerified()
+                        && !verifiedPairs.get(i).getProperty().getValue().isEmpty()
+                        && !verifiedPairs.get(i).getProperty().getValue().contains("http://")
+                        && !verifiedPairs.get(i).getProperty().isAsResource()
+                        && verifiedPairs.get(i).getProperty().getSubPropertyOf().isEmpty()){
+
+                    Property property = ResourceFactory.createProperty(normalizeURI(v.getUri()), propertyName);
+                    resourceInstance.addProperty(property, verifiedPairs.get(i).getProperty().getValue());
+                    verifiedPairs.get(i).setVerified(true);
+                }
+                //Represents the property that have one simple resource: <vocab:property rdf:resource="http://site.com"/>
+                //If the pair was'nt verified yet and the value of his property contais "http://" and is a resource and the value of the subproperty is empty
+                else if(!verifiedPairs.get(i).isVerified()
+                        && verifiedPairs.get(i).getProperty().getValue().contains("http://")
+                        && verifiedPairs.get(i).getProperty().isAsResource()
+                        && verifiedPairs.get(i).getProperty().getSubPropertyOf().isEmpty()){
+
+                    Resource propResource = ResourceFactory
+                            .createResource(verifiedPairs.get(i).getProperty().getValue());
+                    Property property = ResourceFactory.createProperty(normalizeURI(v.getUri()), propertyName);
+                    model.add(resourceInstance, property, propResource);
+                    verifiedPairs.get(i).setVerified(true);
+                }
+                //Represents the begins of a resource: <vocab:property rdf:parseType="Resource">
+                //If the pair was'nt verified yet and the value of his property is empty and is a resource and the value of the subproperty is empty
+                else if (!verifiedPairs.get(i).isVerified()
+                        && verifiedPairs.get(i).getProperty().getValue().isEmpty()
+                        && verifiedPairs.get(i).getProperty().isAsResource()
+                        && verifiedPairs.get(i).getProperty().getSubPropertyOf().isEmpty()) {
+                    Property property = ResourceFactory.createProperty(normalizeURI(v.getUri()), propertyName);
+//                    RDFNode innerNode =
+                    Resource innerResource = model.createResource();
+                    List<VProperty> vProperties = v.getProperties();
+                    for (int k = 0; k < v.getProperties().size(); k++) {
+                        //Treats the internal properties of the new resource included
+                        //If the name of property of one pair is equals to the property name of another pair
+                        if (verifiedPairs.get(i).getProperty().getPropertyName().equals(vProperties.get(k).getSubPropertyOf())) {
+                            //Treats the case wich the subproperty is represented like a resource <vocab:property rdf:resource="http://anything.com"/
+                            if(!vProperties.get(k).getValue().equals("") && vProperties.get(k).isAsResource()){
+                                Property innerProperty = ResourceFactory.createProperty(normalizeURI(v.getUri()), vProperties.get(k).getPropertyName());
+                                Resource r = ResourceFactory.createResource(vProperties.get(k).getValue());
+                                model.add(innerResource, innerProperty, r);
+                            }
+                            //Treats the case wich the subproperty is represented like a comom tag: <vocab:property>value</vocab:property>
+                            else{
+                                Property innerProperty = ResourceFactory
+                                        .createProperty(normalizeURI(v.getUri()), vProperties.get(k).getPropertyName());
+                                innerResource.addProperty(innerProperty, vProperties.get(k).getValue());
+                            }
+                            verifiedPairs.get(k).setVerified(true);
+                        }
+                    }
+                    resourceInstance.addProperty(property, innerResource);
+                    verifiedPairs.get(i).setVerified(true);
+                }
+            }
+        }
     }
 
 
@@ -616,7 +852,7 @@ public class SMController {
         return false;
     }
 
-    public List<PrefixedPair> getUsedVocabularies(List<PrefixedPair> prefixedPairs){
+    private List<PrefixedPair> getUsedVocabularies(List<PrefixedPair> prefixedPairs){
 
         List<PrefixedPair> usedVocabularies = new ArrayList();
         for (PrefixedPair prefixedPair: prefixedPairs){
@@ -627,149 +863,4 @@ public class SMController {
         return usedVocabularies;
     }
 
-    /**
-     * Method responsible for creating a new resource according to the data passed according to the predefined ontology
-     * <br> The vocabularies, properties and values will be passed to create the new instance of the ontology
-     * @param model Model that will receive the data of the new ontology to be created
-     * @param resource A SMResource with data from the new ontology
-     */
-    public void addAsResource(Model model, SMResource resource) {
-        Resource resourceDefiniton = ResourceFactory
-                .createResource(getResourceUri(resource) +  resource.getName());
-        Resource resourceInstance = model.createResource(getResourceID(resource), resourceDefiniton);
-
-        for (SMVocabulary v : resource.getVocabularies()) {
-            ArrayList<Verified> verifiedPairs = new ArrayList<>();
-            for(VProperty p : v.getProperties()){
-                verifiedPairs.add(new Verified(p));
-            }
-            for (int i = 0; i < verifiedPairs.size(); i++) {
-                String propertyName = verifiedPairs.get(i).getProperty().getPropertyName();
-                //Represents the property like a a comom tag: <vocab:property>value</vocab:property>
-                //If the pair was'nt verified yet and the value of his property isn't empty and the value of his property not contais "http://" and is a resource and the value of the subproperty is empty
-                if (!verifiedPairs.get(i).isVerified()
-                        && !verifiedPairs.get(i).getProperty().getValue().isEmpty()
-                        && !verifiedPairs.get(i).getProperty().getValue().contains("http://")
-                        && !verifiedPairs.get(i).getProperty().isAsResource()
-                        && verifiedPairs.get(i).getProperty().getSubPropertyOf().isEmpty()){
-
-                    Property property = ResourceFactory.createProperty(normalizeURI(v.getUri()), propertyName);
-                    resourceInstance.addProperty(property, verifiedPairs.get(i).getProperty().getValue());
-                    verifiedPairs.get(i).setVerified(true);
-                }
-                //Represents the property that have one simple resource: <vocab:property rdf:resource="http://site.com"/>
-                //If the pair was'nt verified yet and the value of his property contais "http://" and is a resource and the value of the subproperty is empty
-                else if(!verifiedPairs.get(i).isVerified()
-                        && verifiedPairs.get(i).getProperty().getValue().contains("http://")
-                        && verifiedPairs.get(i).getProperty().isAsResource()
-                        && verifiedPairs.get(i).getProperty().getSubPropertyOf().isEmpty()){
-
-                    Resource propResource = ResourceFactory
-                            .createResource(verifiedPairs.get(i).getProperty().getValue());
-                    Property property = ResourceFactory.createProperty(normalizeURI(v.getUri()), propertyName);
-                    model.add(resourceInstance, property, propResource);
-                    verifiedPairs.get(i).setVerified(true);
-                }
-                //Represents the begins of a resource: <vocab:property rdf:parseType="Resource">
-                //If the pair was'nt verified yet and the value of his property is empty and is a resource and the value of the subproperty is empty
-                else if (!verifiedPairs.get(i).isVerified()
-                        && verifiedPairs.get(i).getProperty().getValue().isEmpty()
-                        && verifiedPairs.get(i).getProperty().isAsResource()
-                        && verifiedPairs.get(i).getProperty().getSubPropertyOf().isEmpty()) {
-                    Property property = ResourceFactory.createProperty(normalizeURI(v.getUri()), propertyName);
-//                    RDFNode innerNode =
-                    Resource innerResource = model.createResource();
-                    List<VProperty> vProperties = v.getProperties();
-                    for (int k = 0; k < v.getProperties().size(); k++) {
-                        //Treats the internal properties of the new resource included
-                        //If the name of property of one pair is equals to the property name of another pair
-                        if (verifiedPairs.get(i).getProperty().getPropertyName().equals(vProperties.get(k).getSubPropertyOf())) {
-                            //Treats the case wich the subproperty is represented like a resource <vocab:property rdf:resource="http://anything.com"/
-                            if(!vProperties.get(k).getValue().equals("") && vProperties.get(k).isAsResource()){
-                                Property innerProperty = ResourceFactory.createProperty(normalizeURI(v.getUri()), vProperties.get(k).getPropertyName());
-                                Resource r = ResourceFactory.createResource(vProperties.get(k).getValue());
-                                model.add(innerResource, innerProperty, r);
-                            }
-                            //Treats the case wich the subproperty is represented like a comom tag: <vocab:property>value</vocab:property>
-                            else{
-                                Property innerProperty = ResourceFactory
-                                        .createProperty(normalizeURI(v.getUri()), vProperties.get(k).getPropertyName());
-                                innerResource.addProperty(innerProperty, vProperties.get(k).getValue());
-                            }
-                            verifiedPairs.get(k).setVerified(true);
-                        }
-                    }
-                    resourceInstance.addProperty(property, innerResource);
-                    verifiedPairs.get(i).setVerified(true);
-                }
-            }
-        }
-    }
-
-    /**
-     * Method responsible for normalizing the URI of the created resource by adding '/' if necessary
-     * @param uri String that stores the URI
-     * @return Returns a String from a normalized URI
-     */
-    private String normalizeURI(String uri) {
-        return (uri.endsWith("/") || uri.endsWith("#")) ? uri : uri + "/";
-    }
-
-    /**
-     * Method that generates a unique identifier to be coupled to the URI for a new instance of the ontology
-     * @param resource SMResource resource passed to treat resource URI
-     * @return Returns a String with the resource URI plus a unique identifier
-     */
-//    private String getResourceID(SMResource resource) {
-//        return resource.getAbout() + UUID.randomUUID();
-//    }
-    private String getResourceID(SMResource resource) {
-        boolean hasLocalName = resourceHasLocalName(resource);
-        String localName =  hasLocalName? getResourceLocalName(resource) : String.valueOf(UUID.randomUUID());
-        return getResourceUri(resource) + localName;
-    }
-
-    private boolean resourceHasLocalName(SMResource resource) {
-        int localNameSize = getResourceLocalNameSize(resource);
-        return (localNameSize == 37 && (!getResourceLocalName(resource).contains(".")));
-    }
-
-    private int getResourceLocalNameSize(SMResource resource) {
-        int localNameSize = 0;
-        String aboutResource = resource.getAbout();
-        for (int x = aboutResource.length() - 2; aboutResource.charAt(x) != '/'; x--)
-            localNameSize++;
-        localNameSize++ ;
-        return localNameSize;
-    }
-
-    private String getResourceLocalName(SMResource resource){
-        String resourceLocalName;
-        String resourceAbout = resource.getAbout();
-        resourceLocalName = resourceAbout.substring(resource.getAbout().length() - getResourceLocalNameSize(resource), resourceAbout.length() - 1);
-        return resourceLocalName;
-    }
-
-    private  String getResourceUri(SMResource resource){
-        String resourceUri;
-        String aboutResource = resource.getAbout();
-        resourceUri = resourceHasLocalName(resource) ? aboutResource.substring(0, aboutResource.length() - getResourceLocalNameSize(resource)) : aboutResource;
-        return resourceUri;
-    }
-
-
-    /**
-     * Method responsible for creating a template that will receive the given data:
-     * <br> Vocabularies with their respective prefixes and properties with their values
-     * @param resource SMResource with the data to insert into the template
-     * @return Returns a Model with the passed data
-     */
-    public Model createModel(SMResource resource) {
-        Model model = ModelFactory.createDefaultModel();
-        model.setNsPrefix(resource.getPrefix(), getResourceUri(resource));
-        for (SMVocabulary v : resource.getVocabularies()) {
-            model.setNsPrefix(v.getPrefix(), normalizeURI(v.getUri()));
-        }
-        return model;
-    }
 }
