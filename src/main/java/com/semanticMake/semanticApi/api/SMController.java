@@ -188,7 +188,7 @@ public class SMController {
      * Method responsible for assign the triple store address e the dataset name
      * @param datasetAddress String to hold the triple store address
      * @param datasetName String to hold the dataset name
-     * @return Returns true
+     * @return Returns a ResponseEntity with true value
      */
     @PostMapping("/setTripleStoreAddress")
     @ApiOperation(value = "Method for assign the triple store address", response = ResponseEntity.class)
@@ -240,7 +240,7 @@ public class SMController {
      * Method responisble for delete one especified resouce
      * @param workspace String to hold the name of the workspace where the resource is
      * @param resourceId String to hold the ID of the resource to be deleted
-     * @return Returns a ResponseEntity containing a APIResponse
+     * @return Returns a ResponseEntity containing a SMResource
      */
     @DeleteMapping("/deleteResource/{workspace}")
     @ApiOperation(value = "Method responsible to delete a resource given the resource uri", response = ResponseEntity.class)
@@ -271,7 +271,7 @@ public class SMController {
     /**
      * Method responsible for to delete one specifc graph given his name that we call workspace
      * @param workspace String to hold the name of the workspace to be deleted
-     * @return Returns a ResponseEntity containing a APIResponse
+     * @return Returns a ResponseEntity containing a SMResource
      */
     @DeleteMapping("/deleteGraph/{workspace}")
     @ApiOperation(value = "Method responsible to delete a especifc graph given the graph name", response = ResponseEntity.class)
@@ -289,7 +289,7 @@ public class SMController {
      * @param workspace String to hold the graph name that contains the resource
      * @param resourceId String to hold the resource URI
      * @param propertyUri String to hold the property URI that will be deleted
-     * @return Returns a ResponseEntity containing a APIResponse
+     * @return Returns a ResponseEntity containing a SMResource
      */
     @DeleteMapping("/deleteProperty/{workspace}")
     @ApiOperation(value = "Method responsible to delete a especific property of a resource given the property uri", response = ResponseEntity.class)
@@ -353,7 +353,7 @@ public class SMController {
      * @param resourceId String to hold the resource URI
      * @param propertyUri String to hold the property that will be deleted
      * @param newValue String to hold the new value to assign to the property
-     * @return Returns a ResponseEntity containing a APIResponse
+     * @return Returns a ResponseEntity containing a SMResource
      */
     @PutMapping("/updateProperty/{workspace}")
     @ApiOperation(value = "Method responsible to update a property of a resource", response = ResponseEntity.class)
@@ -435,7 +435,7 @@ public class SMController {
      * @param value String to hold the property value
      * @param isExactly Boolean usedo to determine if the passed value must be considered exactly like was passed
      *                  or if must only to contain the value passed on the property
-     * @return Returns a ResponseEntity containing a list of resources
+     * @return Returns a ResponseEntity containing a list of SMResource
      */
     @GetMapping("/getResources/{workspace}")
     @ApiOperation(value = "Method responsible to get all resources that have one value of a property", response = ResponseEntity.class)
@@ -491,7 +491,7 @@ public class SMController {
             @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
             @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")})
-    public ResponseEntity<Collection<OptGroup>> getVocabularyPredicates(
+    private ResponseEntity<Collection<OptGroup>> getVocabularyPredicates(
             @RequestParam(value = "vocabPrefix", required = false) String vocabPrefix,
             @RequestParam(value = "search", required = false) String search){
 
@@ -511,7 +511,7 @@ public class SMController {
      * Method for obtaining a resource given his URI
      * @param workspace String to hold the graph nome that contain the resource searched
      * @param resourceId String to hold the resource ID searched
-     * @return Returns a ResponseEntity containing a APIResponse
+     * @return Returns a ResponseEntity containing a SMResource
      */
     @GetMapping("/getResource/{workspace}")
     @ApiOperation(value = "Method responsible for obtaining a resource given his uri", response = ResponseEntity.class)
@@ -526,7 +526,7 @@ public class SMController {
      * Method responsible for obtaining a list of resources given the resource type
      * @param workspaces A string list that hold the graphs names that contain the resource searched
      * @param type String to hold the resource type
-     * @return Returns a ResponseEntity containing a APIResponse
+     * @return Returns a ResponseEntity containing a list of SMResource
      */
     @GetMapping("/getResourcesByType")
     @ApiOperation(value = "Method responsible for obtaining a list of resources given the resource type", response = ResponseEntity.class)
