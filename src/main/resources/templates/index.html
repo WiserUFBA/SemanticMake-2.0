@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8"/>
     <title>SemanticMake Framework</title>
@@ -18,8 +18,10 @@
     <div>
         <ul class="nav nav-tabs">
             <li class="active"><a data-toggle="tab" href="#what-is-it">What is It</a></li>
-            <li><a data-toggle="tab" href="#create-and-save">API Teaching</a></li>
+            <li><a data-toggle="tab" href="#getting-start">Getting Start</a></li>
             <li><a data-toggle="tab" href="#how-it-works">How it works</a></li>
+            <li><a data-toggle="tab" href="#create-and-save">API Teaching</a></li>
+            <li><a data-toggle="tab" href="#api-client-classes">API Client Classes</a></li>
             <li><a data-toggle="tab" href="#examples">Examples</a></li>
         </ul>
         <div class="tab-content">
@@ -30,58 +32,215 @@
                         <div class="panel-heading">
                             <h1 class="panel-title">Description</h1>
                         </div>
-                        <div class="panel-body">
+                        <div class="panel-content">
                             <center>
-                                <h2>A easy way to make semantic data trough Javascript</h2>
-                                <h4>Are four elements to help you in this activitie</h4>
+                                <h2>A easy way to make semantic data trough Java or Javascript</h2>
+                                <h4>Are five elements elements to help you in this activitie</h4>
                             </center>
-                            <div class="row">
-                                <div class="col-xs-6 col-md-3">
-                                    <div class="thumbnail">
-                                        <img src="images/api.png" width="170"/>
-                                        <div class="caption">
-                                            <br/><br/>
-                                            <h3>Semantic API</h3>
-                                            <p>Tool focused mainly in authoring and publishing of linked data.
-                                                Has operations of storage and update but besides these it has functions of consultations and exclusion in triple stores</p>
-                                            <br/><br/><br/><br/><br/>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xs-6 col-md-3">
-                                    <div class="thumbnail">
-                                        <img src="images/teach.jpg" width="170"/>
-                                        <div class="caption">
-                                            <h3>Teaching application</h3>
-                                            <p>this application helps you understand how the API works.
-                                                This application helps to understand how the API works. showing the assembly of a new resource, showing at the same time both
-                                                the resource being assembled and the code necessary to persist the data in the presented form </p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xs-6 col-md-3">
-                                    <div class="thumbnail">
-                                        <img src="images/documentation.png" width="130"/>
-                                        <div class="caption">
-                                            <br/><br/>
-                                            <h3>Documentation</h3>
-                                            <p>The server side of api was done in java and has REST architecture. The <a href="documentation/javadoc/index.html"> documentation</a> is useful in implementation through collaborative work.</p>
-                                            <br/><br/><br/><br/><br/><br/><br/>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xs-6 col-md-3">
-                                    <div class="thumbnail">
-                                        <img src="images/testing.png" width="120"/>
-                                        <div class="caption">
-                                            <h3>API test application </h3>
-                                            <p>There is also an application that tests all server-side methods. There are input fields to receive the data.
-                                                Responses are returned according to the data passed. Click <a href="/swagger-ui.html">here</a> to open the application</p>
-                                            <br/><br/><br/>
-                                        </div>
-                                    </div>
+                            <div class="row float-left">
+                                <div class="col-md-3"><center><img src="images/packages.jpg" class="rounded" width="150"/></center></div>
+                                <div class="col-md-9">
+                                    <h3>Core</h3>
+                                    <p>
+                                        A set of Java packages with routines to support their back-end development for semantic data.
+                                    </p>
                                 </div>
                             </div>
+                            <br/>
+                            <div class="row float-left">
+                                <div class="col-md-3"><center><img src="images/api.png" class="rounded" width="160"/></center></div>
+                                <div class="col-md-9">
+                                    <h3>Semantic API</h3>
+                                    <p>
+                                        Tool focused mainly in authoring and publishing of linked data.
+                                        Has operations of storage and update but besides these it has functions of consultations and exclusion in triple stores
+                                    </p>
+                                </div>
+                            </div>
+                            <br/>
+                            <div class="row float-left">
+                                <div class="col-md-3">
+                                    <center><img src="images/teach.jpg" class="rounded" width="170"/></center>
+                                </div>
+                                <div class="col-md-9">
+                                    <h3>Teaching application</h3>
+                                    <p>
+                                        This application helps to understand how the API works. Showing at the same time both
+                                        the resource being assembled and the code necessary to persist the data in the presented form.
+                                    </p>
+                                </div>
+                            </div>
+                            <br/>
+                            <div class="row float-left">
+                                <div class="col-md-3"><center><img src="images/documentation.png" class="rounded" width="140"/></center></div>
+                                <div class="col-md-9">
+                                    <h3>Documentation</h3>
+                                    <p>
+                                        The server side of api was done in java and has REST architecture. The  is useful in implementation through collaborative work.
+                                        Click in this <a href="documentation/javadoc/index.html">link</a> to open the SemanticcMake Java core documentation.
+                                    </p>
+                                </div>
+                            </div>
+                            <br/>
+                            <div class="row float-left">
+                                <div class="col-md-3"><center><img src="images/testing.png" class="rounded" width="150"/></center></div>
+                                <div class="col-md-9">
+                                    <h3>API test application </h3>
+                                    <p>
+                                        There is also an application that tests all server-side methods. There are input fields to receive the data.
+                                        Responses are returned according to the data passed. Click <a href="/swagger-ui.html">here</a> to open the application
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="getting-start" class="tab-pane fade">
+                <div class="container col-lg-offset-1 col-lg-10">
+                    <br/>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h1 class="panel-title">Introduction to sematic web</h1>
+                        </div>
+                        <div class="panel-content">
+                            <center><h4>This section presents basic concepts for initiation into semantic data</h4></center>
+                            <ul>
+                                <li><a href="#introduction"><h5>Introduction: Why to use linked data?</h5></a></li>
+                                <li><a href="#datasets"><h5>Datasets: Details about triple stores</h5></a></li>
+                                <li><a href="#ontology"><h5>Ontology: Making the concept of anythig</h5></a></li>
+                                <li><a href="#vocabulary"><h5>Vocabulary: A set of properties of a domain</h5></a></li>
+                                <li><a href="#resources"><h5>Resources: An ontology instance</h5></a></li>
+                            </ul>
+                            <div id="introduction">
+                                <h3>Introduction</h3>
+                                <div class="row float-left">
+                                    <div class="col-md-4"><center><img src="images/integration.png" class="rounded" width="200"/></center></div>
+                                    <div class="col-md-8">
+                                        <br/><br/>
+                                        <p> The purpose of semantic data is to give meaning to data in a way that it is understandable by machines.
+                                            Through this you can make relationships between data from any domains, and better yet, this potentiates
+                                            the integration of systems into different databases. These relationships are possible with the paradigm
+                                            called linked data, a set of norms that should be used to make semantic data.</p>
+                                    </div>
+                                 </div>
+                                <br/>
+                            </div>
+                            <div id="datasets">
+                                <h3>Datasets</h3>
+                                <div class="row float-left">
+                                    <div class="col-md-4"><center><img src="images/lod-cloud.png" class="rounded" width="200"/></center></div>
+                                    <div class="col-md-8">
+                                        <br/>
+                                        <p>The databases for storing semantic data are called triple stores, this is because all data relating to
+                                            something is stored in triple formats (Subject → predicate → value). In the figure to the side, each
+                                            image is considered a triple store and the edges represent the related data links.
+                                            Click <a href="https://www.w3.org/wiki/SweoIG/TaskForces/CommunityProjects/LinkingOpenData">here</a>
+                                            to view the community site for the pioneering triple data stores open project.
+                                            Click in this <a href="https://lod-cloud.net/">link</a> to open the website that shows the triple
+                                            stores diagram of this project.</p>
+                                    </div>
+                                </div>
+                                <br/>
+                            </div>
+                            <div id="ontology">
+                                <h3>Ontology</h3>
+                                <div class="row float-left">
+                                    <div class="col-md-4"><center><img src="images/ontology.jpg" class="irounded" width="180"/></center></div>
+                                    <div class="col-md-8">
+                                        <br/><br/>
+                                        <p>Ontologies are the basis for linked data formation. An ontology is an abstraction of a concept. Where a concept has
+                                            features that are assigned a set of instances. Its definition is made in a specific language so that it is
+                                            structured in a way that is understandable by machines. Didatically we can make an analogy to a class in object
+                                            orientation.</p>
+                                    </div>
+                                </div>
+                                <br/>
+                            </div>
+                            <div id="vocabulary">
+                                <h3>Vocabulary</h3>
+                                <div class="row float-left">
+                                    <div class="col-md-4"><center><img src="images/vocabularies.png" class="rounded" width="190"/></center></div>
+                                    <div class="col-md-8">
+                                        <br/>
+                                        <p>One of the components of ontologies is vocabularies, these are directed to infinite specific domains
+                                            like health, finance, commerce, social networks, science, etc ...Some examples of these vocabularies
+                                            are FOAF, Schema.org, Vcard, Dublin Core, SKOS, among others. Each vocabulary holds a set (and growing)
+                                            of properties / predicates. The predicates in turn are those responsible for establishing the domain
+                                            that the property will store - similarly, we compare to the data members in a class, or, the names of
+                                            the fields in the tables of a relational database. Currently
+                                            o <a href="https://lov.okfn.org/">Linked Open Vocabularies (LOV)</a> is the most popular site for
+                                            accessing vocabulary information.</p>
+                                    </div>
+                                </div>
+                                <br/>
+                            </div>
+                            <div id="resources">
+                                <h3>Resources</h3>
+                                <div class="row float-left">
+                                    <div class="col-md-4"><center><img src="images/resource.png" class="rounded" width="250"/></center></div>
+                                    <div class="col-md-8">
+                                        <br/>
+                                        <p>The defined ontologies allow the creation of resources and these are stored in triple stores.
+                                            Maintaining the comparison the resources created are the instances of the objects, with
+                                            identifier (in this case defined by a URI), defined vocabularies and
+                                            predicates, and values assigned to them. The language used for resource definition is RDF/XML.
+                                            The API teaching application presents this usage.</p>
+                                    </div>
+                                </div>
+                                <br/>
+                            </div>
+                            <br/><br/>
+                            <p>
+                                Finally we can realize that an ontology can contain as many vocabularies of different domains are needed to
+                                represent a data. Once the predicates are defined, how many are needed, they can receive values relative to
+                                their domain. These values can be a literal value (a name, a number, etc ...) or the URI of another resource.
+                                There is a specific notation for this representation in RDF/XML.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="how-it-works" class="tab-pane fade">
+                <div class="container col-lg-offset-1 col-lg-10">
+                    <br/>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h1 class="panel-title">What is necessary to use this framewrok?</h1>
+                        </div>
+                        <div class="panel-content">
+                            <p>
+                                SemanticMake was developed in Java and has packages that have routines that encapsulate various natural operations
+                                to manipulate linked data, such as retrieval, update, creation and deletion of resources. To start using them you only
+                                need to add the <a href="semanticMake.jar" download="semanticMake.jar"><b>semanticMake.jar</b></a> container to your project
+                                and use its routines as needed. This can aid in the back-end development of your web application. It should be noted that
+                                saving, updating, and deleting a resource are limited to ontologies. There are four ways of representing a value in a
+                                predicate: a literal, a resource URI, a literal value in a subproperty, or a URI of a resource in a subproperty. However,
+                                if these possible forms are not sufficient to maintain the data types for the desired ontologies, the developer will now
+                                have more work to program methods that meet their needs, but will still be supported by a set of methods that meet the
+                                desired ontologies.
+                            </p>
+                            <p>
+                                In addition, an API, called SemanticAPI, is available that enables the manipulation of linked data. On the server side
+                                this API was developed in Java and with the request methods use the REST architecture. The SemanticMake.jar container
+                                already contains this implementation. Its data manipulation methods are also limited to the ontology structures as well
+                                as the methods of the extensible packages. And these methods can not be increased. To use this API you need to import the
+                                <a href="semanticAPI.js" download="semanticAPI.js"><b>sematicAPI.js</b></a> library and this library has several calling functions,
+                                one for each of the API server methods and some utilitarian functions. Classes are available for configuring the application
+                                server address and the triple store address. If the triple store address is not passed then the API stores the data in a
+                                dataset making that service available and the database name is created and returned automatically the first time a data is
+                                persisted. The name of this database must contain a "workspace" + a sequence of 8 random digits, this name should be saved
+                                for later recordings.
+                            </p>
+                            <p>
+
+                                In the testing tool the passed parameters must be variables or JSON objects in the formats expected by the functions of the
+                                API server module, as shown in the examples of the tool. In the other sections of the site you will find all documentation of both
+                                the packages and the API and some examples of how to use it. The figure below represents the SemanticMake schema.
+                            </p>
+                            <center>
+                                <img src="images/semanticMakeSchema.png" class="rounded" width="550"/>
+                            </center>
                         </div>
                     </div>
                 </div>
@@ -99,12 +258,12 @@
                                         <h4>Resource</h4>
                                         <div class="form-group">
                                             <div class="input-group">
-                                                <input type="text" class="form-control" id="resPrefix" placeholder="prefixo" data-toggle="tooltip" title="Insira um valor"/>
+                                                <input type="text" class="form-control" id="resPrefix" placeholder="prefixo" data-toggle="tooltip" title="Enter a value"/>
                                                 <span class="input-group-addon">:</span>
-                                                <input title="Insira um valor" data-toggle="tooltip" type="text" class="form-control" id="resName" placeholder="name (type)"/>
+                                                <input title="Enter a value" data-toggle="tooltip" type="text" class="form-control" id="resName" placeholder="name (type)"/>
                                                 <span class="input-group-addon">about</span>
                                                 <input style="width: 285px" type="text" class="form-control" id="resAbout" placeholder="http://www.fre.dg/"
-                                                       data-toggle="tooltip" title="As URIs devem ser válidas: http://... terminando com / ou #"/>
+                                                       data-toggle="tooltip" title="The URIs must be valid: http://... ending with / or #"/>
                                             </div>
                                         </div>
                                     </div>
@@ -130,7 +289,7 @@
                                                 </select>
                                                 <span class="input-group-addon">=</span>
                                                 <input readonly="readonly" style="width: 270px" type="text" class="form-control" id="vocabUri" placeholder="http://www.foo.tz/"
-                                                       data-toggle="tooltip" title="As URIs devem ser válidas: http://... terminando com / ou #" tabindex="-1"/>
+                                                       data-toggle="tooltip" title="The URIs must be valid :: http://... ending with / or #" tabindex="-1"/>
                                                 <span class="input-group-btn">
                                                 <button type="button" id="addVocab" class="btn btn-secondary">
                                                   <span class="glyphicon glyphicon-plus"/>
@@ -143,16 +302,18 @@
                                     <div class="row">
                                         <div>
                                             <span style="font-size:18px">Properties</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                            <input type="checkbox" id="propAsResource" value="true" title="Guarda a URI de outro recurso" data-toggle="tooltip"/> As a resource&nbsp;&nbsp;
-                                            <input type="checkbox" id="hasSubproperty" title="Insere um Blank Node no recurso" data-toggle="tooltip" /> Has subproperties&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            <input type="checkbox" id="propAsResource" value="true" title="Save the URI from another resource" data-toggle="tooltip"/> As a resource&nbsp;&nbsp;
+                                            <input type="checkbox" id="hasSubproperty" title="Inserts a Blank Node in the resource" data-toggle="tooltip" /> Has subproperties&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                            <input type="checkbox" id="addDateTime" title="Adiciona a data e a hora da inserção do resurso" data-toggle="tooltip" /> addDateTime&nbsp;&nbsp;
-                                            <input type="checkbox" id="addCoordinates" title="Adiciona a data e a hora da inserção do resurso" data-toggle="tooltip" /> addCoordinates&nbsp;&nbsp;
+                                            <input type="checkbox" id="addDateTime" value="true" title="Add date and time of resource insertion" data-toggle="tooltip" /> addDateTime&nbsp;&nbsp;
+                                            <input type="checkbox" id="addCoordinates" value="true" title="Adds the coordinates from where the insertion of the resource was made" data-toggle="tooltip" /> addCoordinates&nbsp;&nbsp;
                                         </div>
                                         <div class="form-group">
                                             <div class="input-group">
-                                                <select data-toggle="tooltip" title="Selecione um valor" placeholder="prefix" class="form-control" style="width: 150px" id="propPrefix"></select>
+                                                <select data-toggle="tooltip" title="Select a vocabulary prefix" placeholder="prefix" class="form-control" style="width: 150px" id="propPrefix">
+                                                    <option value="" title="">Vocabulary prefix</option>
+                                                </select>
                                             </div>
                                             <div class="input-group">
                                                 <span class="input-group-addon">:</span>
@@ -172,13 +333,13 @@
                                     <br/>
                                     <div class="row" id="subpropDiv" style="display: none">
                                         <div class="form-group">
-                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id="subpropAsResource" value="true" title="Guarda a URI de outro recurso" data-toggle="tooltip"/> Como um recurso &nbsp;&nbsp;&nbsp;&nbsp;
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id="subpropAsResource" value="true" title="Save the URI from another resource" data-toggle="tooltip"/> Como um recurso &nbsp;&nbsp;&nbsp;&nbsp;
                                             <div class="input-group">
                                                 <select data-toggle="tooltip" class="form-control select2-single" id="subpropName" style="width:260px"></select>
                                             </div>
                                             <div class = "input-group">
                                                 <span class="input-group-addon">=</span>
-                                                <input type="text" class="form-control" id="subpropValue" style="width:250px" placeholder="valor" data-toggle="tooltip" />
+                                                <input type="text" class="form-control" id="subpropValue" style="width:250px" placeholder="Value" data-toggle="tooltip" />
                                                 <div class="input-group-btn">
                                                     <button type="button" id="addSubprop" class="btn btn-secondary">
                                                         <span class="glyphicon glyphicon-plus"></span>
@@ -209,11 +370,12 @@
                                         <br/><br/>
                                     </pre>
                                 </div>
+
                         </div>
                     </div>
                 </div>
             </div>
-            <div id="how-it-works" class="tab-pane fade">
+            <div id="api-client-classes" class="tab-pane fade">
                 <br/>
                 <div class="container col-lg-offset-1 col-lg-10">
                     <ul class="nav nav-pills nav-stacked col-md-2">
@@ -223,7 +385,7 @@
                         <li><a href="#property" data-toggle="pill">Property</a></li>
                     </ul>
                     <div class="tab-content col-md-10">
-                        <div class="tab-pane active panel panel-default " id="semantic_api">
+                        <div class="tab-pane active panel panel-default" id="semantic_api">
                             <div class="panel-heading">
                                 <h1 class="panel-title">SemanticAPI class</h1>
                             </div>

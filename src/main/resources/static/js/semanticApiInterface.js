@@ -74,7 +74,7 @@
     
     propPrefixField       .addEventListener('change', validateField(isNotEmpty))
     $(propNameField)      .on('select2:close', validateField(isNotEmpty))
-    propValueField        .addEventListener('blur', validateField(isNotEmpty))
+    propValueField        .addEventListener('change', validateField(isNotEmpty))
 
     $(subpropNameField)   .on('select2:close', validateField(isNotEmpty))
     subpropValueField     .addEventListener('blur', validateField(isNotEmpty))
@@ -119,6 +119,16 @@
     $(subpropAsResourceCheck).on({
       'mouseenter': (evt) => { $(evt.target).tooltip('show') },
       'mouseleave': (evt) => { $(evt.target).tooltip('hide') }
+    })
+
+    $(addDateTimeCheck).on({
+        'mouseenter': (evt) => {$(evt.target).tooltip('show')},
+        'mouseleave': (evt) => {$(evt.target).tooltip('hide')}
+    })
+
+    $(addCoordinatescheck).on({
+        'mouseenter': (evt) => {$(evt.target).tooltip('show')},
+        'mouseleave': (evt) => {$(evt.target).tooltip('hide')}
     })
 
     hasSubpropCheck.addEventListener('click', (evt) => {
@@ -225,6 +235,7 @@
           resource.vocabularies[prefix].properties.push(property)
         }
         else if(propAsResourceCheck.checked && propValueField.value.includes('http://')){
+
           resource.vocabularies[prefix].properties.push(property)
         }          
       }
