@@ -173,7 +173,7 @@ class SemanticAPI{
         this.config.baseURL = this.config.baseURL.substring(0, (this.config.baseURL.length - 1))
       }
       return fetch(`${this.config.baseURL}/${endpoint}`, Object.assign({}, this.defaultParams, params))
-      .then((response) => { response.json() })
+      .then((response) => { return response.json() })
     }
 
     /**

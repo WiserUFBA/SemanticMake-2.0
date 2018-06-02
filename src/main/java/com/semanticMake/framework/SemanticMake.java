@@ -1,18 +1,13 @@
 package com.semanticMake.framework;
 
-import com.semanticMake.semanticApi.api.PrefixedPair;
 import com.semanticMake.semanticApi.api.SMController;
-import com.semanticMake.semanticApi.util.Verified;
-import io.swagger.annotations.Api;
-import lombok.Data;
 import org.apache.jena.query.DatasetAccessor;
 import org.apache.jena.query.DatasetAccessorFactory;
 import org.apache.jena.rdf.model.*;
-import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
-
-import static org.springframework.util.StringUtils.hasText;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * This class was made to aid developers to create semantic data more easely and to persist them.
@@ -134,7 +129,7 @@ public class SemanticMake {
             System.out.println("Could'nt retrieve template with passed workspace: " + e.getMessage());
         }
         controller.getDatasetAccessor().add(graphURI, model);
-        return "Succes";
+        return "Success";
     }
 
     /**

@@ -38,7 +38,7 @@
                                 <h4>Are five elements elements to help you in this activitie</h4>
                             </center>
                             <div class="row float-left">
-                                <div class="col-md-3"><center><img src="images/packages.jpg" class="rounded" width="150"/></center></div>
+                                <div class="col-md-3"><center><img src="images/packages.png" class="rounded" width="150"/></center></div>
                                 <div class="col-md-9">
                                     <h3>Core</h3>
                                     <p>
@@ -77,7 +77,7 @@
                                     <h3>Documentation</h3>
                                     <p>
                                         The server side of api was done in java and has REST architecture. The  is useful in implementation through collaborative work.
-                                        Click in this <a href="documentation/javadoc/index.html">link</a> to open the SemanticcMake Java core documentation.
+                                        Click in this <a href="documentation/javadoc/index.html">link</a> to open the SemanticMake Java core documentation.
                                     </p>
                                 </div>
                             </div>
@@ -87,7 +87,7 @@
                                 <div class="col-md-9">
                                     <h3>API test application </h3>
                                     <p>
-                                        There is also an application that tests all server-side methods. There are input fields to receive the data.
+                                        There is also an application that tests all API server-side methods. There are input fields to receive the data.
                                         Responses are returned according to the data passed. Click <a href="/swagger-ui.html">here</a> to open the application
                                     </p>
                                 </div>
@@ -106,16 +106,16 @@
                         <div class="panel-content">
                             <center><h4>This section presents basic concepts for initiation into semantic data</h4></center>
                             <ul>
-                                <li><a href="#introduction"><h5>Introduction: Why to use linked data?</h5></a></li>
-                                <li><a href="#datasets"><h5>Datasets: Details about triple stores</h5></a></li>
-                                <li><a href="#ontology"><h5>Ontology: Making the concept of anythig</h5></a></li>
-                                <li><a href="#vocabulary"><h5>Vocabulary: A set of properties of a domain</h5></a></li>
-                                <li><a href="#resources"><h5>Resources: An ontology instance</h5></a></li>
+                                <li><a href="#introduction">Introduction: Why to use linked data?</a></li>
+                                <li><a href="#datasets">Datasets: Details about triple stores</a></li>
+                                <li><a href="#ontology">Ontology: Making the concept of anythig</a></li>
+                                <li><a href="#vocabulary">Vocabulary: A set of properties of a domain</a></li>
+                                <li><a href="#resources">Resources: An ontology instance</a></li>
                             </ul>
                             <div id="introduction">
                                 <h3>Introduction</h3>
                                 <div class="row float-left">
-                                    <div class="col-md-4"><center><img src="images/integration.png" class="rounded" width="200"/></center></div>
+                                    <div class="col-md-4"><center><img src="images/integration.png" class="img-rounded" width="200"/></center></div>
                                     <div class="col-md-8">
                                         <br/><br/>
                                         <p> The purpose of semantic data is to give meaning to data in a way that it is understandable by machines.
@@ -163,7 +163,7 @@
                                     <div class="col-md-4"><center><img src="images/vocabularies.png" class="rounded" width="190"/></center></div>
                                     <div class="col-md-8">
                                         <br/>
-                                        <p>One of the components of ontologies is vocabularies, these are directed to infinite specific domains
+                                        <p>One of the components of ontologies are the vocabularies, these are directed to infinite specific domains
                                             like health, finance, commerce, social networks, science, etc ...Some examples of these vocabularies
                                             are FOAF, Schema.org, Vcard, Dublin Core, SKOS, among others. Each vocabulary holds a set (and growing)
                                             of properties / predicates. The predicates in turn are those responsible for establishing the domain
@@ -262,7 +262,7 @@
                                                 <span class="input-group-addon">:</span>
                                                 <input title="Enter a value" data-toggle="tooltip" type="text" class="form-control" id="resName" placeholder="name (type)"/>
                                                 <span class="input-group-addon">about</span>
-                                                <input style="width: 285px" type="text" class="form-control" id="resAbout" placeholder="http://www.fre.dg/"
+                                                <input style="width: 280px" type="text" class="form-control" id="resAbout" placeholder="http://www.fre.dg/"
                                                        data-toggle="tooltip" title="The URIs must be valid: http://... ending with / or #"/>
                                             </div>
                                         </div>
@@ -303,9 +303,8 @@
                                         <div>
                                             <span style="font-size:18px">Properties</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                             <input type="checkbox" id="propAsResource" value="true" title="Save the URI from another resource" data-toggle="tooltip"/> As a resource&nbsp;&nbsp;
-                                            <input type="checkbox" id="hasSubproperty" title="Inserts a Blank Node in the resource" data-toggle="tooltip" /> Has subproperties&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            <input type="checkbox" id="hasSubproperty" title="Inserts a Blank Node in the resource" data-toggle="tooltip" /> Has subproperties&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                             <input type="checkbox" id="addDateTime" value="true" title="Add date and time of resource insertion" data-toggle="tooltip" /> addDateTime&nbsp;&nbsp;
                                             <input type="checkbox" id="addCoordinates" value="true" title="Adds the coordinates from where the insertion of the resource was made" data-toggle="tooltip" /> addCoordinates&nbsp;&nbsp;
                                         </div>
@@ -333,7 +332,7 @@
                                     <br/>
                                     <div class="row" id="subpropDiv" style="display: none">
                                         <div class="form-group">
-                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id="subpropAsResource" value="true" title="Save the URI from another resource" data-toggle="tooltip"/> Como um recurso &nbsp;&nbsp;&nbsp;&nbsp;
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id="subpropAsResource" value="true" title="Save the URI from another resource" data-toggle="tooltip"/> As a resource&nbsp;&nbsp;&nbsp;&nbsp;
                                             <div class="input-group">
                                                 <select data-toggle="tooltip" class="form-control select2-single" id="subpropName" style="width:260px"></select>
                                             </div>
@@ -512,7 +511,7 @@
                                 <h1 class="panel-title">Vocabulary class</h1>
                             </div>
                             <div class="panel-content">
-                                <p>This class é very simple, it only has a constructor of a smVocabulary to add to a resource</p>
+                                <p>This class is very simple, it only has a constructor of a smVocabulary to add to a resource</p>
                                 <p>The contructor sctructure will be showed bellow:</p>
                                 <pre class="brush: js">
                                     class Vocabulary{
@@ -563,15 +562,19 @@
                             <div id="initial_setting" class="collapse in">
                                 <pre class="brush: js">
                                     const config = {
+                                    &nbsp;&nbsp;&nbsp;&nbsp;datasetName: 'SemanticContent'          //Optional
+                                    &nbsp;&nbsp;&nbsp;&nbsp;datasetAddress: 'http://localhost:3030' //Optional
                                     &nbsp;&nbsp;&nbsp;&nbsp;baseURL: 'http://localhost:8080/',
                                     &nbsp;&nbsp;&nbsp;&nbsp;workspace: 'workspace-869f1a93'
                                     }
                                     const api = new SemanticAPI(config)
                                 </pre>
                                 <div class="panel-content text-format">
-                                    First, to start working with the API, you must assign some configuration values that represent the base URL
-                                    that is the address of the server where the data will be stored and the workspace where it will be stored. And then
-                                    we can create a new <strong>SemanticAPI</strong> object that have functions to manipulate resources and datasets.
+                                    First, to start working with the API, you must assign some configuration values: The baseURL that represent
+                                    the server application address that manage the logic of the back-end;  workspace, the name of the graph in the
+                                    database where will be stored the data; datasetAdress (optional), the address of the triple store; and,
+                                    datasetName, the name of database on the triple store. Then we can create
+                                    a new <strong>SemanticAPI</strong> object that have functions to manipulate resources and datasets.
                                 </div>
                             </div>
                         </div>

@@ -1,8 +1,8 @@
 package com.semanticMake.semanticApi.api;
 
-import com.semanticMake.framework.VProperty;
 import com.semanticMake.framework.SMResource;
 import com.semanticMake.framework.SMVocabulary;
+import com.semanticMake.framework.VProperty;
 import com.semanticMake.semanticApi.util.KnownVocabs;
 import com.semanticMake.semanticApi.util.OptGroupBuilder;
 import com.semanticMake.semanticApi.util.Verified;
@@ -233,7 +233,9 @@ public class SMController {
         }
 
         datasetAccessor.add(graphURI, model);
-        return ResponseEntity.ok(new APIResponse(graphURI, resourceId, null));
+        APIResponse response = new APIResponse(graphURI, resourceId, null);
+        return ResponseEntity.ok(response);
+//        return new ResponseEntity(response, HttpStatus.OK);
     }
 
     /**
