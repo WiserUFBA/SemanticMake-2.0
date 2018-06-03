@@ -1,5 +1,5 @@
 (
-  function() {
+  function() { 
 
     const resForm = document.forms[0]
 
