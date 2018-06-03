@@ -589,7 +589,7 @@
         //Monta a string com o prefixo e o nome do recurso
         let resourceHead = `xmlns:${resource.prefix}="${resource.about}"`
         //Monta a string que mostra todos os vocabulários usados
-        let vocabulariesString = resToSend.vocabularies.map(vocab => `xmlns:${vocab.prefix}="${vocab.uri}"`).join("\n  ");
+        let vocabulariesString = resToSend.vocabularies.map(vocab => `xmlns:${vocab.prefix}="${vocab.uri}"`).join("\n   ");
         //Cria uma variável que vai ser usada para guardar todas as propriedades de todos os vabulários usados
         const propsString = mountPropertiesString(resToSend.vocabularies)
         //Verifica se o nome do recurso é vazio e apresenta 'rdf:Desciption' se for
@@ -675,20 +675,21 @@
     function showCalledFunctions(evt){
       const res         = getResourceToSend()
       const props       = getProps(res.vocabularies)
-      let vocabularies  = ''
+      let vocabularies  = []
       let utilities     = []
       RDFprops          = []
 
       for (let vocab of res.vocabularies){
-        vocabularies += `r.addVocabulary("${vocab.prefix}", "${vocab.uri}")`
+        vocabularies.push(`r.addVocabulary("${vocab.prefix}", "${vocab.uri}")`)
       }
+      let addVocabularies = vocabularies.join('\n')
       for(let p of props){
         if(p.value != ''){
           RDFprops.push(`const p = new Property("${p.propertyName}", "${p.value}", "${p.asResource}", "${p.subPropertyOf}")
- r.addTriple("${p.prefix}", p)`)
+r.addTriple("${p.prefix}", p)`)
         } 
       }
-      let properties = RDFprops.join('\n ')
+      let addProperties = RDFprops.join('\n')
       let end = ''
       if (evt.target === saveButton){
         let dateTime = (addDateTimeCheck.checked)? 'r.addDateTime()' :'r.addDateTime(\"workspace\")'
@@ -696,17 +697,28 @@
           utilities.push('r.addDateTime()')
         }
         if(addCoordinatescheck.checked){
-          utilities.push('r.addCoordinatesAndSave()')
+          utilities.push('api.addCoordinatesAndSave()')
         }else{
-          utilities.push('r.sendResource(\"workspace\")')
+          utilities.push('api.sendResource(r)')
         }
-        end = utilities.join('\n ')
+        end = utilities.join('\n')
       }
-      let out = `Called functions (example):
- let r = new Resource("${res.name}", "${res.prefix}", "${res.about}")
- ${vocabularies}
- ${properties}
- ${end}`
+      let out = `Correspondent code:
+const config = {
+    datasetName:    'datasetName'                 //Optional
+    datasetAddress: 'http://datasetAddress:3030'  //Optional
+    baseURL:        'http://applicationServerAddress:8080/',
+    workspace:      'workspaceName'
+}
+const api = new SemanticAPI(config)      
+
+let r = new Resource("${res.name}", "${res.prefix}", "${res.about}")
+
+${addVocabularies}
+ 
+${addProperties}
+ 
+${end}`
       calledFunctions.innerText = out
     }
 }()
