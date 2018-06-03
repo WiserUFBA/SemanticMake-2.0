@@ -229,7 +229,7 @@ public class SMController {
             if(datasetAccessor.getModel(graphURI) == null)
                 graphURI = "/workspace-" + UUID.randomUUID().toString().substring(0,8);
         }catch (Exception e){
-            System.out.println("Could not recover past workspace");
+            System.out.println("Could not recover past workspace.");
         }
 
         datasetAccessor.add(graphURI, model);
