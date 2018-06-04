@@ -5,7 +5,9 @@
 
     const addVocabButton          = document.getElementById('addVocab')
     const addPropButton           = document.getElementById('addProp')
+    addPropButton.disabled        = true
     const addSubpropButton        = document.getElementById('addSubprop')
+    addSubpropButton.disabled     = true
     const saveButton              = document.getElementById('save')
 
     const resPrefixField          = document.getElementById('resPrefix')
@@ -74,6 +76,10 @@
     
     propPrefixField       .addEventListener('change', validateField(isNotEmpty))
     $(propNameField)      .on('select2:close', validateField(isNotEmpty))
+    $(propNameField)      .on('select2:close', (evt) => {
+      if (validateField(isNotEmpty))
+        addSubpropButton.disabled = false
+    })
     propValueField        .addEventListener('change', validateField(isNotEmpty))
 
     $(subpropNameField)   .on('select2:close', validateField(isNotEmpty))
@@ -182,6 +188,9 @@
       const vocab = { prefix, uri, properties: [] } 
       //Atribui o objeto 'vocab' (inicialmente sem pares) ao vocabulário de prefixo ('prefix'), do recurso
       resource.vocabularies[prefix] = vocab
+      //Habilita o botão de adicionar propriedades
+      if(Object.keys(resource.vocabularies).length > 0)
+        addPropButton.disabled = false
       //Atualiza a lista de prefixos dos vocabulários usados no campo select
       updatePrefixList()
       //Mostra o recurso na tag '<pre>' de id 'result'
