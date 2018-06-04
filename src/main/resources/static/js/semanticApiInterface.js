@@ -703,7 +703,7 @@ r.addTriple("${p.prefix}", p)`)
         }
         end = utilities.join('\n')
       }
-      let out = `Correspondent code - Sample:
+      let out = `Correspondent code (Sample):
 const config = {
     datasetName:    'datasetName'                 //Optional
     datasetAddress: 'http://datasetAddress:3030'  //Optional
