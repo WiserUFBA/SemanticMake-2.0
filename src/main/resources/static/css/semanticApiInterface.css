@@ -2,7 +2,7 @@
   margin-top: 20px;
 }
 
-.has-error.form-control {
+.has-error.col-md-11 {
     background-color: #FFDBDB;
     border-color: #a94442;
     -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);

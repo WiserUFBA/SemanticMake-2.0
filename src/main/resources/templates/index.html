@@ -258,11 +258,11 @@
                                         <h4>Resource</h4>
                                         <div class="form-group">
                                             <div class="input-group">
-                                                <input type="text" class="form-control" id="resPrefix" placeholder="prefixo" data-toggle="tooltip" title="Enter a value"/>
+                                                <input type="text" class="form-control" id="resPrefix" placeholder="Resource prefix" data-toggle="tooltip" title="Enter a value"/>
                                                 <span class="input-group-addon">:</span>
-                                                <input title="Enter a value" data-toggle="tooltip" type="text" class="form-control" id="resName" placeholder="name (type)"/>
+                                                <input title="Enter a value" data-toggle="tooltip" type="text" class="form-control" id="resName" placeholder="Resource name(type)"/>
                                                 <span class="input-group-addon">about</span>
-                                                <input style="width: 280px" type="text" class="form-control" id="resAbout" placeholder="http://www.fre.dg/"
+                                                <input style="width: 280px" type="text" class="form-control" id="resAbout" placeholder="Resource ID - URI(http://www.fre.dg/)"
                                                        data-toggle="tooltip" title="The URIs must be valid: http://... ending with / or #"/>
                                             </div>
                                         </div>
@@ -288,7 +288,7 @@
                                                     <option value="geo">GEO</option>
                                                 </select>
                                                 <span class="input-group-addon">=</span>
-                                                <input readonly="readonly" style="width: 270px" type="text" class="form-control" id="vocabUri" placeholder="http://www.foo.tz/"
+                                                <input readonly="readonly" style="width: 270px" type="text" class="form-control" id="vocabUri" placeholder="Vocabulary URI(http://www.foo.tz/)"
                                                        data-toggle="tooltip" title="The URIs must be valid :: http://... ending with / or #" tabindex="-1"/>
                                                 <span class="input-group-btn">
                                                 <button type="button" id="addVocab" class="btn btn-secondary">
@@ -323,7 +323,7 @@
                                             <span class="input-group-addon">=</span>
                                             <input type="text" class="form-control" id="propValue" placeholder="value" data-toggle="tooltip" style="width:250px"/>
                                             <div class="input-group-btn">
-                                                <button type="button" id="addProp" class="btn btn-secondary">
+                                                <button type="button" id="addProp" class="btn btn-secondary" data-toggle="tooltip" title="First you have add a vocabulary">
                                                     <span class="glyphicon glyphicon-plus"></span>
                                                 </button>
                                             </div>
@@ -331,7 +331,7 @@
                                     </div>
                                     <br/>
                                     <div class="row" id="subpropDiv" style="display: none">
-                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id="subpropAsResource" value="true" title="Save the URI from another resource" data-toggle="tooltip"/> As a resource&nbsp;&nbsp;&nbsp;&nbsp;
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id="subpropAsResource" value="true"/> As a resource&nbsp;&nbsp;&nbsp;&nbsp;
                                         <div class="form-group">
                                             <div class="input-group">
                                                 <span class="input-group-addon">:</span>
@@ -339,9 +339,9 @@
                                             </div>
                                             <div class = "input-group">
                                                 <span class="input-group-addon">=</span>
-                                                <input type="text" class="form-control" id="subpropValue" style="width:250px" placeholder="Value" data-toggle="tooltip" />
+                                                <input type="text" class="form-control" id="subpropValue" style="width:250px" placeholder="value"/>
                                                 <div class="input-group-btn">
-                                                    <button type="button" id="addSubprop" class="btn btn-secondary">
+                                                    <button type="button" id="addSubprop" class="btn btn-secondary" >
                                                         <span class="glyphicon glyphicon-plus"></span>
                                                     </button>
                                                 </div>

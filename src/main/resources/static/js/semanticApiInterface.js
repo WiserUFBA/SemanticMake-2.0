@@ -253,8 +253,7 @@
       //Mostra o recurso na tag '<pre>' de id 'result'
       showResource()
     }
-
-    subpropAsResourceCheck.addEventListener('click', (evt) => {
+      subpropAsResourceCheck.addEventListener('click', (evt) => {
       if (propAsResourceCheck.checked && subpropAsResourceCheck.checked){
         $(subpropValueField).attr('data-original-title', 'URIs must be valid: http://... ending with / ou #')
         subpropValueField.onblur = validateField(isValidURL)
@@ -458,7 +457,8 @@
         }
       //Este bloco trata o evento da conexão estar indisponível
       }).catch(function(error) {
-          result.innerHTML += `<br/><br/><h3>Connection problem when trying to save the ontology<h3><br/><br/>${error.message}`
+        result.classList.add('has-error')
+        result.innerHTML += `<br/><br/><h3>Connection problem when trying to save the ontology<h3><br/><br/>${error.message}`
       });
     }
 

@@ -168,6 +168,6 @@ To open the Swagger the application SemanticApi need be running.
 ## Support and development
 
 <p align="center">
-Developed by Eudes Souza with Intellij IDEA at </br>
+Developed by Eudes Souza with Intellij IDEA 2016.3.5</br>
 <img src="https://wiki.dcc.ufba.br/pub/SmartUFBA/ProjectLogo/wiserufbalogo.jpg"/>
 </p>

@@ -34,12 +34,16 @@ public class OptGroupBuilder {
     public Map<String, OptGroup> build(String vocabUri, String vocabFilePath, String search) {
         RIOT.init();
         InputStream vocabInputStream = getClass().getResourceAsStream(vocabFilePath);
+        //Model: Compreendida como a ontologia do recurso criado
         Model model = ModelFactory.createDefaultModel();
         String lang = vocabFilePath.endsWith("rdf") ? "RDF/XML" : "TURTLE";
+        //Lê o modelo do arquivo cujo caminho caminho foi passado
         model.read(vocabInputStream, null, lang);
 
+        //OptGroup: A class that holds a group of predicates of a vocabulary
         Map<String, OptGroup> optGroupMap = new HashMap<>();
 
+        //Lista todos os recursos que são sujeitos de Statements
         model.listSubjects().forEachRemaining(res -> {
             Statement typeStmt = res.getProperty(RDF.type);
             if (typeStmt == null) return;
@@ -53,6 +57,7 @@ public class OptGroupBuilder {
             if (search != null && !property.toLowerCase().contains(search.toLowerCase())) return;
 
             String domain = "Without specific domain";
+            //Statement: Declaração, não é um recurso, assumiremos como uma tripla. Cada Statement pertence a um recurso, logo a um modelo consequentemente.
             Statement domainStmt = res.getProperty(RDFS.domain);
             if (domainStmt != null) {
                 Resource domainResource = domainStmt.getResource();
@@ -63,8 +68,8 @@ public class OptGroupBuilder {
             }
 
             if (domain.startsWith("http")) return;
-
             optGroupMap.putIfAbsent(domain, new OptGroup(domain, new ArrayList<>()));
+
             OptGroup optGroup = optGroupMap.get(domain);
             optGroup.getChildren().add(new Option(property, property));
         });
